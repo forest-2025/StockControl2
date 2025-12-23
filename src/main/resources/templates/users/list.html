@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/main-layout}">
+
+<head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/users/password-edit.css}">
+	<!--/* titleはfragmentで置換する */-->
+	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<!--/* ユーザー登録ボタンと検索フォームをdivタグのrowでひとまとめにしている(rowを使うときはそのすぐ下の子要素にcolを加えないと意味がない).このまとまりの上下に余白を別で足している(margin). */-->
+		<div class="row mt-5 mb-5">
+			<!-- ユーザー登録ボタン -->
+			<!--/* パソコン用(992px以上)ならユーザー登録ボタンと検索フォーム・ボタンが横並びになるようにしている.
+			text-centerで中央寄せにしている.
+			pb-4は小さい画面でユーザー登録ボタンと検索フォーム・ボタンが二段になっているときに余白をつけるためのもの. */-->
+			<div class="col-lg-6 text-center pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
+				<a class="btn btn-dark btn-lg" th:href="@{/users/register}" role="button"
+					th:text="#{userRegister}"></a>
+			</div>
+
+			<!-- 検索フォームと検索ボタン -->
+			<!--/* 検索フォームと検索ボタンを横並びにすると検索ボタンの位置が離れるので2段にしている. */-->
+			<div class="col-lg-6">
+				<form class="" method="get" th:action="@{/users/list}">
+					<!-- 検索フォーム -->
+					<div class="text-center pb-3">
+						<!--/* inputタグのw-auto d-inline-blockはform-controlのwidth:100%,display:blockを上書きしていおり,
+							これにより検索フォームとボタンの高さを合わせている. */-->
+						<label for="search"></label>
+						<input class="form-control form-control-lg w-auto d-inline-block" type="search" id="search"
+							name="search" th:value="${search}" th:placeholder="#{searchForm}">
+						<!--/* "管理者権限で検索するときは管理者または一般で検索してください"というメッセージを表示する. */-->
+						<div class="pt-3" th:text="#{searchText1}"></div>
+						<strong class="text-danger" th:text="#{admin}"></strong>
+						<span th:text="#{searchText2}"></span>
+						<strong class="text-danger" th:text="#{general}"></strong>
+						<span th:text="#{searchText3}"></span>
+					</div>
+
+					<!-- 検索ボタン -->
+					<div class="text-center">
+						<label for="search-btn"></label>
+						<button class="btn btn-outline-dark btn-lg" type="submit" id="search-btn"
+							th:text="#{searchBtn}"></button>
+					</div>
+				</form>
+			</div>
+
+		</div>
+
+		<!-- ユーザー一覧表示 -->
+		<div class="row">
+			<!--/* table-responsiveでラップしたテーブルは,テーブルの内容が多くて横幅が広くなったときにスクロールバーが表示される. */-->
+			<div class="col table-responsive">
+				<table class="table table-striped text-center fs-5">
+					<thead>
+						<tr>
+							<th scope="col" th:text="#{employeeNumber}"></th>
+							<th scope="col" th:text="#{familyName}"></th>
+							<th scope="col" th:text="#{firstName}"></th>
+							<th scope="col" th:text="#{emailAddress}"></th>
+							<th scope="col" th:text="#{isAdmin}"></th>
+							<th scope="col"></th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<!--/* 削除済みのユーザー以外を表示する. */-->
+
+						<tr th:each="item:${userList}">
+
+							<td th:text="${item.employeeNumber}"></td>
+							<td th:text="${item.familyName}"></td>
+							<td th:text="${item.firstName}"></td>
+							<td th:text="${item.emailAddress}"></td>
+							<td th:text="${item.isAdmin} == 1 ? #{admin} : #{general}"></td>
+							<td>
+								<!-- 修正ボタン -->
+								<a class="btn btn-primary btn-lg me-3 mb-2"
+									th:href="@{'/users/' + ${item.userId}+ '/edit'}" role="button"
+									th:text="#{edit}"></a>
+								<!-- パスワード修正ボタン -->
+								<a class="btn info btn-lg me-3 mb-2"
+									th:href="@{'/users/' + ${item.userId}+ '/passwordEdit'}" role="button"
+									th:text="#{editPassword}"></a>
+								<!-- 削除ボタン -->
+								<a class="btn btn-danger btn-lg me-3 mb-2"
+									th:href="@{'/users/' + ${item.userId}+ '/delete'}" role="button"
+									th:text="#{delete}"></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- 戻るボタン -->
+		<div class="text-center mt-5 mb-5">
+			<a class="btn btn-dark btn-lg" th:href="@{/products/info/list}" role="button" th:text="#{back}"></a>
+		</div>
+	</div>
+</body>
+
+</html>

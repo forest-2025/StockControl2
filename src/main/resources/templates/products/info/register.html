@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/form-layout}">
+
+<head>
+	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- メッセージ -->
+		<div class="alert alert-success mt-5" role="alert">
+			<span th:text="#{productInfoRegisterMessage}"></span>
+		</div>
+
+		<form method="post" th:object="${registerForm}" th:action="@{/products/info/register}"
+			enctype="multipart/form-data">
+
+			<!-- 商品番号 -->
+			<div>
+				<label class="mb-1" for="productNumber" th:text="#{productNumber}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{productNumber}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('productNumber')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{productNumber}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+
+			<!-- 商品名 -->
+			<div>
+				<label class="mb-1" for="productName" th:text="#{productName}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{productName}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('productName')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{productName}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<!-- 入荷先名 -->
+			<div>
+				<label class="mb-1" for="supplierId" th:text="#{supplierName}"></label>
+				<select class="form-select mb-3 fs-5" th:field="*{supplierId}">
+					<option value="" th:text="#{select}"></option>
+					<div th:each="item:${supplierList}">
+						<option th:value="${item.supplierId}" th:label="${item.supplierName}"></option>
+					</div>
+				</select>
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('supplierId')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{supplierId}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<!-- 画像 -->
+			<div>
+				<label class="mb-1" for="productFile" th:text="#{selectImage}"></label>
+				<input type="file" class="form-control mb-3 fs-5" th:field="*{productFile}" th:aria-label="#{selectImage}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('productFile')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{productFile}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<div class="mt-5">
+				<!-- 登録ボタン -->
+				<label for="productRegister"></label>
+				<button class="btn btn-success btn-lg me-2 mb-5" type="submit" id="productRegister"
+					name="productRegister" th:text="#{register}"></button>
+
+				<!-- キャンセルボタン -->
+				<a class="btn btn-outline-success btn-lg mb-5" th:href="@{/products/info/list}" role="button"
+					id="cancel" name="cancel" th:text="#{cancel}"></a>
+			</div>
+		</form>
+
+	</div>
+</body>
+
+</html>

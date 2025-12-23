@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.ProductWithSupplierMapper">
+
+	<resultMap type="ProductWithSupplier" id="productWithSupplierMap" >
+  		<association property="product" resultMap="product" columnPrefix="product_" />
+  		<association property="supplier" resultMap="supplier" columnPrefix="supplier_" />
+  	</resultMap>
+  	
+  	<resultMap type="MProduct" id="product">
+  		<id column="id" property="productId"/>
+  		<result column="name" property="productName" />
+  		<result column="number" property="productNumber" />
+  		<result column="is_deleted" property="productIsDeleted" />
+		<result column="register_date_time" property="productRegisterDateTime" />
+  		<result column="update_date_time" property="productUpdateDateTime" />
+  	</resultMap>
+  	
+  	<resultMap type="MSupplier" id="supplier" >
+   		 <id column="id" property="supplierId"/>
+  		<result column="name" property="supplierName" />
+  		<result column="is_deleted" property="supplierIsDeleted" />
+  		<result column="register_date_time" property="supplierRegisterDateTime" />
+  		<result column="update_date_time" property="supplierUpdateDateTime" />
+	</resultMap>	
+
+	<!-- 商品IDから商品情報と入荷先情報を取得する(削除済みは除く) -->
+	<select id="findByProductId"
+		resultMap="productWithSupplierMap">
+		select
+			product.id as product_id,
+			product.name as product_name,
+			product.number as product_number,
+			product.is_deleted as product_is_deleted,
+			product.register_date_time as product_register_date_time,
+			product.update_date_time as product_update_date_time,
+			supplier.id as supplier_id,
+			supplier.name as supplier_name,
+			supplier.is_deleted as supplier_is_deleted,
+			supplier.register_date_time as supplier_register_date_time,
+			supplier.update_date_time as supplier_update_date_time
+		from	
+			m_product as product
+		left join
+			m_supplier as supplier
+		on
+			product.supplier_id = supplier.id
+		where
+			product.id = #{productId}
+			and
+			product.is_deleted != 1
+	</select>
+	
+</mapper>

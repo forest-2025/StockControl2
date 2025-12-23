@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.StockMapper">
+
+	<!-- 商品の在庫情報を登録する -->
+	<insert id="insertOne">
+		insert into
+			t_stock(
+				product_id,
+				stock_quantity
+			) value (
+				#{productId},
+				#{stockQuantity}
+			)
+	</insert>
+	
+	<!-- 商品の在庫数を更新する(在庫数に商品の変化数を足しているため減少するときはamountOfChangeを負の数にする) -->
+	<update id="updateStockQuantity">
+		update
+			t_stock
+		set
+			stock_quantity = stock_quantity + #{amountOfChange}
+			
+		where
+			product_id  = #{productId}
+	
+	</update>
+	
+	<!-- 商品IDから在庫情報を取得する -->
+	<select id="findByProductId" resultType="TStock">
+		select
+			id as stockId,
+			product_id,
+			stock_quantity,
+			register_date_time,
+			update_date_time
+		from
+			t_stock
+		where
+			product_id = #{productId}
+	</select>
+	
+</mapper>

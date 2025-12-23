@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.ProductListMapper">
+
+	<!-- 削除済み以外の商品一覧を商品番号の昇順で取得する  -->
+	<select id="findAll"
+		resultType="ProductList">
+		select
+			product.id as productId,
+			product.name as productName,
+			product.number as productNumber,
+			product.supplier_id as supplier_id,
+			product.is_deleted as productIsDeleted,
+			supplier.name as supplierName,
+			supplier.is_deleted as supplierIsDeleted,
+			stock.id as stockId,
+			stock.stock_quantity
+		from
+			m_product as product
+		left join
+			m_supplier as supplier
+		on
+			product.supplier_id = supplier.id
+		left join
+			t_stock as stock
+		on 
+			product.id = stock.product_id
+		where
+			product.is_deleted != 1
+		order by
+			product.number asc
+	</select>
+	
+	<!-- 削除済み以外の商品検索結果一覧を商品番号の昇順で取得する(商品番号・商品名・入荷先名で検索、商品IDで昇順)  -->
+	<select id="findSearchResults"
+		resultType="ProductList">
+		select
+			product.id as productId,
+			product.name as productName,
+			product.number as productNumber,
+			product.supplier_id as supplierId,
+			product.is_deleted as productIsDeleted,
+			supplier.name as supplierName,
+			supplier.is_deleted as supplierIsDeleted,
+			stock.id as stockId,
+			stock.stock_quantity
+		from
+			m_product as product
+		left join
+			m_supplier as supplier
+		on
+			product.supplier_id = supplier.id
+		left join
+			t_stock as stock
+		on 
+			product.id = stock.product_id
+		where
+			product.is_deleted != 1
+			and(
+			product.name like concat('%' , #{search} , '%') 
+			or
+			product.number like concat('%' , #{search} , '%') 
+			or
+			supplier.name like concat('%' , #{search} , '%') 
+			)
+		order by
+			product.number asc
+	</select>
+	
+	<!-- 削除済み以外の商品IDから商品情報を取得する(詳細で商品IDの商品が存在するか確認するためなので並びはとくに指定していない)  -->
+	<select id="findByProductId"
+		resultType="ProductList">
+		select
+			product.id as productId,
+			product.name as productName,
+			product.number as productNumber,
+			product.supplier_id as supplier_id,
+			product.image as image,
+			product.is_deleted as productIsDeleted,
+			supplier.name as supplierName,
+			supplier.is_deleted as supplierIsDeleted,
+			stock.id as stockId,
+			stock.stock_quantity
+		from
+			m_product as product
+		left join
+			m_supplier as supplier
+		on
+			product.supplier_id = supplier.id
+		left join
+			t_stock as stock
+		on 
+			product.id = stock.product_id
+		where
+			product.id = #{productId}
+			and
+			product.is_deleted != 1
+	</select>
+	
+</mapper>

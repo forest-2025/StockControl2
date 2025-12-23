@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/main-layout}">
+
+<head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/products/info/display-details.css}">
+	<script th:src="@{/js/image.js}" defer></script>
+	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- 商品情報表示 -->
+		<!--/* ヘッダーの下ギリギリに配置しているのでmt-5で余白をつくる */-->
+		<div class="col mt-5">
+			<table class="table text-center">
+				<thead>
+					<tr>
+						<th scope="col" th:text="#{productNumber}"></th>
+						<th scope="col" th:text="#{productName}"></th>
+						<th scope="col" th:text="#{supplierName}"></th>
+						<th scope="col" th:text="#{stockQuantity}"></th>
+						<!--/* 在庫修正ボタンは管理者権限がある人だけ表示するので管理者権限のない人がログインしたときは表示しないようにしないとテーブルの下線が短くなる(対応するthが少なくなるため) */-->
+						<th scope="col" sec:authorize="hasAuthority('ROLE_ADMIN')"></th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<!--/* 在庫数が10未満のときに背景色が黄色になるように設定する */-->
+					<tr class="fs-4" th:classappend="${oneItem.stockQuantity} < 10 ? 'table-warning' : ''">
+						<td th:text="${oneItem.productNumber}"></td>
+						<td th:text="${oneItem.productName}"></td>
+						<td th:text="${oneItem.supplierName}"></td>
+						<td th:text="${oneItem.stockQuantity}"></td>
+						<!-- 在庫修正ボタン -->
+						<td sec:authorize="hasAuthority('ROLE_ADMIN')">
+							<a class="btn info btn-lg" th:href="@{'/products/' + ${oneItem.productId} + '/count/edit'}"
+								role="button" th:text="#{editStockQuantity}"></a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="col text-center mt-5">
+
+			<!--/* 小さい画面でもボタンの位置がズレないようにme-3 mb-3で調整している */-->
+			<!-- 商品情報修正ボタン -->
+			<a class="btn btn-primary btn-lg me-3 mb-3" sec:authorize="hasAuthority('ROLE_ADMIN')"
+				th:href="@{'/products/' + ${oneItem.productId} + '/info/edit'}" role="button"
+				th:text="#{productInformationEdit}"></a>
+			<!-- 商品情報削除ボタン -->
+			<a class="btn btn-danger btn-lg me-3 mb-3" sec:authorize="hasAuthority('ROLE_ADMIN')"
+				th:href="@{'/products/' + ${oneItem.productId} + '/info/delete'}" role="button"
+				th:text="#{productInformationDelete}"></a>
+		</div>
+
+		<!--/* 商品情報修正・削除ボタンと位置がズレないようにme-3 mb-3で調整している */-->
+		<!-- 画像表示ボタン -->
+		<div class="col text-center mt-5" th:if="${oneItem.image != null }">
+			<button class="btn btn-success btn-lg me-3 mb-3" id="showImageBtn"
+				th:data-product-id="${oneItem.productId}" th:text="#{showImage}">
+			</button>
+		</div>
+
+		<div class="mt-4 position-relative">
+			<!-- 画像 -->
+			<img class="rounded mx-auto d-block img-fluid d-none" id="resultImage"
+			title="#{productImage}">
+			<!-- ×ボタン -->
+			<button type="button" class="btn-close position-absolute top-0 end-0 m-3 d-none" aria-label="Close"
+				id="closeImageBtn"></button>
+		</div>
+
+		<!-- 入出荷・修正履歴 -->
+		<div class="col">
+			<h3 class="mt-5 mb-3" th:text="#{history}"></h3>
+		</div>
+
+		<div class="col">
+			<table class="table table-striped text-center">
+
+				<thead>
+					<tr>
+						<th scope="col" th:text="#{registerDateTime}"></th>
+						<th scope="col" th:text="#{process}"></th>
+						<th scope="col" th:text="#{quantity}"></th>
+						<th scope="col" th:text="#{customerName}"></th>
+						<th scope="col" th:text="#{fullName}"></th>
+						<th scope="col" th:text="#{remarks}"></th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<!--/* 増加修正のレコードは背景色が赤、減少修正のレコードは青になるように設定する */-->
+
+					<tr th:each="item:${historyList}" th:classappend="${item.amountOfChange > 0 and item.supplierId == null ? 'table-danger' : ''}
+					 + ${item.amountOfChange < 0 and item.customerId == null ? 'table-primary' : ''}">
+
+						<!--/* 登録日を表示する */-->
+						<td th:text="${#temporals.format(item.historyRegisterDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+
+						<!--/* 入荷・出荷・増加修正・減少修正のいずれかを在庫の変化数や入荷先・出荷先の有無から判断できるように設定する */-->
+						<td th:if="${item.amountOfChange > 0 and item.supplierId != null}" } th:text="#{arrival}"></td>
+						<td th:if="${item.amountOfChange > 0 and item.supplierId == null}" } th:text="#{increase}"></td>
+						<td th:if="${item.amountOfChange < 0 and item.customerId != null}" } th:text="#{shipping}"></td>
+						<td th:if="${item.amountOfChange < 0 and item.customerId == null}" } th:text="#{decrease}"></td>
+
+						<!--/* 在庫の変化数が負の数のときに正の数で表示するようにしている */-->
+						<td th:text="${item.amountOfChange < 0 ? -(item.amountOfChange) : item.amountOfChange}"></td>
+
+						<!--/* 出荷のときだけ出荷先名を表示する */-->
+						<td th:text="${item.customerId == null } ? '' : ${item.customerName}"></td>
+
+						<!--/* 担当者を表示する */-->
+						<td th:text="${item.fullName}"></td>
+
+						<!--/* 備考を表示する */-->
+						<td th:text="${item.remarks}"></td>
+
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- 戻るボタン -->
+		<div class="text-center mt-5 mb-5">
+			<a class="btn btn-dark btn-lg" th:href="@{/products/info/list}" role="button" th:text="#{back}"></a>
+		</div>
+	</div>
+</body>
+
+
+</html>

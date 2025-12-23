@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/form-layout}">
+
+<head>
+	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- メッセージ -->
+		<div class="alert alert-primary mt-5" role="alert">
+			<span th:text="#{userEditMessage}"></span>
+		</div>
+
+		<form method="post" th:object="${editForm}" th:action="@{/users/{userId}/edit(userId=${user.userId})}">
+
+			<!-- 従業員番号 -->
+			<div>
+				<label class="mb-1" for="employeeNumber" th:text="#{employeeNumber}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{employeeNumber}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('employeeNumber')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{employeeNumber}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<!-- 姓 -->
+			<div>
+				<label class="mb-1" for="familyName" th:text="#{familyName}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{familyName}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('familyName')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{familyName}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+			
+			<!-- 名 -->
+			<div>
+				<label class="mb-1" for="firstName" th:text="#{firstName}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{firstName}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('firstName')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{firstName}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+			
+			<!-- メールアドレス -->
+			<div>
+				<label class="mb-1" for="emailAddress" th:text="#{emailAddress}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{emailAddress}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('emailAddress')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{emailAddress}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<!-- 管理者権限 -->
+			<div>
+				<label class="mb-1" for="isAdmin" th:text="#{isAdmin}"></label>
+				<select class="form-select mb-3 fs-5" th:field="*{isAdmin}">
+					<option value="" th:text="#{select}"></option>
+					<div>
+						<option th:value="#{generalNumber}" th:label="#{general}"></option>
+						<option th:value="#{adminNumber}" th:label="#{admin}"></option>
+					</div>
+				</select>
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('isAdmin')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{isAdmin}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<div class="mt-5">
+				<!-- 確定ボタン -->
+				<button class="btn btn-primary btn-lg me-2 mb-5" type="submit" id="userEdit" name="userEdit"
+					th:text="#{confirmed}"></button>
+
+				<!-- キャンセルボタン -->
+				<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel" name="cancel"
+					th:text="#{cancel}"></a>
+			</div>
+		</form>
+
+	</div>
+</body>
+
+</html>

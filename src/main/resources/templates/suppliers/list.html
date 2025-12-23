@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/main-layout}">
+
+<head>
+	<!--/* titleはfragmentで置換する */-->
+	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<!--/* 入荷先登録ボタンと検索フォームをdivタグのrowでひとまとめにしている.このまとまりの上下に余白を別で足している. */-->
+		<div class="row mt-5 mb-5">
+			<!-- 入荷先登録ボタン -->
+			<!--/* パソコン用(992px以上)なら入荷先登録ボタンと検索フォーム・ボタンが横並びになるようにしている.
+			d-flexでdivタグをフレックスコンテナに変えることで子要素(aタグ)をフレックスアイテムとして細かく配置ができるようになる.
+			justify-content-center align-items-center(中央配置)はd-flexがあるため使用できる. 
+			これらは子要素に作用することに注意する.pb-4は小さい画面で入荷先登録ボタンと検索フォーム・ボタンが二段になっているときに余白をつけるためのもの. */-->
+			<div class="col-lg-6 d-flex justify-content-center align-items-center pb-4"
+				sec:authorize="hasAuthority('ROLE_ADMIN')">
+				<a class="btn btn-dark btn-lg" th:href="@{/suppliers/register}" role="button"
+					th:text="#{supplierRegister}"></a>
+			</div>
+
+			<!-- 検索フォームと検索ボタン -->
+			<!--/* colで入荷先登録ボタンとは別要素と判断されて横方向に分割して表示される. */-->
+			<div class="col">
+				<!--/* d-flexをformタグにつけることでformタグの子要素の検索フォームと検索ボタンを横並びにし,中央配置にできる. */-->
+				<form class="d-flex justify-content-center align-items-center" method="get"
+					th:action="@{/suppliers/list}">
+					<!-- 検索フォーム -->
+					<!--/* inputタグのw-auto d-inline-blockはform-controlのwidth:100%,display:blockを上書きしていおり,
+					これにより検索フォームとボタンの高さを合わせている. */-->
+					<div>
+						<label for="search"></label>
+						<input class="form-control form-control-lg w-auto d-inline-block" type="search" id="search"
+							name="search" th:value="${search}" th:placeholder="#{searchForm}">
+					</div>
+
+					<!-- 検索ボタン -->
+					<!--/* ps-4で検索フォームとの間に余白を作っている. */-->
+					<div class="ps-4">
+						<label for="search-btn"></label>
+						<button class="btn btn-outline-dark btn-lg " type="submit" id="search-btn"
+							th:text="#{searchBtn}"></button>
+					</div>
+				</form>
+			</div>
+
+		</div>
+
+		<!-- 入荷先一覧表示 -->
+		<div class="row">
+			<!--/* table-responsiveでラップしたテーブルは,テーブルの内容が多くて横幅が広くなったときにスクロールバーが表示される. */-->
+			<div class="col table-responsive">
+				<table class="table table-striped text-center fs-5">
+					<thead>
+						<tr>
+							<!-- 入荷先ID -->
+							<th scope="col">
+								<div class="mb-3" th:text="#{supplierId}"></div>
+								<!-- 昇順ボタン -->
+								<a class="btn btn-outline-danger btn-lg me-3 mb-2" 
+									th:href="@{/suppliers/list(sortItem='id',sort='asc',search=${search})}" role="button" th:text="#{asc}"></a>
+								<!-- 降順ボタン -->
+								<a class="btn btn-outline-primary btn-lg me-3 mb-2" 
+									th:href="@{/suppliers/list(sortItem='id',sort='desc',search=${search})}" role="button" th:text="#{desc}"></a>
+							</th>
+							<!-- 入荷先名 -->
+							<th scope="col">
+								<div class="mb-3" th:text="#{supplierName}"></div>
+								<!-- 昇順ボタン -->
+								<a class="btn btn-outline-danger btn-lg me-3 mb-2" 
+									th:href="@{/suppliers/list(sortItem='furigana',sort='asc',search=${search})}" role="button" th:text="#{asc}"></a>
+								<!-- 降順ボタン -->
+								<a class="btn btn-outline-primary btn-lg me-3 mb-2" 
+									th:href="@{/suppliers/list(sortItem='furigana',sort='desc',search=${search})}" role="button" th:text="#{desc}"></a>
+							</th>
+							<th scope="col"></th>
+						</tr>
+
+
+					</thead>
+
+					<tbody>
+						<!--/* 削除済みの入荷先以外を表示する. */-->
+
+						<tr th:each="item:${supplierList}">
+
+							<td th:text="${item.supplierId}"></td>
+							<td th:text="${item.supplierName}"></td>
+							<td>
+								<!-- 修正ボタン -->
+								<a class="btn btn-primary btn-lg me-3 mb-2"
+									th:href="@{'/suppliers/' + ${item.supplierId}+ '/edit'}" role="button"
+									th:text="#{edit}"></a>
+								<!-- 削除ボタン -->
+								<a class="btn btn-danger btn-lg me-3 mb-2"
+									th:href="@{'/suppliers/' + ${item.supplierId}+ '/delete'}" role="button"
+									th:text="#{delete}"></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- 戻るボタン -->
+		<div class="text-center mt-5 mb-5">
+			<a class="btn btn-dark btn-lg" th:href="@{/products/info/list}" role="button" th:text="#{back}"></a>
+		</div>
+	</div>
+</body>
+
+</html>

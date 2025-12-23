@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/form-layout}">
+
+<head>
+	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- メッセージ -->
+		<div class="alert alert-success mt-5" role="alert">
+			<span th:text="#{supplierRegisterMessage}"></span>
+		</div>
+
+		<form method="post" th:object="${registerForm}" th:action="@{/suppliers/register}">
+
+			<!-- 入荷先名 -->
+			<div>
+				<label class="mb-1" for="supplierName" th:text="#{supplierName}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{supplierName}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('supplierName')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{supplierName}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+			
+			<!-- 入荷先名ふりがな -->
+			<div>
+				<label class="mb-1" for="supplierFurigana" th:text="#{supplierFurigana}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{supplierFurigana}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('supplierFurigana')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{supplierFurigana}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<div class="mt-5">
+				<!-- 登録ボタン -->
+				<button class="btn btn-success btn-lg me-2 mb-5" type="submit" id="supplierRegister"
+					name="supplierRegister" th:text="#{register}"></button>
+
+				<!-- キャンセルボタン -->
+				<a class="btn btn-outline-success btn-lg mb-5" th:href="@{/suppliers/list}" role="button" id="cancel"
+					name="cancel" th:text="#{cancel}"></a>
+			</div>
+		</form>
+
+	</div>
+</body>
+
+</html>

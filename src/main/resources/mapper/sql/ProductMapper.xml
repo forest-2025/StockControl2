@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.ProductMapper">
+	
+	<!-- 商品番号から商品情報を取得する -->
+	<select id="findByProductNumber"
+		resultType="MProduct">
+		select
+			id as productId,
+			number as productNumber,
+			name as productName,
+			supplier_id,
+			is_deleted as productIsDeleted,
+			register_date_time as registerDateTime,
+			update_date_time as updateDateTime
+		from
+			m_product
+		where
+			number = #{productNumber}
+	</select>
+	
+	<!-- 商品情報を登録 -->
+	<insert id="insertOne">
+		insert into
+			m_product(
+				name,
+				number,
+				supplier_id,
+				image
+			) value (
+				#{productName},
+				#{productNumber},
+				#{supplierId},
+				#{image}
+			)
+	</insert>
+	
+	<!-- 商品IDから商品情報を取得する(削除済みは除く) -->
+	<select id="findByProductId"
+		resultType="MProduct">
+		select
+			id as productId,
+			number as productNumber,
+			name as productName,
+			supplier_id,
+			is_deleted as productIsDeleted,
+			register_date_time as productRegisterDateTime,
+			update_date_time as productUpdateDateTime
+		from
+			m_product
+		where
+			id = #{productId}
+			and
+			is_deleted != 1
+	</select>
+	
+	<!-- 商品IDで指定した商品の商品情報(商品番号・商品名・入荷先)を更新する -->
+	<update id="updateOne">
+		update
+			m_product
+		set
+			number = #{productNumber},
+			name = #{productName},
+			supplier_id = #{supplierId}
+		where
+			id = #{productId}	
+	</update>
+	
+	
+	<!-- 商品IDで指定した商品の商品情報(削除フラグ)を更新する -->
+	<update id="updateIsDeleted">
+		update
+			m_product
+		set
+			is_deleted = #{productIsDeleted}
+		where
+			id = #{productId}	
+	</update>
+	
+</mapper>

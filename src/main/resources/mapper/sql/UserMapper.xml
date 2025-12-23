@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.UserMapper">
+
+	<!-- メールアドレスからユーザー情報を取得する(削除済みは除く) -->
+	<select id="findByEmailAddress" resultType="MUser">
+		select
+			id as userId,
+			email_address,
+			password,
+			family_name,
+			first_name,
+			employee_number,
+			is_admin,
+			is_deleted as userIsDeleted,
+			register_date_time as userRegisterDateTime,
+			update_date_time as userUpdateDateTime,
+			concat(family_name,first_name) as fullName
+		from
+			m_user
+		where
+			email_address = #{emailAddress}
+			and
+			is_deleted != 1
+	</select>
+	
+	<!-- 削除済み以外のユーザー情報を従業員番号の昇順で全件取得する -->
+	<select id="findAll" resultType="MUser">
+		select
+			id as userId,
+			email_address,
+			password,
+			family_name,
+			first_name,
+			employee_number,
+			is_admin,
+			is_deleted as userIsDeleted,
+			register_date_time as userRegisterDateTime,
+			update_date_time as userUpdateDateTime
+		from
+			m_user
+		where
+			is_deleted != 1
+		order by
+			employee_number asc
+	</select>
+	
+	<!-- 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索,ユーザーIDで昇順)  -->
+	<select id="findSearchResults"
+		resultType="MUser">
+		select
+			id as userId,
+			email_address,
+			password,
+			family_name,
+			first_name,
+			employee_number,
+			is_admin,
+			is_deleted as userIsDeleted,
+			register_date_time as userRegisterDateTime,
+			update_date_time as userUpdateDateTime
+		from
+			m_user
+		where
+			is_deleted != 1
+			and(
+			family_name like concat('%' , #{search} , '%') 
+			or
+			first_name like concat('%' , #{search} , '%') 
+			or
+			employee_number like concat('%' , #{search} , '%')
+			or
+			if(#{search} = '管理者',is_admin = '1',null)
+			or
+			if(#{search} = '一般',is_admin = '0',null)  
+			)
+		order by
+			employee_number asc
+	</select>
+	
+	<!-- 従業員番号からユーザー情報を取得する(削除済みも含む) -->
+	<select id="findByEmployeeNumber" resultType="MUser">
+		select
+			id as userId,
+			email_address,
+			password,
+			family_name,
+			first_name,
+			employee_number,
+			is_admin,
+			is_deleted as userIsDeleted,
+			register_date_time as userRegisterDateTime,
+			update_date_time as userUpdateDateTime
+		from
+			m_user
+		where
+			employee_number = #{employeeNumber}
+	</select>
+	
+	<!-- ユーザーを登録する -->
+	<insert id="insertOne">
+		insert into
+			m_user (
+			email_address,
+			password,
+			family_name,
+			first_name,
+			employee_number,
+			is_admin
+		) value (
+			#{emailAddress},
+			#{password},
+			#{familyName},
+			#{firstName},
+			#{employeeNumber},
+			#{isAdmin}
+		)
+	</insert>
+	
+	<!-- ユーザーIDからユーザー情報を取得する(削除済みは除く) -->
+	<select id="findByUserId" resultType="MUser">
+		select
+			id as userId,
+			email_address,
+			password,
+			family_name,
+			first_name,
+			employee_number,
+			is_admin,
+			is_deleted as userIsDeleted,
+			register_date_time as userRegisterDateTime,
+			update_date_time as userUpdateDateTime
+		from
+			m_user
+		where
+			id = #{userId}
+			and
+			is_deleted != 1
+	</select>
+	
+	<!-- ユーザーIDで指定したユーザーの情報を更新する(パスワード以外). -->
+	<update id="updateOne">
+		update
+			m_user
+		set
+			email_address = #{emailAddress},
+			family_name = #{familyName},
+			first_name = #{firstName},
+			employee_number = #{employeeNumber},
+			is_admin = #{isAdmin}
+			
+		where
+			id  = #{userId}
+	</update>
+	
+	<!-- ユーザーIDで指定したユーザーのパスワードのみ更新する. -->
+	<update id="updatePassword">
+		update
+			m_user
+		set
+			password = #{password}
+		where
+			id  = #{userId}
+	</update>
+	
+	<!-- ユーザーIDで指定したユーザーの削除フラグを更新する. -->
+	<update id="updateIsDeleted">
+		update
+			m_user
+		set
+			is_deleted = #{userIsDeleted}
+		where
+			id  = #{userId}
+	</update>
+	
+</mapper>

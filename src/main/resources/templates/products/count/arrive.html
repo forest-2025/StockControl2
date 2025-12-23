@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/form-layout}">
+
+<head>
+	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- メッセージ -->
+		<div class="alert alert-danger mt-5" role="alert">
+			<span th:text="#{productArriveMessage}"></span>
+		</div>
+
+		<form method="post" th:object="${arriveForm}"
+			th:action="@{/products/{productId}/count/arrive(productId=${productWithSupplier.product.productId})}">
+
+			<!-- 商品番号 -->
+			<div >
+				<div class="mb-1" th:text="#{productNumber}"></div>
+				<div class="ms-3 mb-3" th:text="${productWithSupplier.product.productNumber}"></div>
+			</div>
+
+			<!-- 商品名 -->
+			<div>
+				<div class="mb-1" th:text="#{productName}"></div>
+				<div class="ms-3 mb-3" th:text="${productWithSupplier.product.productName}"></div>
+			</div>
+
+			<!-- 入荷先名 -->
+			<div>
+				<div class="mb-1" th:text="#{supplierName}"></div>
+				<div class="ms-3 mb-3" th:text="${productWithSupplier.supplier.supplierName}"></div>
+			</div>
+
+			<!-- 入荷数 -->
+			<div>
+				<label class="mb-1" for="amountOfChange" th:text="#{increaseNumber}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{amountOfChange}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('amountOfChange')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{amountOfChange}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<!-- 担当者 -->
+			<div>
+				<div class="mb-1" th:text="#{fullName}"></div>
+				<div class="ms-3 mb-3" th:text="${fullName}"></div>
+			</div>
+
+			<!-- 備考 -->
+			<div>
+				<label class="mb-1" for="remarks" th:text="#{remarks}"></label>
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{remarks}">
+
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${#fields.hasErrors('remarks')}">
+
+					<!-- エラーメッセージ -->
+					<span th:errors="*{remarks}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<div class="mt-5">
+				<!-- 確定ボタン -->
+				<button class="btn btn-dark btn-lg me-2 mb-5" type="submit" id="confirmed" name="confirmed"
+					th:text="#{confirmed}"></button>
+
+				<!-- キャンセルボタン -->
+				<a class="btn btn-outline-dark btn-lg mb-5" th:href="@{/products/info/list}" role="button"
+					id="cancel" name="cancel" th:text="#{cancel}"></a>
+			</div>
+		</form>
+	</div>
+</body>
+
+</html>

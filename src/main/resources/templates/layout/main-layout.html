@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+	<!-- 共通CSS読込 -->
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/css/layout/main-layout.css}">
+	<!-- 共通JS読込 -->
+	<script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
+	<script th:src="@{/webjars/popper.js/2.9.2/umd/popper.min.js}" defer></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+	<script th:src="@{/js/cache.js}" defer></script>
+	<title layout:fragment="title"></title>
+</head>
+
+<body>
+	<!-- ヘッダー -->
+	<header>
+		<div layout:replace="~{header/main-header::mainHeader}"></div>
+	</header>
+	<!-- コンテンツ -->
+	<!--/* パソコン用(992px未満)までは横幅100%で表示する. */-->
+	<div class="container-lg">
+		<div layout:fragment="content"></div>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+/* ヘッダーを固定しているためヘッダーとコンテンツがかぶるので余白をつくる(ヘッダーのfixed-topのposition:fixedの影響と思われる) */
+body {
+	/* ヘッダーの高さの分(画面サイズにより変わるので1400pxの画面サイズの幅分)余白をつくる */
+	padding-top:104.4px;
+}
+
+/* ログアウトボタンを押したときの背景色をデフォルトの青から薄いグレー,フォントを白から黒に変更している. */
+.dropdown-menu {
+  --bs-dropdown-link-active-bg: #f0f0f0; 
+  --bs-dropdown-link-active-color: black;
+  }
+ 
+ /* ヘッダーの見出しの位置を調整している */  
+.header-height{
+	margin-left: 40px;
+}
+  

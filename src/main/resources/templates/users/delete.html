@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/form-layout}">
+
+<head>
+	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- メッセージ -->
+		<div class="alert alert-danger mt-5" role="alert">
+			<span th:text="#{userDeleteMessage}"></span>
+		</div>
+
+		<form method="post" th:action="@{/users/{userId}/delete(userId=${user.userId})}">
+
+			<!-- 従業員番号 -->
+			<div>
+				<div class="mb-1" for="employeeNumber" th:text="#{employeeNumber}"></div>
+				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.employeeNumber}"></div>
+			</div>
+
+			<!-- 姓 -->
+			<div>
+				<div class="mb-1" for="familyName" th:text="#{familyName}"></div>
+				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.familyName}"></div>
+			</div>
+
+			<!-- 名 -->
+			<div>
+				<div class="mb-1" for="firstName" th:text="#{firstName}"></div>
+				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.firstName}"></div>
+			</div>
+
+			<!-- メールアドレス -->
+			<div>
+				<div class="mb-1" for="emailAddress" th:text="#{emailAddress}"></div>
+				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.emailAddress}"></div>
+			</div>
+
+			<!-- 管理者権限 -->
+			<div>
+				<div class="mb-1" for="isAdmin" th:text="#{isAdmin}"></div>
+				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.isAdmin == 1} ? #{admin} : #{general}"></div>
+			</div>
+
+			<div class="mt-5">
+				<!-- 削除ボタン -->
+				<button class="btn btn-danger btn-lg me-2 mb-5" type="submit" id="userDelete" name="userDelete"
+					th:text="#{delete}"></button>
+
+				<!-- キャンセルボタン -->
+				<a class="btn btn-outline-danger btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel" name="cancel"
+					th:text="#{cancel}"></a>
+			</div>
+		</form>
+
+	</div>
+</body>
+
+</html>

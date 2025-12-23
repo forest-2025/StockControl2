@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.CustomerMapper">
+
+	<!-- 削除済み以外の出荷先一覧を出荷先IDの昇順で取得する  -->
+	<select id="findAllInAscById"
+		resultType="MCustomer">
+		
+		select
+			id as customerId,
+			name as customerName,
+			furigana as customerFurigana,
+			is_deleted as customerIsDeleted,
+			register_date_time as customerRegisterDateTime,
+			update_date_time as customerUpdateDateTime
+		from
+			m_customer
+		where
+			is_deleted != 1
+		order by
+			id asc
+	</select>
+	
+	<!-- 削除済み以外の出荷先IDから出荷先情報を取得する  -->
+	<select id="findByCustomerId"
+		resultType="MCustomer">
+		select
+			id as customerId,
+			name as customerName,
+			furigana as customerFurigana,
+			is_deleted as customerIsDeleted,
+			register_date_time as customerRegisterDateTime,
+			update_date_time as customerUpdateDateTime
+		from
+			m_customer
+		where
+			id = #{customerId}
+			and
+			is_deleted != 1
+	</select>
+	
+	<!-- 削除済み以外の出荷先検索結果一覧を取得する(出荷先ID・出荷先名・出荷先名ふりがなで検索する)  -->
+	<select id="findSearchResults"
+		resultType="MCustomer">
+		select
+			id as customerId,
+			name as customerName,
+			furigana as customerFurigana,
+			is_deleted as customerIsDeleted,
+			register_date_time as customerRegisterDateTime,
+			update_date_time as customerUpdateDateTime
+		from
+			m_customer
+		where
+			is_deleted != 1
+			and (
+			id like concat('%' , #{search} , '%')
+			or
+			name like concat('%' , #{search} , '%') 
+			or
+			furigana like concat('%' , #{search} , '%') 
+			)
+        order by ${sortItem} ${sort}
+	</select>
+	
+	<!-- 出荷先を登録する -->
+	<insert id="insertOne">
+		insert into
+			m_customer (
+			name,
+			furigana
+		) value (
+			#{customerName},
+			#{customerFurigana}
+		)
+	</insert>
+	
+	<!-- 出荷先IDで指定した出荷先の情報を更新する. -->
+	<update id="updateOne">
+		update
+			m_customer
+		set
+			name = #{customerName},
+			furigana = #{customerFurigana}
+		where
+			id  = #{customerId}
+	</update>
+	
+	<!-- 出荷先IDで指定した出荷先の削除フラグを更新する. -->
+	<update id="updateIsDeleted">
+		update
+			m_customer
+		set
+			is_deleted = #{customerIsDeleted}
+		where
+			id  = #{customerId}
+	</update>
+	
+</mapper>

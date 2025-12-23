@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/form-layout}">
+
+<head>
+	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+
+		<!-- メッセージ -->
+		<div class="alert alert-danger mt-5" role="alert">
+			<span th:text="#{supplierDeleteMessage}"></span>
+		</div>
+
+		<form method="post" th:action="@{/suppliers/{supplierId}/delete(supplierId=${supplier.supplierId})}">
+
+			<!-- 入荷先名 -->
+			<div>
+				<div class="mb-1" for="supplierName" th:text="#{supplierName}"></div>
+				<div class="ms-3 mb-3 fs-5" type="text" th:text="${supplier.supplierName}"></div>
+			</div>
+			
+			<!-- 入荷先名ふりがな -->
+			<div>
+				<div class="mb-1" for="supplierFurigana" th:text="#{supplierFurigana}"></div>
+				<div class="ms-3 mb-3 fs-5" type="text" th:text="${supplier.supplierFurigana}"></div>
+			</div>
+
+			<div class="mt-5">
+				<!-- 削除ボタン -->
+				<button class="btn btn-danger btn-lg me-2 mb-5" type="submit" id="supplierDelete" name="supplierDelete"
+					th:text="#{delete}"></button>
+
+				<!-- キャンセルボタン -->
+				<a class="btn btn-outline-danger btn-lg mb-5" th:href="@{/suppliers/list}" role="button" id="cancel"
+					name="cancel" th:text="#{cancel}"></a>
+			</div>
+		</form>
+
+	</div>
+</body>
+
+</html>

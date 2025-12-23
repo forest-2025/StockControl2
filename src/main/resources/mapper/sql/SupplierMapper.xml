@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.SupplierMapper">
+
+	<!-- 削除済み以外の入荷先一覧を入荷先IDの昇順で取得する  -->
+	<select id="findAllInAscById"
+		resultType="MSupplier">
+		
+		select
+			id as supplierId,
+			name as supplierName,
+			furigana as supplierFurigana,
+			is_deleted as supplierIsDeleted,
+			register_date_time as supplierRegisterDateTime,
+			update_date_time as supplierUpdateDateTime
+		from
+			m_supplier
+		where
+			is_deleted != 1
+		order by
+			id asc
+	</select>
+	
+	<!-- 入荷先IDから入荷先情報を取得する(削除済みは除く)  -->
+	<select id="findBySupplierId"
+		resultType="MSupplier">
+		
+		select
+			id as supplierId,
+			name as supplierName,
+			furigana as supplierFurigana,
+			is_deleted as supplierIsDeleted,
+			register_date_time as supplierRegisterDateTime,
+			update_date_time as supplierUpdateDateTime
+		from
+			m_supplier
+		where
+			id = #{supplierId}
+			and
+			is_deleted != 1
+	</select>
+	
+	<!-- 削除済み以外の入荷先検索結果一覧を取得する(入荷先ID・入荷先名・入荷先名ふりがなで検索する)  -->
+	<select id="findSearchResults"
+		resultType="MSupplier">
+		select
+			id as supplierId,
+			name as supplierName,
+			furigana as supplierFurigana,
+			is_deleted as supplierIsDeleted,
+			register_date_time as supplierRegisterDateTime,
+			update_date_time as supplierUpdateDateTime
+		from
+			m_supplier
+		where
+			is_deleted != 1
+			and (
+			id like concat('%' , #{search} , '%')
+			or
+			name like concat('%' , #{search} , '%')
+			or
+			furigana like concat('%' , #{search} , '%') 
+			)
+        order by ${sortItem} ${sort}
+	</select>
+	
+	<!-- 入荷先を登録する -->
+	<insert id="insertOne">
+		insert into
+			m_supplier (
+			name,
+			furigana
+		) value (
+			#{supplierName},
+			#{supplierFurigana}
+		)
+	</insert>
+	
+	<!-- 入荷先IDで指定した入荷先の情報を更新する. -->
+	<update id="updateOne">
+		update
+			m_supplier
+		set
+			name = #{supplierName},
+			furigana = #{supplierFurigana}
+		where
+			id  = #{supplierId}
+	</update>
+	
+	<!-- 入荷先IDで指定した入荷先の削除フラグを更新する. -->
+	<update id="updateIsDeleted">
+		update
+			m_supplier
+		set
+			is_deleted = #{supplierIsDeleted}
+		where
+			id  = #{supplierId}
+	</update>
+	
+</mapper>

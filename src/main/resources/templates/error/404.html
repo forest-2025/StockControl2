@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/common-layout}">
+
+<head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/error/404error.css}">
+	<title layout:fragment="title" th:text="#{404ErrorPage}"></title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="text-center">
+			<h3 class="error-message text-danger" th:text="#{404ErrorMessage}"></h3>
+			
+			<h4 class="mt-4 mb-5"><strong th:text="#{404ErrorStrongMessage}"></strong></h4>
+
+			<a class="fw-bold fs-5" th:href="@{/products/info/list}" th:text="#{backToTheList}"></a>
+
+		</div>
+	</div>
+</body>
+
+</html>

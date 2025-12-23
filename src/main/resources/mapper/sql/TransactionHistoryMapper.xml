@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.repository.TransactionHistoryMapper">
+
+	<!-- 入荷・出荷・修正履歴を登録する  -->
+	<insert id="insertOne" >
+		insert into 
+			t_transaction_history(
+				product_id ,
+				amount_of_change,
+ 				supplier_id,
+				customer_id,
+				user_id,
+				remarks
+			) value (
+				#{productId},
+				#{amountOfChange},
+				#{supplierId},
+				#{customerId},
+				#{userId},
+				#{remarks}
+			)
+	</insert>
+	
+	<!-- 商品IDから履歴を降順で取得する  -->
+	<select id="findByProductId"
+		resultType="HistoryDetails">
+		select
+			history.id as historyId,			
+	 		history.product_id as productId,						
+	 		history.amount_of_change as amountOfChange,				
+	 		history.supplier_id as supplierId,
+	 		history.customer_id as customerId,
+	 		history.user_id as userId,
+			history.remarks,
+			history.register_date_time as historyRegisterDateTime,
+			customer.name as customerName,
+			concat(user.family_name,user.first_name) as fullName
+		from
+			t_transaction_history as history
+		left join
+			m_customer as customer
+		on 
+			history.customer_id = customer.id
+		left join
+			m_user as user
+		on 
+			history.user_id = user.id
+		where
+			history.product_id = #{productId}
+		order by
+			history.register_date_time desc
+	</select>
+
+</mapper>

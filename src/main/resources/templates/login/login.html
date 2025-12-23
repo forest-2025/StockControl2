@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/login-layout}">
+
+<head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/login/login.css}">
+	<title layout:fragment="title" th:text="#{loginScreen}"></title>
+</head>
+
+<body>
+
+	<div layout:fragment="content">
+		<form class="form-login" method="post" th:action="@{/login}">
+			<div class="form-group mt-5">
+				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
+				<div class="alert alert-warning alert-dismissible fade show" role="alert"
+					th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']}!=null">
+
+					<!-- エラーメッセージ -->
+					<span th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"></span>
+
+					<!-- エラーメッセージを消せるボタン -->
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+				</div>
+			</div>
+
+			<!-- ユーザー名 -->
+			<div class="form-group">
+				<label class="mb-1" for="emailAddress" th:text="#{emailAddress}"></label>
+				<input class="form-control form-control-lg mb-3 fs-5" type="text" id="emailAddress" name="emailAddress">
+			</div>
+
+			<!-- パスワード -->
+			<div class="form-group">
+				<label  class="mb-1" for="password" th:text="#{password}"></label>
+				<input class="form-control form-control-lg mb-5 fs-5" type="password" id="password" name="password">
+			</div>
+
+			<!-- ログインボタン-->
+			<div class="login-buttom">
+				<input class="btn btn-secondary btn-lg mb-5" type="submit" th:value="#{login}">
+			</div>
+
+		</form>
+	</div>
+
+</body>
+
+</html>
