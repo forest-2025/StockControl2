@@ -45,3 +45,18 @@ $(function() {
 		$("#closeImageBtn").addClass("d-none");
 	});
 });
+//$(function () {
+//    $.ajax({
+//        url: "/images/sample.png",
+//        method: "GET",
+//        xhrFields: { responseType: "blob" }
+//    })
+//    .done(function (blob) {
+//        const url = URL.createObjectURL(blob);
+//        $("#image").attr("src", url);
+//    })
+//    .fail(function (jqXHR) {
+//        $("#image").attr("src", "/images/default.png");
+//    });
+//});
+

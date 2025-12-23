@@ -1,10 +1,12 @@
 package com.example.controller;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.tika.Tika;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -121,28 +123,30 @@ public class ProductInfoController {
 		MultipartFile file = form.getProductFile();
 		System.out.println(file);
 
-		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像の表示が表示されないようになる).
+		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
 		String uniqueName = null;
 
-		// 画像が選択されているか分岐する.(登録フォームで<input type="file" name="multipartFile">は存在し,画像が選択されている(画像が空白でない)ということ.)
+		// 画像が選択されているか分岐する(登録フォームで<input type="file" name="multipartFile">は存在し,画像が選択されている(画像が空白でない)ということ).
 		if (file != null && !file.isEmpty()) {
-			System.out.println("file != null && !file.isEmpty()");
 
 			/* InputStreamクラスは,バイト単位でデータを読み込むための抽象クラス.
 			 * MultipartFileはインターフェースで,HTTPでアップロードされたファイルのことで,
 			 * ファイル内容をバイトデータとして持っている.
 			 * そのバイトデータをInputStreamを通して順次読み込む.
 			 * つまりInputStreamはバイトデータを読み込む窓口のようなもので,
-			 * InputStream inputStream = file.getInputStream()で,
-			 * 窓口となるオブジェクトを生成しているだけでMultipartFileのバイトデータを扱う準備が整えているということ.
+			 * InputStream inputStream = new BufferedInputStream(file.getInputStream())で,
+			 * ファイルのデータを読み込む窓口（InputStreamオブジェクト）を生成しているだけでMultipartFileのバイトデータをBufferedInputStreamで扱う準備が整えている.
+			 * BufferedInputStreamでラップすることで,元の InputStream をそのまま読み込むより便利になる.
+			 * (内部にバッファがあるので少しずつではなくまとめて読み込めることで速くなる.
+			 * またmark/resetに対応しているため,ファイルを少し読み込むとファイルの最初に戻れずにまた読み込みたいときにオブジェクトを破棄して再取得するということをしなくていい).
 			 * tryの()はリソース宣言でリソース(InputStream)を安全に自動で閉じるために変数宣言＋初期化をおこなっている.
 			 * (tryブロック終了後inputStream.close();を自動的に呼ぶように設定している).
 			 * ここで宣言された変数のこと(inputStream)をリソースオブジェクトという.
 			 * Javaのプログラムの中で外部との接続を行うとき,必ずその対象と接続して様々な処理をするためのオブジェクトを利用する.
 			 * 処理が終了したらそのオブジェクト（接続）を閉じ（解放）なければならない.
 			 * (ファイルの場合には接続したままでは他のプログラムが同じファイルを開くことが出来ないということが起こったり,接続できる上限数に達してしまって,
-			 * 接続ができなくなるといったエラーになることがある. */
-			try (InputStream inputStream = file.getInputStream()) {
+			 * 接続ができなくなるといったエラーになることがある). */
+			try (InputStream inputStream = new BufferedInputStream(file.getInputStream())) {
 
 				/* 選択された画像ファイルの大きさが20MB以内か確認する(20MBも大丈夫).
 				 * 計算の単位はバイトなので注意する(1KB = 1024 バイト, 1MB = 1024KB = 1024 * 1024 バイト, 20MB = 20 * 1024 * 1024 バイト).
@@ -150,38 +154,18 @@ public class ProductInfoController {
 				long maxSize = 20 * 1024 * 1024;
 				if (file.getSize() > maxSize) {
 					bindingResult.rejectValue("multipartFile", "OverSize");
-					System.out.println("サイズ");
 				}
 
-				// ファイルの形式がJPEGか確認する.
-				byte[] fileByte = new byte[3];
-				// formByteは読み込めたファイルのバイト数で,.read(fileByte, 0, 3)で読み込んだマジックナンバーが先頭(0)から3バイト分fileByteに配列で格納される.
-				int formByte = inputStream.read(fileByte, 0, 3);
-			
-				//　格納されたマジックナンバーをJPEGのマジックナンバーと比較する(0xFF 0xD8 0xFFがJPEGのマジックナンバーで0xは16進数であることを示す接頭辞).
-				if (formByte == 3 &&
-						fileByte[0] == (byte) 0xFF &&
-						fileByte[1] == (byte) 0xD8 &&
-						fileByte[2] == (byte) 0xFF) {
-					// trueならJPEGなので何もしない.
-				} else {
+				// 画像の形式がJPEGかApache Tikaを使用して確認する（MIMEタイプをString型取得してから確認する）.
+				Tika tika = new Tika();
+				String mimeType = tika.detect(inputStream);
+				
+				// JPEGのMINEタイプ"image/jpeg"とおなじか確認し,違うときはエラーとエラーメッセージを追加する.
+				if (!mimeType.equals("image/jpeg")) {
 					bindingResult.rejectValue("productFile", "FileFormatsDiffer");
-					System.out.println("ファイル形式");
 				}
 
-			/* このあと画像のリサイズを行うが画像ファイルは少し読み込んでいるので正確な画像取得ができない状態になっている(少しでも読み込むと先頭に戻ることができないため).
-			 * そのためオブジェクトの再取得をするためこのInputStreamオブジェクトは破棄するため,リソースの解放をしなくてはいけないのでcatchする. */
-			} catch (Exception e) {
-
-				e.printStackTrace();
-				
-			}
-			
-			// 画像のリサイズ用にInputStreamのオブジェクトを再取得する.
-			try(InputStream inputStream = file.getInputStream()){
-				
-
-				// エラーがあれば登録フォームに戻るため,保存先ディレクトリの確認や画像のリサイズなどはしない.
+				// エラーがあれば登録フォームに戻るため,保存先ディレクトリの確認や画像のリサイズの前に確認する.
 				if (!bindingResult.hasErrors()) {
 
 					/* Fileクラスは「ファイルやディレクトリのパス情報」を表すオブジェクト.
@@ -205,7 +189,6 @@ public class ProductInfoController {
 					Thumbnails.of(inputStream) // NullPointerException/IllegalArgumentException/IOException(チェック例外).
 							.size(800, 600) // このメソッドを何回も呼んだり,このメソッドの後にscale(double)メソッド(拡大縮小率の設定ができるメソッド)を呼ばなければ例外なし). 
 							.toFile(dest); // 画像をリサイズしたものを作成し,Fileクラスのオブジェクトのディレクトリとファイル名で保存する.IllegalArgumentException/IOException(チェック例外).
-					System.out.println("リサイズ");
 				}
 
 			} catch (Exception e) {
@@ -222,7 +205,6 @@ public class ProductInfoController {
 
 			/* 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
 			this.goToRegister(model, form);
-			System.out.println("エラー通る");
 
 			return "/products/info/register";
 		}
@@ -230,9 +212,7 @@ public class ProductInfoController {
 		// formクラスをエンティティクラスに変換する.
 		MProduct product = modelMapper.map(form, MProduct.class);
 		product.setImage(uniqueName);
-		System.out.println(product);
-		System.out.println("登録");
-
+		
 		// 商品登録を行う.
 		productInfoService.registerProduct(product);
 
@@ -266,31 +246,31 @@ public class ProductInfoController {
 		return "/products/info/display-details";
 	}
 
-//	/**  */
-//	@GetMapping("/{productId}/info/display-details/showImage")
-//	public String getDisplayDetailsImage(Model model, @PathVariable Integer productId) {
-//
-//		// 商品IDから商品情報を取得する(削除済みは除く).
-//		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
-//
-//		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
-//		if (oneItem == null) {
-//			return "/error";
-//		}
-//
-//		// modelに格納する.
-//		model.addAttribute("oneItem", oneItem);
-//
-//		// 商品IDからその商品の履歴を降順で取得してmodelに格納する.
-//		List<HistoryDetails> historyList = productInfoService.getHistoryForOneProduct(productId);
-//		model.addAttribute("historyList", historyList);
-//
-//		// ヘッダーの色と項目を設定する.
-//		customHeader.setGray("詳細情報");
-//		model.addAttribute("customHeader", customHeader);
-//
-//		return "/products/info/display-details";
-//	}
+	//	/**  */
+	//	@GetMapping("/{productId}/info/display-details/showImage")
+	//	public String getDisplayDetailsImage(Model model, @PathVariable Integer productId) {
+	//
+	//		// 商品IDから商品情報を取得する(削除済みは除く).
+	//		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
+	//
+	//		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
+	//		if (oneItem == null) {
+	//			return "/error";
+	//		}
+	//
+	//		// modelに格納する.
+	//		model.addAttribute("oneItem", oneItem);
+	//
+	//		// 商品IDからその商品の履歴を降順で取得してmodelに格納する.
+	//		List<HistoryDetails> historyList = productInfoService.getHistoryForOneProduct(productId);
+	//		model.addAttribute("historyList", historyList);
+	//
+	//		// ヘッダーの色と項目を設定する.
+	//		customHeader.setGray("詳細情報");
+	//		model.addAttribute("customHeader", customHeader);
+	//
+	//		return "/products/info/display-details";
+	//	}
 
 	/** 商品情報修正ボタンを押してくるところ */
 	@GetMapping("/{productId}/info/edit")
