@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.domain.users.model.MUser;
 import com.example.domain.users.service.UserService;
 import com.example.repository.UserMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Service
 @Transactional
@@ -125,4 +127,25 @@ public class UserServiceImpl implements UserService {
 		userMapper.updateIsDeleted(user);
 	}
 
+	public PageInfo<MUser> getUsers(int page, int size) {
+        // 1ページ目=1 / size=10 など
+        PageHelper.startPage(page, size);
+
+        // LIMIT は自動で付与される
+        List<MUser> result = userMapper.findAll();
+
+        // PageInfo に総件数/総ページ数/データが全て入る
+        return new PageInfo<>(result);
+    }
+	
+	public PageInfo<MUser> getSearchUsers(int page, int size,String search) {
+        // 1ページ目=1 / size=10 など
+        PageHelper.startPage(page, size);
+
+        // LIMIT は自動で付与される
+        List<MUser> result = userMapper.findSearchResults(search);
+
+        // PageInfo に総件数/総ページ数/データが全て入る
+        return new PageInfo<>(result);
+    }
 }

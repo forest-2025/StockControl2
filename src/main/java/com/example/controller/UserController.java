@@ -1,6 +1,7 @@
 package com.example.controller;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,7 @@ import com.example.domain.users.service.UserService;
 import com.example.form.users.EditForm;
 import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.github.pagehelper.PageInfo;
 
 @Controller
 @RequestMapping("/users")
@@ -44,19 +43,26 @@ public class UserController {
 
 	/** ユーザー一覧画面に遷移する. */
 	@GetMapping("/list")
-	public String getList(@RequestParam(required = false) String search, Model model) {
+	public String getList(@RequestParam(required = false) String search,
+			@RequestParam(defaultValue = "1") int page,
+			
+			Model model) {
 
 		/*@RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
 		 * パラメータ名searchが無ければ削除されていない全ユーザーの一覧を取得し,あればsearchの値が含まれるユーザーを検索する.*/
 
-		// 削除済み以外のユーザー情報を全件(またはsearch(検索語句)が一致するデータを)従業員番号の昇順で取得する.
+		
 		if (search == null) {
-			List<MUser> userList = userService.getAll();
-			model.addAttribute("userList", userList);
+			PageInfo<MUser> pageInfo = userService.getUsers(page, 1);
+			model.addAttribute("pageInfo", pageInfo);
+//			List<MUser> userList = userService.getAll();
+//			model.addAttribute("userList", userList);
 		} else {
-			List<MUser> userList = userService.getSearchUserList(search);
-			model.addAttribute("userList", userList);
+			PageInfo<MUser> pageInfo = userService.getSearchUsers(page, 1, search);
+			model.addAttribute("pageInfo", pageInfo);
+//			List<MUser> userList = userService.getSearchUserList(search);
+//			model.addAttribute("userList", userList);
 			model.addAttribute("search", search);
 		}
 
@@ -134,7 +140,7 @@ public class UserController {
 	@GetMapping("/{userId}/edit")
 	public String getEdit(Model model, @PathVariable Integer userId, @ModelAttribute EditForm form) {
 
-		// ユーザーIDから情報を取得する(削除済みは除く).
+		// ユーザーIDから情報を取得する.
 		MUser user = userService.getByUserId(userId);
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
@@ -164,7 +170,7 @@ public class UserController {
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
 
-		// ユーザーIDから情報を取得する(削除済みは除く).
+		// ユーザーIDから情報を取得する.
 		MUser user = userService.getByUserId(userId);
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
@@ -247,7 +253,7 @@ public class UserController {
 	@GetMapping("/{userId}/passwordEdit")
 	public String getPasswordEdit(Model model, @PathVariable Integer userId, @ModelAttribute PasswordEditForm form) {
 
-		// ユーザーIDから情報を取得する(削除済みは除く).
+		// ユーザーIDから情報を取得する.
 		MUser user = userService.getByUserId(userId);
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
@@ -269,7 +275,7 @@ public class UserController {
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
 
-		// ユーザーIDから情報を取得する(削除済みは除く).
+		// ユーザーIDから情報を取得する.
 		MUser user = userService.getByUserId(userId);
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
@@ -299,11 +305,11 @@ public class UserController {
 
 	}
 
-	/** ユーザー情報削除ボタンを押してくるところ. */
+	/** ユーザー情報削除ボタンを押してくるところ */
 	@GetMapping("/{userId}/delete")
 	public String getDelete(Model model, @PathVariable Integer userId) {
 
-		// ユーザーIDから情報を取得する(削除済みは除く).
+		// ユーザーIDから情報を取得する.
 		MUser user = userService.getByUserId(userId);
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
@@ -323,14 +329,13 @@ public class UserController {
 
 	/** ユーザー情報削除フォーム画面の削除ボタンを押してくるところ. */
 	@PostMapping("/{userId}/delete")
-	public String postDelete(Model model, 
-			@PathVariable Integer userId,
+	public String postDelete(Model model, @PathVariable Integer userId,
 			@AuthenticationPrincipal UserDetails userDetails,
 			Authentication authentication,
 			HttpServletRequest request,
 			HttpServletResponse response) {
 
-		// ユーザーIDから情報を取得する(削除済みは除く).
+		// ユーザーIDから情報を取得する.
 		MUser user = userService.getByUserId(userId);
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
@@ -341,7 +346,7 @@ public class UserController {
 		// ユーザーの削除フラグを削除済みに変更する.
 		userService.updateIsDeleted(user);
 
-		// ログインユーザーが自身のユーザー情報を削除した場合はアプリの使用ができなくなるためログアウトさせる.
+		// ログインユーザーが自身の管理者権限を管理者から一般に変更した場合はリダイレクト先のユーザー情報一覧について閲覧権限がなくなるためログアウトさせる.
 		if (userDetails.getUsername().equals(user.getEmailAddress())) {
 
 			/* SecurityContextLogoutHandlerはSpringSecurityのログアウト用のユーティリティクラス(補助クラス)で,

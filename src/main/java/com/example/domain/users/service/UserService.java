@@ -3,6 +3,7 @@ package com.example.domain.users.service;
 import java.util.List;
 
 import com.example.domain.users.model.MUser;
+import com.github.pagehelper.PageInfo;
 
 public interface UserService {
 	
@@ -35,4 +36,8 @@ public interface UserService {
 	
 	/** ユーザーIDで指定したユーザーの削除フラグを更新する. */
 	public void updateIsDeleted(MUser user);
+	
+	public PageInfo<MUser> getUsers(int page, int size) ;
+	   
+	public PageInfo<MUser> getSearchUsers(int page, int size, String search) ;
 }
