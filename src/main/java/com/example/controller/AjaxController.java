@@ -32,36 +32,50 @@ public class AjaxController {
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
 		String filename = oneItem.getImage();
+
+		/* 取得した商品情報が存在するか,DBのimageに画像ファイル名が存在するか(nullじゃないか)を確認し存在しなければ404エラーを設定する.
+		 * (画像ファイルはnullでもいいがそもそもnullのときは画像表示のボタンが表示されないが念のため).
+		 * HTTPステータスコード404 Not Found を設定*/
+		/* ResponseEntityはBuilderパターン(複雑なオブジェクトを段階的に組み立てるための設計方法)でつくられていて,
+		* .notFound()でオブジェクトの設定を行い.build()でオブジェクトを作成する.
+		* (Builderパターンでは設定と生成を分離し,.build()を呼んで初めてResponseEntityという実体を作る). */
+
+		if (oneItem == null || filename == null) {
+
+			return ResponseEntity.status(404) // HTTPステータスコード404 Not Found (ページがない)を設定する.
+					//.header("Error-Reason", "deleted")		// レスポンスヘッダにカスタムヘッダError-Reason(Xを先頭につけるのは非推奨)を追加し値をdeletedで設定する.
+					.body(null); // レスポンスボディをnullに設定する.
+		}
+
 		// try文の外でも使うため先に宣言しておく.
 		MediaType mediaType = null;
-		// try文の外でも使うため先に宣言しておく.
-		Path path = null;
-		/* Pathクラスはファイルシステム上のファイルやディレクトリのパス（経路）をオブジェクトとして表現し,
+
+		/* try文の外でも使うため先に宣言しておく.
+		 * Pathクラスはファイルシステム上のファイルやディレクトリのパス（経路）をオブジェクトとして表現し,
 		 * そのパス情報（ファイル名、親ディレクトリなど）の取得,結合,比較といったパス自体の操作を行うためのクラス.
 		 * ディレクトリと画像ファイル名を代入してファイルパスを表すオブジェクトを作成する */
+
+		Path path = null;
 		try {
-			//Path path = Path.of(uploadDir, filename);
+
 			path = Path.of(uploadDir, filename);
-
+			if(path == null) {
+				
+			}
 			// HTTPレスポンスでクライアントにこのデータの種類を知らせるためにMIMEタイプをString型で取得する(タイプを特定できないとnullが返る).
-			String contentType = Files.probeContentType(path);
+			String contentType = null;
 
-			// if文の外でも使うため先に宣言しておく.
-			//MediaType mediaType = null;
-
-			/* 取得した商品情報が存在するか,DBのimageに画像ファイル名が存在するか(nullじゃないか),pathの場所(/image/img.jpgもファイルシステム上の場所を指す)が存在するか,
-			 * MIMEタイプが取得できるか(nullじゃないか)を確認し存在しなければ代替画像を設定する.
-			 * (画像ファイルはnullでもいいがそもそもnullのときは画像表示のボタンが表示されないが念のため).
-			 * .badRequest()で400エラー(クライアントがサーバーに送ったリクエストが不正な形式であるためサーバーがそれを理解・処理できなかったことを示すHTTPステータスコード).
-			 * ResponseEntityはBuilderパターン(複雑なオブジェクトを段階的に組み立てるための設計方法)でつくられていて,
-			 * .badRequest()でオブジェクトの設定を行い.build()でオブジェクトを作成する.
-			 * (Builderパターンでは設定と生成を分離し,.build()を呼んで初めてResponseEntityという実体を作る). */
-			if (oneItem == null || filename == null || !Files.exists(path) || contentType == null) {
-				// MINEタイプをJPEGにしてMediaType型で設定する.
-				mediaType = MediaType.parseMediaType("image/jpeg");
-			} else {
+			/* pathの場所(/image/img.jpgもファイルシステム上の場所を指す)が存在するか確認する.
+			 * (Files.exists(path)は引数(pathのこと)がnullのときnullpoint).*/
+			if (Files.exists(path)) {
+				contentType = Files.probeContentType(path);
 				// String型で取得したMINEタイプをMediaType型へ変更する.
 				mediaType = MediaType.parseMediaType(contentType);
+			} else {
+				// pathの場所がないときは代替画像を表示する.
+				path = Path.of(uploadDir, "no_image.jpg");
+				// MINEタイプをJPEGにしてMediaType型で設定する.
+				mediaType = MediaType.parseMediaType("image/jpeg");
 			}
 
 			/* 2MB以上になるかもしれないのでFiles.readAllBytes()でファイル全体をメモリ上に読み込むのではなく,
@@ -78,20 +92,25 @@ public class AjaxController {
 					.contentType(mediaType)
 					.body(resource);
 
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			e.printStackTrace();
+			// if文でfalseで画像のpathの設定とMediaTypeへの変更をしているときにエラーになったときに画像取得できなかったときなどのcatch.
 			try {
+				path = Path.of(uploadDir, "no_image.jpg");
 				mediaType = MediaType.parseMediaType("image/jpeg");
 				InputStreamResource resource = new InputStreamResource(Files.newInputStream(path));
 				return ResponseEntity.ok()
 						.contentType(mediaType)
 						.body(resource);
 			} catch (Exception ex) {
+				// 上のcatchでエラーになったときのcatch.
 				ex.printStackTrace();
 				return ResponseEntity
 						.internalServerError() // 500エラー.
 						.build();
-			}//
+			}
 		}
 	}
 }

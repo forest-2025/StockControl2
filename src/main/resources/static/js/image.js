@@ -34,6 +34,7 @@ $(function() {
 			},
 			error: function() {
 				alert("画像の取得に失敗しました");
+				window.location.href = '/error.html';
 			}
 		});
 
