@@ -45,12 +45,12 @@ public class UserController {
 	@GetMapping("/list")
 	public String getList(@RequestParam(required = false) String search,
 			@RequestParam(defaultValue = "1") int page,
-			
 			Model model) {
 
-		/*@RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
+		/* @RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
-		 * パラメータ名searchが無ければ削除されていない全ユーザーの一覧を取得し,あればsearchの値が含まれるユーザーを検索する.*/
+		 * パラメータ名searchが無ければ削除されていない全ユーザーの一覧を取得し,あればsearchの値が含まれるユーザーを検索する.
+		 * @RequestParam(defaultValue = "1") int pageはpage=1がデフォルト */
 
 		
 		if (search == null) {

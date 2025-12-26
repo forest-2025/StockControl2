@@ -56,18 +56,21 @@ public class AjaxController {
 		 * ディレクトリと画像ファイル名を代入してファイルパスを表すオブジェクトを作成する */
 
 		Path path = null;
+		
 		try {
 
 			path = Path.of(uploadDir, filename);
-			if(path == null) {
-				
-			}
-			// HTTPレスポンスでクライアントにこのデータの種類を知らせるためにMIMEタイプをString型で取得する(タイプを特定できないとnullが返る).
-			String contentType = null;
 
 			/* pathの場所(/image/img.jpgもファイルシステム上の場所を指す)が存在するか確認する.
 			 * (Files.exists(path)は引数(pathのこと)がnullのときnullpoint).*/
-			if (Files.exists(path)) {
+			if (path == null) {
+				// pathの場所がないときは代替画像を表示する.
+				path = Path.of(uploadDir, "no_image.jpg");
+				// MINEタイプをJPEGにしてMediaType型で設定する.
+				mediaType = MediaType.parseMediaType("image/jpeg");
+			} else if (Files.exists(path)) {
+				// HTTPレスポンスでクライアントにこのデータの種類を知らせるためにMIMEタイプをString型で取得する(タイプを特定できないとnullが返る).
+				String contentType = null;
 				contentType = Files.probeContentType(path);
 				// String型で取得したMINEタイプをMediaType型へ変更する.
 				mediaType = MediaType.parseMediaType(contentType);
@@ -76,6 +79,11 @@ public class AjaxController {
 				path = Path.of(uploadDir, "no_image.jpg");
 				// MINEタイプをJPEGにしてMediaType型で設定する.
 				mediaType = MediaType.parseMediaType("image/jpeg");
+
+				//				// pathの場所がないときは代替画像を表示する.
+				//				path = Path.of(uploadDir, "no_image.jpg");
+				//				// MINEタイプをJPEGにしてMediaType型で設定する.
+				//				mediaType = MediaType.parseMediaType("image/jpeg");
 			}
 
 			/* 2MB以上になるかもしれないのでFiles.readAllBytes()でファイル全体をメモリ上に読み込むのではなく,
@@ -92,9 +100,7 @@ public class AjaxController {
 					.contentType(mediaType)
 					.body(resource);
 
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			// if文でfalseで画像のpathの設定とMediaTypeへの変更をしているときにエラーになったときに画像取得できなかったときなどのcatch.
 			try {
