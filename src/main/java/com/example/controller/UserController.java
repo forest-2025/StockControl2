@@ -1,7 +1,5 @@
 package com.example.controller;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -47,19 +45,19 @@ public class UserController {
 	@GetMapping("/list")
 	public String getList(@RequestParam(required = false) String search,
 			@RequestParam(defaultValue = "1") int page,
-			
 			Model model) {
 
-		/*@RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
+		/* @RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
-		 * パラメータ名searchが無ければ削除されていない全ユーザーの一覧を取得し,あればsearchの値が含まれるユーザーを検索する.*/
+		 * パラメータ名searchが無ければ削除されていない全ユーザーの一覧を取得し,あればsearchの値が含まれるユーザーを検索する.
+		 * @RequestParam(defaultValue = "1") int pageはpage=1がデフォルト */
 
 		
 		if (search == null) {
-//			PageInfo<MUser> pageInfo = userService.getUsers(page, 1);
-//			model.addAttribute("pageInfo", pageInfo);
-			List<MUser> userList = userService.getAll();
-			model.addAttribute("userList", userList);
+			PageInfo<MUser> pageInfo = userService.getUsers(page, 1);
+			model.addAttribute("pageInfo", pageInfo);
+//			List<MUser> userList = userService.getAll();
+//			model.addAttribute("userList", userList);
 		} else {
 			PageInfo<MUser> pageInfo = userService.getSearchUsers(page, 1, search);
 			model.addAttribute("pageInfo", pageInfo);

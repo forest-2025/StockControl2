@@ -6,6 +6,7 @@
 	<link rel="stylesheet" th:href="@{/css/users/password-edit.css}">
 	<!--/* titleはfragmentで置換する */-->
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
+
 </head>
 
 <body>
@@ -17,8 +18,7 @@
 			text-centerで中央寄せにしている.
 			pb-4は小さい画面でユーザー登録ボタンと検索フォーム・ボタンが二段になっているときに余白をつけるためのもの. */-->
 			<div class="col-lg-6 text-center pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
-				<a class="btn btn-dark btn-lg" th:href="@{/users/register}" role="button"
-					th:text="#{userRegister}"></a>
+				<a class="btn btn-dark btn-lg" th:href="@{/users/register}" role="button" th:text="#{userRegister}"></a>
 			</div>
 
 			<!-- 検索フォームと検索ボタン -->
@@ -70,7 +70,7 @@
 					<tbody>
 						<!--/* 削除済みのユーザー以外を表示する. */-->
 
-						<tr th:each="item:${userList}">
+						<tr th:each="item:${pageInfo.list}">
 
 							<td th:text="${item.employeeNumber}"></td>
 							<td th:text="${item.familyName}"></td>
@@ -94,6 +94,36 @@
 						</tr>
 					</tbody>
 				</table>
+
+				<div>
+					<nav aria-label="Page navigation">
+						<ul class="pagination pagination-lg justify-content-center">
+
+							<!-- Previous -->
+							<li class="page-item [[${pageInfo.hasPreviousPage} ? '' : 'disabled']]">
+								<a class="page-link" th:href="@{/users/list(page=${pageInfo.prePage})}"
+									aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+
+							<!-- Page Numbers -->
+							<li th:each="i : ${pageInfo.navigatepageNums}"
+								class="page-item [[${i} == ${pageInfo.pageNum} ? 'active' : '']]">
+								<a class="page-link" th:href="@{/users/list(page=${i})}" th:text="${i}"></a>
+							</li>
+
+							<!-- Next -->
+							<li class="page-item [[${pageInfo.hasNextPage} ? '' : 'disabled']]">
+								<a class="page-link" th:href="@{/users/list(page=${pageInfo.nextPage})}"
+									aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+
+						</ul>
+					</nav>
+				</div>
 			</div>
 		</div>
 

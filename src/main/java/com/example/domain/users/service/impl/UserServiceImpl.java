@@ -31,24 +31,48 @@ public class UserServiceImpl implements UserService {
 
 		return user;
 	}
+	
+	/** 削除済み以外のユーザー情報を従業員番号の昇順で全件取得する. */
+	public PageInfo<MUser> getUsers(int page, int size) {
+        // 1ページ目=1 / size=10 など
+        PageHelper.startPage(page, size);
+
+        // LIMIT は自動で付与される
+        List<MUser> result = userMapper.findAll();
+
+        // PageInfo に総件数/総ページ数/データが全て入る
+        return new PageInfo<>(result);
+    }
+	
+	/** 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する). */
+	public PageInfo<MUser> getSearchUsers(int page, int size,String search) {
+        // 1ページ目=1 / size=10 など
+        PageHelper.startPage(page, size);
+
+        // LIMIT は自動で付与される
+        List<MUser> result = userMapper.findSearchResults(search);
+
+        // PageInfo に総件数/総ページ数/データが全て入る
+        return new PageInfo<>(result);
+    }
 
 	/** 削除済み以外のユーザー情報を従業員番号の昇順で全件取得する. */
-	@Override
-	public List<MUser> getAll() {
-
-		List<MUser> userList = userMapper.findAll();
-
-		return userList;
-	}
+//	@Override
+//	public List<MUser> getAll() {
+//
+//		List<MUser> userList = userMapper.findAll();
+//
+//		return userList;
+//	}
 
 	/** 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する). */
-	@Override
-	public List<MUser> getSearchUserList(String search) {
-
-		List<MUser> userList = userMapper.findSearchResults(search);
-
-		return userList;
-	}
+//	@Override
+//	public List<MUser> getSearchUserList(String search) {
+//
+//		List<MUser> userList = userMapper.findSearchResults(search);
+//
+//		return userList;
+//	}
 
 	/** 従業員番号が重複しているか確認する. */
 	@Override
@@ -127,25 +151,4 @@ public class UserServiceImpl implements UserService {
 		userMapper.updateIsDeleted(user);
 	}
 
-	public PageInfo<MUser> getUsers(int page, int size) {
-        // 1ページ目=1 / size=10 など
-        PageHelper.startPage(page, size);
-
-        // LIMIT は自動で付与される
-        List<MUser> result = userMapper.findAll();
-
-        // PageInfo に総件数/総ページ数/データが全て入る
-        return new PageInfo<>(result);
-    }
-	
-	public PageInfo<MUser> getSearchUsers(int page, int size,String search) {
-        // 1ページ目=1 / size=10 など
-        PageHelper.startPage(page, size);
-
-        // LIMIT は自動で付与される
-        List<MUser> result = userMapper.findSearchResults(search);
-
-        // PageInfo に総件数/総ページ数/データが全て入る
-        return new PageInfo<>(result);
-    }
 }

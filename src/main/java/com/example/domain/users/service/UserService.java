@@ -1,7 +1,5 @@
 package com.example.domain.users.service;
 
-import java.util.List;
-
 import com.example.domain.users.model.MUser;
 import com.github.pagehelper.PageInfo;
 
@@ -11,10 +9,16 @@ public interface UserService {
 	public MUser getByEmailAddress(String emailAddress);
 	
 	/** ユーザー情報全件取得する. */
-	public List<MUser> getAll();
+	public PageInfo<MUser> getUsers(int page, int size) ;
+	 
+	/** ユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する). */
+	public PageInfo<MUser> getSearchUsers(int page, int size, String search) ;
+	
+	/** ユーザー情報全件取得する. */
+	//public List<MUser> getAll();
 	
 	/** ユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する). */
-	public List<MUser> getSearchUserList(String search);
+	//public List<MUser> getSearchUserList(String search);
 
 	/** 従業員番号が重複しているか確認する. */
 	public boolean isNotDuplicateEmployeeNumber(String employeeNumber);
@@ -37,7 +41,4 @@ public interface UserService {
 	/** ユーザーIDで指定したユーザーの削除フラグを更新する. */
 	public void updateIsDeleted(MUser user);
 	
-	public PageInfo<MUser> getUsers(int page, int size) ;
-	   
-	public PageInfo<MUser> getSearchUsers(int page, int size, String search) ;
 }
