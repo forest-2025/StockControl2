@@ -17,8 +17,8 @@
 //	レイアウトcommon-layoutはlogoutがログアウト後の画面なのでログアウトできないことと,404エラーページではログアウトできないことと,
 //	errorページではBFCacheが無効になるブラウザが多いためspringsecurityのデフォルト設定で対応できることからこのjsを使用しなくてもよいが,
 //	BFCacheが無効になるブラウザでないことも考慮して使用している.
-window.addEventListener("pageshow", function(event) {
-	if (event.persisted) {
-		window.location.href = window.location.href;
-	}
-});
+//window.addEventListener("pageshow", function(event) {
+//	if (event.persisted) {
+//		window.location.href = window.location.href;
+//	}
+//});

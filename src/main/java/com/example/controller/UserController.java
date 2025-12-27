@@ -1,7 +1,6 @@
 package com.example.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,9 @@ import com.example.form.users.EditForm;
 import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;
 import com.github.pagehelper.PageInfo;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/users")
@@ -54,10 +56,10 @@ public class UserController {
 
 		
 		if (search == null) {
-			PageInfo<MUser> pageInfo = userService.getUsers(page, 1);
-			model.addAttribute("pageInfo", pageInfo);
-//			List<MUser> userList = userService.getAll();
-//			model.addAttribute("userList", userList);
+//			PageInfo<MUser> pageInfo = userService.getUsers(page, 1);
+//			model.addAttribute("pageInfo", pageInfo);
+			List<MUser> userList = userService.getAll();
+			model.addAttribute("userList", userList);
 		} else {
 			PageInfo<MUser> pageInfo = userService.getSearchUsers(page, 1, search);
 			model.addAttribute("pageInfo", pageInfo);

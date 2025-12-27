@@ -92,9 +92,8 @@ public class AjaxController {
 					.contentType(mediaType)
 					.body(resource);
 
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
+			
 			e.printStackTrace();
 			// if文でfalseで画像のpathの設定とMediaTypeへの変更をしているときにエラーになったときに画像取得できなかったときなどのcatch.
 			try {

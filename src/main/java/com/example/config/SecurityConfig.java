@@ -24,24 +24,28 @@ public class SecurityConfig {
 		// リクエストの制御(直リンクの禁止).
 		http.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()// 静的リソースのファイルパスにログインなしでアクセスOK.
-				.anyRequest().authenticated()); // それ以外は直リンク禁止する.
+				.anyRequest().authenticated()) // それ以外は直リンク禁止する.
 
-		// ログインに関する設定.
-		http.formLogin(login -> login
-				.loginPage("/login") // 自作ログインページのためURLパスを指定する(GETリクエスト).
-				.loginProcessingUrl("/login") // ログインページでログインボタンを押した時の遷移先のURLパス.(POSTリクエストでこちらに遷移したら認証処理が行われる).
-				.failureUrl("/login?error") // ログイン失敗時の遷移先URLパスを指定する.
-				.usernameParameter("emailAddress") // ログインページのメールアドレス.
-				.passwordParameter("password") // ログインページのパスワード.
-				.defaultSuccessUrl("/products/info/list", true) // ログイン成功後の遷移先URLパスを指定.
-				.permitAll() // 未ログインのユーザーでもログインページにアクセスできるようにする.﻿
+				// ログインに関する設定.
+				.formLogin(login -> login
+						.loginPage("/login") // 自作ログインページのためURLパスを指定する(GETリクエスト).
+						.loginProcessingUrl("/login") // ログインページでログインボタンを押した時の遷移先のURLパス.(POSTリクエストでこちらに遷移したら認証処理が行われる).
+						.failureUrl("/login?error") // ログイン失敗時の遷移先URLパスを指定する.
+						.usernameParameter("emailAddress") // ログインページのメールアドレス.
+						.passwordParameter("password") // ログインページのパスワード.
+						.defaultSuccessUrl("/products/info/list", true) // ログイン成功後の遷移先URLパスを指定.
+						.permitAll() // 未ログインのユーザーでもログインページにアクセスできるようにする.﻿
 
-		// ログアウト処理.
-		).logout(logout -> logout
-				.logoutUrl("/logout") // ログアウトのURLパスを指定する(POSTリクエスト).
-				.logoutSuccessUrl("/logout") // ログアウト成功時の遷移先URLパス(リダイレクトするのでGETリクエストでURLパスに遷移する).
-				.permitAll() // 独自のログアウト成功エンドポイントを指定したので、未ログインユーザーでもアクセスできるようにする.
-		);
+				// ログアウト処理.
+				).logout(logout -> logout
+						.logoutUrl("/logout") 			// ログアウトのURLパスを指定する(POSTリクエスト).
+						.logoutSuccessUrl("/logout") 	// ログアウト成功時の遷移先URLパス(リダイレクトするのでGETリクエストでURLパスに遷移する).
+						.invalidateHttpSession(true)	// 
+					    .deleteCookies("JSESSIONID")
+						.permitAll()					// 独自のログアウト成功エンドポイントを指定したので、未ログインユーザーでもアクセスできるようにする.
+														// (ログアウト後は未ログイン状態なのでログアウト成功時の画面が)
+
+				);
 
 		/* springsecurityではキャッシュについてはデフォルトでブラウザのキャッシュが無効になるようにHTTPレスポンスヘッダが付与されるため,
 		 * 基本的には何も設定しなくていい.
