@@ -133,12 +133,12 @@
 			<artifactId>tika-core</artifactId>
 			<version>3.2.3</version>
 		</dependency>
-		<!-- PageHelper (Optional: ページングを簡単にする) -->
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.4.7</version>
-        </dependency>
+		<!-- PageHelper (ページネーション用) -->
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<version>2.1.1</version>
+		</dependency>
 
 	</dependencies>
 
