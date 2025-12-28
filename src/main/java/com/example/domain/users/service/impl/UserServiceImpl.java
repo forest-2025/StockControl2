@@ -56,13 +56,11 @@ public class UserServiceImpl implements UserService {
 	
 	/** 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する). */
 	public PageInfo<MUser> getSearchUsers(int page, int size,String search) {
-        // 1ページ目=1 / size=10 など
+        
         PageHelper.startPage(page, size);
 
-        // LIMIT は自動で付与される
         List<MUser> result = userMapper.findSearchResults(search);
 
-        // PageInfo に総件数/総ページ数/データが全て入る
         return new PageInfo<>(result);
     }
 

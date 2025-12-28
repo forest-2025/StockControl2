@@ -11,7 +11,8 @@
 
 <body>
 	<div layout:fragment="content">
-		<!--/* ユーザー登録ボタンと検索フォームをdivタグのrowでひとまとめにしている(rowを使うときはそのすぐ下の子要素にcolを加えないと意味がない).このまとまりの上下に余白を別で足している(margin). */-->
+		<!--/* ユーザー登録ボタンと検索フォームをdivタグのrowでひとまとめにしている
+			(rowを使うときはそのすぐ下の子要素にcolを加えないと意味がない).このまとまりの上下に余白を別で足している(margin). */-->
 		<div class="row mt-5 mb-5">
 			<!-- ユーザー登録ボタン -->
 			<!--/* パソコン用(992px以上)ならユーザー登録ボタンと検索フォーム・ボタンが横並びになるようにしている.
@@ -27,11 +28,12 @@
 				<form class="" method="get" th:action="@{/users/list}">
 					<!-- 検索フォーム -->
 					<div class="text-center pb-3">
-						<!--/* inputタグのw-auto d-inline-blockはform-controlのwidth:100%,display:blockを上書きしていおり,
-							これにより検索フォームとボタンの高さを合わせている. */-->
+						<!--/* inputタグのw-auto d-inline-blockはform-controlのwidth:100%,
+							display:blockを上書きしていおり,これにより検索フォームとボタンの高さを合わせている. */-->
 						<label for="search"></label>
-						<input class="form-control form-control-lg w-auto d-inline-block" type="search" id="search"
-							name="search" th:value="${search}" th:placeholder="#{searchForm}">
+						<input class="form-control form-control-lg w-auto d-inline-block" 
+							type="search" id="search" name="search" th:value="${search}"
+							th:placeholder="#{searchForm}">
 						<!--/* "管理者権限で検索するときは管理者または一般で検索してください"というメッセージを表示する. */-->
 						<div class="pt-3" th:text="#{searchText1}"></div>
 						<strong class="text-danger" th:text="#{admin}"></strong>
@@ -84,8 +86,8 @@
 									th:text="#{edit}"></a>
 								<!-- パスワード修正ボタン -->
 								<a class="btn info btn-lg me-3 mb-2"
-									th:href="@{'/users/' + ${item.userId}+ '/passwordEdit'}" role="button"
-									th:text="#{editPassword}"></a>
+									th:href="@{'/users/' + ${item.userId}+ '/passwordEdit'}"
+									role="button" th:text="#{editPassword}"></a>
 								<!-- 削除ボタン -->
 								<a class="btn btn-danger btn-lg me-3 mb-2"
 									th:href="@{'/users/' + ${item.userId}+ '/delete'}" role="button"
@@ -96,11 +98,30 @@
 				</table>
 
 				<div>
+					<!--/* navタグはウェブサイトの主要なナビゲーション（案内）リンクを囲むHTML5の要素でページネーションでも利用する.
+						 aria-label属性はページネーションが「何のためのナビゲーションか」をスクリーンリーダー(読み上げソフト)に伝えるために必
+						 要なものでPage navigationでページネーション用であることを伝える. */-->
 					<nav aria-label="Page navigation">
+						<!--/* paginationで体裁を整える(ボタン風にしたり,青文字にしたり,display:flex 子要素(li)を横並び).
+							pagination-lgでサイズを大きくしている.
+							 justify-content-centerで横並びの子要素(li)を中央揃えにする. */-->
 						<ul class="pagination pagination-lg justify-content-center">
 
-							<!-- Previous -->
-							<li class="page-item [[${pageInfo.hasPreviousPage} ? '' : 'disabled']]">
+							<!-- 前のページ -->
+							<!--/* page-itemで余白や角を丸くしたりなど整える.
+								 hasPreviousPageはPageInfoクラスの前のページが存在するかをboolean型で返すメソッド.
+								 本来はisHasPreviousPage()メソッドだがTymeleafはJavaBeansの仕様
+								 (プロパティはgetter/setterで定義され,通常get~,set~だがboolean型のgetterは
+								 is~からでもよくて,プロパティ名はget・set・isをのぞいた名前が付けられる(1文字目は小文字))
+								 によりプロパティ名を通じて値にアクセスしている.
+								 (PageHelperのPageInfoはprivate boolean hasPreviousPage = false;
+								 というフィールドを保持し,
+								 public boolean isHasPreviousPage() {
+								        return hasPreviousPage;
+								 }
+								 というgetterを持つ) */-->
+							<li class="page-item" 
+								th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled'">
 								<a class="page-link" th:href="@{/users/list(page=${pageInfo.prePage})}"
 									aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
@@ -109,7 +130,8 @@
 
 							<!-- Page Numbers -->
 							<li th:each="i : ${pageInfo.navigatepageNums}"
-								class="page-item [[${i} == ${pageInfo.pageNum} ? 'active' : '']]">
+								class="page-item"
+								th:classappend="${i} == ${pageInfo.pageNum} ? 'active'">
 								<a class="page-link" th:href="@{/users/list(page=${i})}" th:text="${i}"></a>
 							</li>
 
