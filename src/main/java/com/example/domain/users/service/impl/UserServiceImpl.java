@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 		 * 現在のページ番号・1ページあたりの件数・全件数・総ページ数・前後ページの有無・実データ（List）などの情報をもつことができる.
 		 * Mapperから返ってきたList(変数result)をPageInfoにコンストラクタ引数で渡してnewすることで自動でページング情報（総件数や総ページ数など）と,
 		 * Listの情報を持つオブジェクトを作成できる(そのオブジェクトがメソッドの戻り値となっている). */
-        return new PageInfo<>(result);
+        return new PageInfo<>(result,5);
     }
 	
 	/** 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する). */

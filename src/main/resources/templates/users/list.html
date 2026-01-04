@@ -19,7 +19,8 @@
 			text-centerで中央寄せにしている.
 			pb-4は小さい画面でユーザー登録ボタンと検索フォーム・ボタンが二段になっているときに余白をつけるためのもの. */-->
 			<div class="col-lg-6 text-center pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
-				<a class="btn btn-dark btn-lg" th:href="@{/users/register}" role="button" th:text="#{userRegister}"></a>
+				<a class="btn btn-dark btn-lg" th:href="@{/users/register}" role="button" 
+				th:text="#{userRegister}"></a>
 			</div>
 
 			<!-- 検索フォームと検索ボタン -->
@@ -99,8 +100,12 @@
 
 				<div>
 					<!--/* navタグはウェブサイトの主要なナビゲーション（案内）リンクを囲むHTML5の要素でページネーションでも利用する.
-						 aria-label属性はページネーションが「何のためのナビゲーションか」をスクリーンリーダー(読み上げソフト)に伝えるために必
-						 要なものでPage navigationでページネーション用であることを伝える. */-->
+						ARIA属性(aria-)は標準のHTML要素（<button>や<a>など）がもつ本来の意味や役割
+						（何をするボタンか,リンクかなど）が,JavaScriptで複雑なユーザーインターフェース（タブで切り替える画面や
+						ポップアップのように表示される画面など）を作ることにより失われやすい意味(divタグをbuttonタグのように使うなど)
+						を補ったり,HTMLだけでは伝えられない情報をスクリーンリーダーなどの支援技術に伝えるための仕組みのこと.
+						aria-label属性はページネーションが「何のためのナビゲーションか」をスクリーンリーダー(読み上げソフト)に伝えるために必
+						要なものでPage navigationでページネーション用であることを伝える. */-->
 					<nav aria-label="Page navigation">
 						<!--/* paginationで体裁を整える(ボタン風にしたり,青文字にしたり,display:flex 子要素(li)を横並び).
 							pagination-lgでサイズを大きくしている.
@@ -108,7 +113,7 @@
 						<ul class="pagination pagination-lg justify-content-center">
 
 							<!-- 前のページ -->
-							<!--/* page-itemで余白や角を丸くしたりなど整える.
+							<!--/* page-itemで個々のページのグループ化をする.また角を丸くしたりなど整える.
 								 hasPreviousPageはPageInfoクラスの前のページが存在するかをboolean型で返すメソッド.
 								 本来はisHasPreviousPage()メソッドだがTymeleafはJavaBeansの仕様
 								 (プロパティはgetter/setterで定義され,通常get~,set~だがboolean型のgetterは
@@ -119,16 +124,31 @@
 								 public boolean isHasPreviousPage() {
 								        return hasPreviousPage;
 								 }
-								 というgetterを持つ) */-->
+								 というgetterを持つ).
+								 前のページがないときは前のページのアイコンが暗くなる(disabled). */-->
 							<li class="page-item" 
 								th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled'">
+								<!--/* page-linkで枠線・色・余白や位置などの見た目が整う.
+									prePageはPageHelperのフィールドで前のページを値に持つ
+									(1ページ目なら0,２ページ目なら1).
+									aria-label="Previous"はスクリーンリーダーで前のページという意味を表す
+									(画面表示に影響はない).
+									aria-hiddenはこの要素を画面では表示するがスクリーンリーダーからは隠す時に指定する.
+									それがtrueなので読み上げられないようにしている.
+									&laquo;は文字実体参照(HTMLでそのまま書くと問題が起きる文字や,直接入力しにくい文字を
+									安全に表すための特別な書き方のこと).
+									&○○;が基本形.HTMLエンティティ名の方法と数値文字参照(Unicodeコードポイント)の方法があり,
+									laquoはHTMLエンティティ名で左二重山括弧(«)のことで画面上に表示されるのは«
+									(Left-pointing double angle quotation mark
+									のleftのl・angleのa・quotationのquo). */-->
 								<a class="page-link" th:href="@{/users/list(page=${pageInfo.prePage})}"
 									aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 								</a>
 							</li>
 
-							<!-- Page Numbers -->
+							<!-- ページ番号 -->
+							<!--/*  */-->
 							<li th:each="i : ${pageInfo.navigatepageNums}"
 								class="page-item"
 								th:classappend="${i} == ${pageInfo.pageNum} ? 'active'">
