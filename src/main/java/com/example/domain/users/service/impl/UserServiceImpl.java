@@ -35,6 +35,10 @@ public class UserServiceImpl implements UserService {
 	/** 削除済み以外のユーザー情報を従業員番号の昇順で全件取得する. */
 	public PageInfo<MUser> getUsers(int page, int size) {
 		
+//		if(page == 0) {
+//			page = 1;
+//		}
+		
 		/* ページング(大量のデータを小分けにして表示・取得する仕組み)には外部ライブラリのPageHelprを使用する.
 		 * PageHelperクラスのstartPage(page, size)メソッドでSQLのLIMIT句(取得するデータの上限件数を指定)と,
 		 * OFFSET句(データの取得を行う最初の位置を指定)をSQLに適用する準備をする(適用するMapperの直前に呼ばないといけない,
@@ -44,14 +48,17 @@ public class UserServiceImpl implements UserService {
 
         /* findAll()で削除されていないユーザー情報をすべて取得するがその際にSQLにLIMIT句(LIMIT page)とOFFSET句(OFFSET size)が,
          * 自動的に付与されるため変数sizeのデータの位置から変数pageの件数分を取得するという条件に変更される(実際のMapperを変更せず自動的に行われている).
-         * この時点では変数resultにはsizeのデータの位置からpageの件数分だけ取得したデータだけ格納されている. */
+         * この時点では変数resultにはsizeのデータの位置からpageの件数分だけ取得したデータだけ格納されている.
+         * この時格納されているのはArrayListを継承したPage<T>クラスのオブジェクトで,Page<T>でラップすることで元のリスト(ユーザー情報)とページ情報をすべて保持できるようになる.
+         * (ArrayListを継承しているためListに格納できる.) */
         List<MUser> result = userMapper.findAll();
 
         /* PageInfo<T>はページング(大量のデータを小分けにして表示・取得する仕組み)結果をまとめて保持するクラス.
 		 * 現在のページ番号・1ページあたりの件数・全件数・総ページ数・前後ページの有無・実データ（List）などの情報をもつことができる.
 		 * Mapperから返ってきたList(変数result)をPageInfoにコンストラクタ引数で渡してnewすることで自動でページング情報（総件数や総ページ数など）と,
-		 * Listの情報を持つオブジェクトを作成できる(そのオブジェクトがメソッドの戻り値となっている). */
-        return new PageInfo<>(result,5);
+		 * Listの情報を持つオブジェクトを作成できる(そのオブジェクトがメソッドの戻り値となっている).
+		 * new PageInfo<>(result,5)とするとページ番号ナビゲーションの最大表示数を5に変更できる(デフォルトは8).*/
+        return new PageInfo<>(result);
     }
 	
 	/** 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する). */

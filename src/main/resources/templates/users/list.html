@@ -131,6 +131,7 @@
 								<!--/* page-linkで枠線・色・余白や位置などの見た目が整う.
 									prePageはPageHelperのフィールドで前のページを値に持つ
 									(1ページ目なら0,２ページ目なら1).
+									0ページ目はないので0のときは1になるようにする.
 									aria-label="Previous"はスクリーンリーダーで前のページという意味を表す
 									(画面表示に影響はない).
 									aria-hiddenはこの要素を画面では表示するがスクリーンリーダーからは隠す時に指定する.
@@ -141,23 +142,34 @@
 									laquoはHTMLエンティティ名で左二重山括弧(«)のことで画面上に表示されるのは«
 									(Left-pointing double angle quotation mark
 									のleftのl・angleのa・quotationのquo). */-->
-								<a class="page-link" th:href="@{/users/list(page=${pageInfo.prePage})}"
+								<a class="page-link" 
+									th:href="@{/users/list(page=${pageInfo.prePage == 0} ? '1')}"
 									aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 								</a>
 							</li>
 
 							<!-- ページ番号 -->
-							<!--/*  */-->
+							<!--/* navigatepageNumsは現在のページを中心にして,ページ番号ナビゲーション( << 1 2 3 4 5 >>
+								の数字のところ)に使える数字の配列のこと.ページ番号ナビゲーションの最大表示数はデフォルトで8つで
+								UserServiceImplのreturn new PageInfo<>(result);を
+								return new PageInfo<>(result,5);など第二引数に最大表示数を数字で記載しておくとその値に変更できる.
+								この配列は内部でcalcNavigatepageNums()で計算されている(コンストラクタで呼ばれて計算する).
+								pageNumは現在のページ番号を保持しているので現在のページ番号の数字をアクティブにする(フォントの色と背景色が変わる). */-->
 							<li th:each="i : ${pageInfo.navigatepageNums}"
 								class="page-item"
 								th:classappend="${i} == ${pageInfo.pageNum} ? 'active'">
 								<a class="page-link" th:href="@{/users/list(page=${i})}" th:text="${i}"></a>
 							</li>
 
-							<!-- Next -->
-							<li class="page-item [[${pageInfo.hasNextPage} ? '' : 'disabled']]">
-								<a class="page-link" th:href="@{/users/list(page=${pageInfo.nextPage})}"
+							<!-- 次のページ -->
+							<!--/* hasNextPage次のページが存在するかを表す真偽値で,!をつけて存在しなければ
+							 次のページのアイコンが暗くなる(disabled). 
+							 nextPageは次のページ番号を表すフィールドでそれが0*/-->
+							<li class="page-item"
+								th:classappend="${!pageInfo.hasNextPage} ? 'disabled'">
+								<a class="page-link" 
+								th:href="@{/users/list(page=${pageInfo.nextPage == 0} ? '1')}"
 									aria-label="Next">
 									<span aria-hidden="true">&raquo;</span>
 								</a>
