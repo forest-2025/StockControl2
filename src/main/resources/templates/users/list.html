@@ -129,9 +129,17 @@
 							<li class="page-item" 
 								th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled'">
 								<!--/* page-linkで枠線・色・余白や位置などの見た目が整う.
-									prePageはPageHelperのフィールドで前のページを値に持つ
-									(1ページ目なら0,２ページ目なら1).
-									0ページ目はないので0のときは1になるようにする.
+									prePageはPageHelperのフィールドで前のページを値に持つ.
+									private int prePage;とint型で宣言されているのでprePageは初期値が0となる
+									(プリミティブ型はnullがない).
+							 		calcPage()メソッドでprePageを更新するとき,
+							 		if (pageNum > 1) {
+                						prePage = pageNum - 1;
+           							 } という条件分岐となっている.
+            				 		現在ページが1より大きくなったらprePageは更新されず初期値0のままのためprePage = 0になる.
+            				 		そもそも前のページがなければ
+            				 		th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled'"
+            				 		で選択できないようにしているが,開発者ツールやページのソース表示で選択できるため0のときは1になるようにしている.
 									aria-label="Previous"はスクリーンリーダーで前のページという意味を表す
 									(画面表示に影響はない).
 									aria-hiddenはこの要素を画面では表示するがスクリーンリーダーからは隠す時に指定する.
@@ -139,11 +147,11 @@
 									&laquo;は文字実体参照(HTMLでそのまま書くと問題が起きる文字や,直接入力しにくい文字を
 									安全に表すための特別な書き方のこと).
 									&○○;が基本形.HTMLエンティティ名の方法と数値文字参照(Unicodeコードポイント)の方法があり,
-									laquoはHTMLエンティティ名で左二重山括弧(«)のことで画面上に表示されるのは«
+									laquoはHTMLエンティティ名で左二重山括弧(ラフト «)のことで画面上に表示されるのは«
 									(Left-pointing double angle quotation mark
 									のleftのl・angleのa・quotationのquo). */-->
 								<a class="page-link" 
-									th:href="@{/users/list(page=${pageInfo.prePage == 0} ? '1')}"
+									th:href="@{/users/list(page=${pageInfo.prePage == 0} ? '1' : ${pageInfo.prePage})}"
 									aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 								</a>
@@ -165,11 +173,22 @@
 							<!-- 次のページ -->
 							<!--/* hasNextPage次のページが存在するかを表す真偽値で,!をつけて存在しなければ
 							 次のページのアイコンが暗くなる(disabled). 
-							 nextPageは次のページ番号を表すフィールドでそれが0*/-->
+							 nextPageは次のページ番号を表すフィールドでそれが private int nextPage;
+							 int型で宣言されているのでnextPageは初期値が0となる(プリミティブ型はnullがない).
+							 calcPage()メソッドでnextPageを更新するとき,
+							 if (pageNum < pages) {
+               					 nextPage = pageNum + 1;
+            				 } という条件分岐となっている.
+            				 現在ページが総ページより大きくなったらnextPageは更新されず初期値0のままのためnextPage = 0になる.
+            				 aria-label="Next"はスクリーンリーダーで次のページという意味を表す
+							(画面表示に影響はない).
+							&raquo;は右二重山括弧(ラウト »)のこと.
+							(right-pointing double angle quotation mark
+							のrightのr・angleのa・quotationのquo). */-->
 							<li class="page-item"
 								th:classappend="${!pageInfo.hasNextPage} ? 'disabled'">
 								<a class="page-link" 
-								th:href="@{/users/list(page=${pageInfo.nextPage == 0} ? '1')}"
+									th:href="@{/users/list(page=${pageInfo.nextPage == 0} ? '1' : ${pageInfo.nextPage})}"
 									aria-label="Next">
 									<span aria-hidden="true">&raquo;</span>
 								</a>

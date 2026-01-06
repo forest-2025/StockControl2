@@ -35,10 +35,6 @@ public class UserServiceImpl implements UserService {
 	/** 削除済み以外のユーザー情報を従業員番号の昇順で全件取得する. */
 	public PageInfo<MUser> getUsers(int page, int size) {
 		
-//		if(page == 0) {
-//			page = 1;
-//		}
-		
 		/* ページング(大量のデータを小分けにして表示・取得する仕組み)には外部ライブラリのPageHelprを使用する.
 		 * PageHelperクラスのstartPage(page, size)メソッドでSQLのLIMIT句(取得するデータの上限件数を指定)と,
 		 * OFFSET句(データの取得を行う最初の位置を指定)をSQLに適用する準備をする(適用するMapperの直前に呼ばないといけない,

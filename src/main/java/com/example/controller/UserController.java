@@ -52,14 +52,16 @@ public class UserController {
 		 * パラメータ名searchが無ければ削除されていない全ユーザーの一覧を取得し,あればsearchの値が含まれるユーザーを検索する.
 		 * @RequestParam(defaultValue = "1") int pageはpage=1がデフォルト */
 
+		// 1ページに表示するデータの件数(人数)を設定する.
+		int size = 10;
 		
 		if (search == null) {
-			PageInfo<MUser> pageInfo = userService.getUsers(page, 1);
+			PageInfo<MUser> pageInfo = userService.getUsers(page, size);
 			model.addAttribute("pageInfo", pageInfo);
 //			List<MUser> userList = userService.getAll();
 //			model.addAttribute("userList", userList);
 		} else {
-			PageInfo<MUser> pageInfo = userService.getSearchUsers(page, 1, search);
+			PageInfo<MUser> pageInfo = userService.getSearchUsers(page, size, search);
 			model.addAttribute("pageInfo", pageInfo);
 //			List<MUser> userList = userService.getSearchUserList(search);
 //			model.addAttribute("userList", userList);

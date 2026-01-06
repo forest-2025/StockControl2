@@ -13,6 +13,7 @@
 			number as productNumber,
 			name as productName,
 			supplier_id,
+			image as productImage,
 			is_deleted as productIsDeleted,
 			register_date_time as registerDateTime,
 			update_date_time as updateDateTime
@@ -29,7 +30,7 @@
 				name,
 				number,
 				supplier_id,
-				image
+				productImage
 			) value (
 				#{productName},
 				#{productNumber},
@@ -45,6 +46,7 @@
 			id as productId,
 			number as productNumber,
 			name as productName,
+			image as productImage,
 			supplier_id,
 			is_deleted as productIsDeleted,
 			register_date_time as productRegisterDateTime,
@@ -57,14 +59,15 @@
 			is_deleted != 1
 	</select>
 	
-	<!-- 商品IDで指定した商品の商品情報(商品番号・商品名・入荷先)を更新する -->
+	<!-- 商品IDで指定した商品の商品情報(商品番号・商品名・入荷先・画像)を更新する -->
 	<update id="updateOne">
 		update
 			m_product
 		set
 			number = #{productNumber},
 			name = #{productName},
-			supplier_id = #{supplierId}
+			supplier_id = #{supplierId},
+			image = #{productImage}
 		where
 			id = #{productId}	
 	</update>

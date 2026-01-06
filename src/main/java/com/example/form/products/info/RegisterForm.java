@@ -21,7 +21,7 @@ public class RegisterForm {
 	@NotNull(message = "入荷先名は必ず入力してください")
 	private Integer supplierId;					// 入荷先ID.
 
-	private MultipartFile productFile;			// 商品画像(エンティティクラスはimageだが).
+	private MultipartFile productFile;			// 商品画像(エンティティクラスはproductImage).
 
 
 }

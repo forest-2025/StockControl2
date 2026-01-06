@@ -142,7 +142,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		stockMapper.insertOne(stock);
 	}
 
-	/** 商品情報(商品番号・商品名・入荷先)を更新する. */
+	/** 商品情報(商品番号・商品名・入荷先・画像)を更新する. */
 	@Override
 	public void updateProduct(MProduct product) {
 		productMapper.updateOne(product);

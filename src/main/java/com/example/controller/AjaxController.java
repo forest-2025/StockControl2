@@ -31,7 +31,9 @@ public class AjaxController {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
+		System.out.println(oneItem);
 		String filename = oneItem.getImage();
+		System.out.println("filename:" + filename);
 
 		/* 取得した商品情報が存在するか,DBのimageに画像ファイル名が存在するか(nullじゃないか)を確認し存在しなければ404エラーを設定する.
 		 * (画像ファイルはnullでもいいがそもそもnullのときは画像表示のボタンが表示されないが念のため).
@@ -56,7 +58,7 @@ public class AjaxController {
 		 * ディレクトリと画像ファイル名を代入してファイルパスを表すオブジェクトを作成する */
 
 		Path path = null;
-		
+
 		try {
 
 			path = Path.of(uploadDir, filename);
@@ -79,6 +81,7 @@ public class AjaxController {
 				path = Path.of(uploadDir, "no_image.jpg");
 				// MINEタイプをJPEGにしてMediaType型で設定する.
 				mediaType = MediaType.parseMediaType("image/jpeg");
+				System.out.println(111);
 
 				//				// pathの場所がないときは代替画像を表示する.
 				//				path = Path.of(uploadDir, "no_image.jpg");
@@ -92,7 +95,7 @@ public class AjaxController {
 			 * Files.newInputStream(path)でバイト単位でpathのデータを順番に読み込む入口(ストリーム)を準備する.
 			 * InputStreamResourceはInputStreamクラスのラッパークラス.InputStreamクラスのオブジェクトを保持する(Springにとって扱いやすくしている). */
 			InputStreamResource resource = new InputStreamResource(Files.newInputStream(path));
-
+			System.out.println("最後");
 			/* ResponseEntityはBuilderパターン(複雑なオブジェクトを段階的に組み立てるための設計方法)でつくられていて,
 			* .contentType(mediaType)などでオブジェクトの設定を行い.build()でオブジェクトを作成する.
 			* (Builderパターンでは設定と生成を分離し,.build()を呼んで初めてResponseEntityという実体を作る). */

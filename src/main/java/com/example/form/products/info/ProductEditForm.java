@@ -18,5 +18,6 @@ public class ProductEditForm {
 
 	@NotNull(message="入荷先名は必ず入力してください")
 	private Integer supplierId; // 入荷先ID.
+	
 
 }

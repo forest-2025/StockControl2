@@ -14,6 +14,7 @@
   		<id column="id" property="productId"/>
   		<result column="name" property="productName" />
   		<result column="number" property="productNumber" />
+  		<result column="image" property="productImage" />
   		<result column="is_deleted" property="productIsDeleted" />
 		<result column="register_date_time" property="productRegisterDateTime" />
   		<result column="update_date_time" property="productUpdateDateTime" />
@@ -34,6 +35,7 @@
 			product.id as product_id,
 			product.name as product_name,
 			product.number as product_number,
+			product.image as product_image,
 			product.is_deleted as product_is_deleted,
 			product.register_date_time as product_register_date_time,
 			product.update_date_time as product_update_date_time,

@@ -29,6 +29,7 @@ import com.example.domain.products.model.ProductList;
 import com.example.domain.products.model.ProductWithSupplier;
 import com.example.domain.products.service.ProductInfoService;
 import com.example.domain.suppliers.model.MSupplier;
+import com.example.form.products.info.ImageEditForm;
 import com.example.form.products.info.ProductEditForm;
 import com.example.form.products.info.RegisterForm;
 
@@ -159,7 +160,7 @@ public class ProductInfoController {
 				// 画像の形式がJPEGかApache Tikaを使用して確認する（MIMEタイプをString型取得してから確認する）.
 				Tika tika = new Tika();
 				String mimeType = tika.detect(inputStream);
-				
+
 				// JPEGのMINEタイプ"image/jpeg"とおなじか確認し,違うときはエラーとエラーメッセージを追加する.
 				if (!mimeType.equals("image/jpeg")) {
 					bindingResult.rejectValue("productFile", "FileFormatsDiffer");
@@ -177,18 +178,18 @@ public class ProductInfoController {
 					}
 
 					/* UUIDでユニーク名を生成する(ユニバーサル・ユニーク・アイデンティファイアとは、全世界で重複しないように設計された128ビット長の一意な識別子(ID)のこと). 
-					 * UUID.randomUUID()でランダムな一意のIDを取得し,toString()で文字列化したものに,JPEGの拡張子をつけることで,
+					 * UUID.randomUUID()でランダムな一意のIDを取得し,toString()で文字列化したものにJPEGの拡張子をつけることで,
 					 * 一意のファイル名を作成できる. */
 					uniqueName = UUID.randomUUID().toString() + ".jpg";
 
-					// 保存したいディレクトリパスと一意の名前にした保存したい画像ファイル名を組み合わせた, Fileクラスのオブジェクトを作成する.
+					// 保存したいディレクトリパスと一意の名前にした保存したい画像ファイル名を組み合わせたFileクラスのオブジェクトを作成する.
 					File dest = new File(uploadDir, uniqueName); // java.lang.NullPointerException(非チェック例外).
 
 					/* 画像をリサイズする（最大幅800px, 最大高さ600px）.
 					 * Thumbnails.of(in)でinputStreamを通してバイトデータを読み込む. */
 					Thumbnails.of(inputStream) // NullPointerException/IllegalArgumentException/IOException(チェック例外).
 							.size(800, 600) // このメソッドを何回も呼んだり,このメソッドの後にscale(double)メソッド(拡大縮小率の設定ができるメソッド)を呼ばなければ例外なし). 
-							.toFile(dest); // 画像をリサイズしたものを作成し,Fileクラスのオブジェクトのディレクトリとファイル名で保存する.IllegalArgumentException/IOException(チェック例外).
+							.toFile(dest); // 画像をリサイズしたものを作成し,Fileクラスのオブジェクトのディレクトリとファイル名でサーバ上に画像を保存する(パソコンの元画像を消しても表示できる).
 				}
 
 			} catch (Exception e) {
@@ -211,8 +212,8 @@ public class ProductInfoController {
 
 		// formクラスをエンティティクラスに変換する.
 		MProduct product = modelMapper.map(form, MProduct.class);
-		product.setImage(uniqueName);
-		
+		product.setProductImage(uniqueName);
+
 		// 商品登録を行う.
 		productInfoService.registerProduct(product);
 
@@ -278,7 +279,7 @@ public class ProductInfoController {
 
 		// 商品IDから商品情報と入荷先情報を取得する(削除済みは除く.初期値として入荷先名も表示したいためMProductではなくProductWithSupplierを使用している).
 		ProductWithSupplier productWithSupplier = productInfoService.getOneProductWithSupplier(productId);
-
+		System.out.println(productWithSupplier);
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productWithSupplier == null) {
 			return "/error";
@@ -343,6 +344,7 @@ public class ProductInfoController {
 			}
 		}
 
+		
 		// バリデーションエラーがあれば商品情報修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
@@ -357,12 +359,35 @@ public class ProductInfoController {
 		MProduct product = modelMapper.map(form, MProduct.class);
 		// 商品IDを設定する.
 		product.setProductId(productId);
-
+		
 		// 商品情報を更新する.
 		productInfoService.updateProduct(product);
 
 		return "redirect:/products/" + productId + "/info/display-details";
 
+	}
+
+	/** 画像修正ボタンを押してくるところ */
+	@GetMapping("/{productId}/info/imageEdit")
+	public String getImageEdit(Model model, @PathVariable Integer productId, @ModelAttribute ImageEditForm form) {
+
+		// 商品IDから商品情報を取得する(削除済みは除く).
+		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
+
+		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
+		if (oneItem == null) {
+			return "/error";
+		}
+
+		// modelに格納する.
+		model.addAttribute("oneItem", oneItem);
+		model.addAttribute("imageEditForm", form);
+
+		// ヘッダーの色と項目を設定する.
+		customHeader.setGray("画像修正");
+		model.addAttribute("customHeader", customHeader);
+		
+		return "/products/info/image-edit";
 	}
 
 	/** 商品情報削除ボタンを押してくるところ */

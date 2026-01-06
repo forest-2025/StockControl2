@@ -37,7 +37,7 @@ public interface ProductInfoService {
 	/** 商品のIDから商品情報と入荷先情報を取得する(削除済みは除く). */ // 商品情報修正画面に遷移する際や、入力後のバリデーション時に使用.
 	public ProductWithSupplier getOneProductWithSupplier(Integer productId);
 	
-	/** 商品情報(商品番号・商品名・入荷先)を更新する. */
+	/** 商品情報(商品番号・商品名・入荷先・画像)を更新する. */
 	public void updateProduct(MProduct product);
 	
 	/**　商品IDから商品情報を取得する(削除済みは除く)　*/
