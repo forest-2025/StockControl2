@@ -33,7 +33,7 @@ public class AjaxController {
 		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
 		System.out.println(oneItem);
 		String filename = oneItem.getImage();
-		System.out.println("filename:" + filename); 
+		System.out.println("filename:" + filename);  
 
 		/* 取得した商品情報が存在するか,DBのimageに画像ファイル名が存在するか(nullじゃないか)を確認し存在しなければ404エラーを設定する.
 		 * (画像ファイルはnullでもいいがそもそもnullのときは画像表示のボタンが表示されないが念のため).
