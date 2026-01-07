@@ -14,7 +14,7 @@
 			<span th:text="#{imageEdit}"></span>
 		</div>
 
-		<form method="post" th:object="${imageEditForm}" th:action="@{'/products/' + ${oneItem.productId} + '/info/imageEdit'}"
+		<form method="post" th:object="${imageEditForm}" th:action="@{'/products/' + ${product.productId} + '/info/imageEdit'}"
 			enctype="multipart/form-data">
 
 			<!-- 画像 -->
@@ -43,7 +43,7 @@
 
 				<!-- キャンセルボタン -->
 				<a class="btn btn-outline-secondary btn-lg mb-5" 
-					th:href="@{/products/{productId}/info/display-details(productId=${oneItem.productId})}"
+					th:href="@{/products/{productId}/info/display-details(productId=${product.productId})}"
 					role="button" id="cancel" name="cancel" th:text="#{cancel}"></a>
 			</div>
 		</form>

@@ -22,4 +22,7 @@ public interface ProductMapper {
 	/** 商品情報(削除フラグ)を更新する. */
 	public void updateIsDeleted(MProduct product);
 	
+	/** 商品の画像情報を更新する. */
+	public void updateProductImage(MProduct product);
+	
 }

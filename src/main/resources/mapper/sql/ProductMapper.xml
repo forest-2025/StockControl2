@@ -23,7 +23,7 @@
 			number = #{productNumber}
 	</select>
 	
-	<!-- 商品情報を登録 -->
+	<!-- 商品情報を登録する -->
 	<insert id="insertOne">
 		insert into
 			m_product(
@@ -59,7 +59,7 @@
 			is_deleted != 1
 	</select>
 	
-	<!-- 商品IDで指定した商品の商品情報(商品番号・商品名・入荷先・画像)を更新する -->
+	<!-- 商品IDで指定した商品の商品情報(商品番号・商品名・入荷先)を更新する -->
 	<update id="updateOne">
 		update
 			m_product
@@ -79,6 +79,16 @@
 			m_product
 		set
 			is_deleted = #{productIsDeleted}
+		where
+			id = #{productId}	
+	</update>
+	
+	<!-- 商品IDで指定した商品の画像情報を更新する -->
+	<update id="updateProductImage">
+		update
+			m_product
+		set
+			image = #{productImage}
 		where
 			id = #{productId}	
 	</update>

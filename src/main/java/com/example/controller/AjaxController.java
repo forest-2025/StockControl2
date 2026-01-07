@@ -22,7 +22,7 @@ public class AjaxController {
 	private ProductInfoService productInfoService;
 
 	@Value("${file.upload-dir}")
-	private String uploadDir; 
+	private String uploadDir;
 
 	/* ResponseEntityはHTTPレスポンスの構成(ステータス・ヘッダー・ボディー)3つを全部まとめて返せるクラス.
 	 * byte[]はbyte型の配列で画像ファイルはこの型で表すことができる(それぞれの保存形式（フォーマット）に従った「バイトの並び」になっている) */
@@ -32,8 +32,8 @@ public class AjaxController {
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
 		System.out.println(oneItem);
-		String filename = oneItem.getImage();
-		System.out.println("filename:" + filename);  
+		String filename = oneItem.getProductImage();
+		System.out.println("filename:" + filename);
 
 		/* 取得した商品情報が存在するか,DBのimageに画像ファイル名が存在するか(nullじゃないか)を確認し存在しなければ404エラーを設定する.
 		 * (画像ファイルはnullでもいいがそもそもnullのときは画像表示のボタンが表示されないが念のため).

@@ -279,7 +279,7 @@ public class ProductInfoController {
 
 		// 商品IDから商品情報と入荷先情報を取得する(削除済みは除く.初期値として入荷先名も表示したいためMProductではなくProductWithSupplierを使用している).
 		ProductWithSupplier productWithSupplier = productInfoService.getOneProductWithSupplier(productId);
-		System.out.println(productWithSupplier);
+
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productWithSupplier == null) {
 			return "/error";
@@ -344,7 +344,6 @@ public class ProductInfoController {
 			}
 		}
 
-		
 		// バリデーションエラーがあれば商品情報修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
@@ -359,7 +358,7 @@ public class ProductInfoController {
 		MProduct product = modelMapper.map(form, MProduct.class);
 		// 商品IDを設定する.
 		product.setProductId(productId);
-		
+
 		// 商品情報を更新する.
 		productInfoService.updateProduct(product);
 
@@ -372,22 +371,143 @@ public class ProductInfoController {
 	public String getImageEdit(Model model, @PathVariable Integer productId, @ModelAttribute ImageEditForm form) {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
-		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
+		MProduct product = productInfoService.getOneProduct(productId);
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
-		if (oneItem == null) {
+		if (product == null) {
 			return "/error";
 		}
 
 		// modelに格納する.
-		model.addAttribute("oneItem", oneItem);
+		model.addAttribute("product", product);
 		model.addAttribute("imageEditForm", form);
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setGray("画像修正");
 		model.addAttribute("customHeader", customHeader);
-		
+
 		return "/products/info/image-edit";
+	}
+
+	/** 画像修正フォームの修正ボタンを押してくるところ */
+	@PostMapping("/{productId}/info/imageEdit")
+	public String postImageEdit(Model model, @PathVariable Integer productId,
+			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult) {
+
+		// 商品IDから商品情報を取得する(削除済みは除く).
+		MProduct product = productInfoService.getOneProduct(productId);
+
+		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
+		if (product == null) {
+			return "/error";
+		}
+
+		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
+		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
+		MultipartFile file = form.getProductFile();
+		System.out.println(file);
+
+		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
+		String uniqueName = null;
+
+		// 画像が選択されているか分岐する(登録フォームで<input type="file" name="multipartFile">は存在し,画像が選択されている(画像が空白でない)ということ).
+		if (file != null && !file.isEmpty()) {
+
+			/* InputStreamクラスは,バイト単位でデータを読み込むための抽象クラス.
+			 * MultipartFileはインターフェースで,HTTPでアップロードされたファイルのことで,
+			 * ファイル内容をバイトデータとして持っている.
+			 * そのバイトデータをInputStreamを通して順次読み込む.
+			 * つまりInputStreamはバイトデータを読み込む窓口のようなもので,
+			 * InputStream inputStream = new BufferedInputStream(file.getInputStream())で,
+			 * ファイルのデータを読み込む窓口（InputStreamオブジェクト）を生成しているだけでMultipartFileのバイトデータをBufferedInputStreamで扱う準備が整えている.
+			 * BufferedInputStreamでラップすることで,元の InputStream をそのまま読み込むより便利になる.
+			 * (内部にバッファがあるので少しずつではなくまとめて読み込めることで速くなる.
+			 * またmark/resetに対応しているため,ファイルを少し読み込むとファイルの最初に戻れずにまた読み込みたいときにオブジェクトを破棄して再取得するということをしなくていい).
+			 * tryの()はリソース宣言でリソース(InputStream)を安全に自動で閉じるために変数宣言＋初期化をおこなっている.
+			 * (tryブロック終了後inputStream.close();を自動的に呼ぶように設定している).
+			 * ここで宣言された変数のこと(inputStream)をリソースオブジェクトという.
+			 * Javaのプログラムの中で外部との接続を行うとき,必ずその対象と接続して様々な処理をするためのオブジェクトを利用する.
+			 * 処理が終了したらそのオブジェクト（接続）を閉じ（解放）なければならない.
+			 * (ファイルの場合には接続したままでは他のプログラムが同じファイルを開くことが出来ないということが起こったり,接続できる上限数に達してしまって,
+			 * 接続ができなくなるといったエラーになることがある). */
+			try (InputStream inputStream = new BufferedInputStream(file.getInputStream())) {
+
+				/* 選択された画像ファイルの大きさが20MB以内か確認する(20MBも大丈夫).
+				 * 計算の単位はバイトなので注意する(1KB = 1024 バイト, 1MB = 1024KB = 1024 * 1024 バイト, 20MB = 20 * 1024 * 1024 バイト).
+				 * 20MBより大きければエラーとエラーメッセージを追加する. */
+				long maxSize = 20 * 1024 * 1024;
+				if (file.getSize() > maxSize) {
+					bindingResult.rejectValue("multipartFile", "OverSize");
+				}
+
+				// 画像の形式がJPEGかApache Tikaを使用して確認する（MIMEタイプをString型取得してから確認する）.
+				Tika tika = new Tika();
+				String mimeType = tika.detect(inputStream);
+
+				// JPEGのMINEタイプ"image/jpeg"とおなじか確認し,違うときはエラーとエラーメッセージを追加する.
+				if (!mimeType.equals("image/jpeg")) {
+					bindingResult.rejectValue("productFile", "FileFormatsDiffer");
+				}
+
+				// エラーがあれば登録フォームに戻るため,保存先ディレクトリの確認や画像のリサイズの前に確認する.
+				if (!bindingResult.hasErrors()) {
+
+					/* Fileクラスは「ファイルやディレクトリのパス情報」を表すオブジェクト.
+					 * 保存先のディレクトリ(ファイルを入れるフォルダのようなもの)のパス情報をもつオブジェクトを作成し保存先のディレクトリが存在するかどうかを確認し,
+					 * 存在しなければディレクトリを作成する. */
+					File dir = new File(uploadDir);
+					if (!dir.exists()) { // java.lang.SecurityException(非チェック例外).
+						dir.mkdirs(); // java.lang.SecurityException(非チェック例外).
+					}
+
+					/* UUIDでユニーク名を生成する(ユニバーサル・ユニーク・アイデンティファイアとは、全世界で重複しないように設計された128ビット長の一意な識別子(ID)のこと). 
+					 * UUID.randomUUID()でランダムな一意のIDを取得し,toString()で文字列化したものにJPEGの拡張子をつけることで,
+					 * 一意のファイル名を作成できる. */
+					uniqueName = UUID.randomUUID().toString() + ".jpg";
+
+					// 保存したいディレクトリパスと一意の名前にした保存したい画像ファイル名を組み合わせたFileクラスのオブジェクトを作成する.
+					File dest = new File(uploadDir, uniqueName); // java.lang.NullPointerException(非チェック例外).
+
+					/* 画像をリサイズする（最大幅800px, 最大高さ600px）.
+					 * Thumbnails.of(in)でinputStreamを通してバイトデータを読み込む. */
+					Thumbnails.of(inputStream) // NullPointerException/IllegalArgumentException/IOException(チェック例外).
+							.size(800, 600) // このメソッドを何回も呼んだり,このメソッドの後にscale(double)メソッド(拡大縮小率の設定ができるメソッド)を呼ばなければ例外なし). 
+							.toFile(dest); // 画像をリサイズしたものを作成し,Fileクラスのオブジェクトのディレクトリとファイル名でサーバ上に画像を保存する(パソコンの元画像を消しても表示できる).
+				}
+
+			} catch (Exception e) {
+
+				e.printStackTrace();
+
+				return "/error";
+			}
+
+		}
+
+		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
+		if (bindingResult.hasErrors()) {
+
+			// modelに格納する.
+			model.addAttribute("product", product);
+			model.addAttribute("imageEditForm", form);
+
+			// ヘッダーの色と項目を設定する.
+			customHeader.setGray("画像修正");
+			model.addAttribute("customHeader", customHeader);
+
+			return "/products/info/image-edit";
+		}
+
+		// 画像情報をオブジェクトに設定する.
+		MProduct productImageEdit = new MProduct();
+		productImageEdit.setProductId(productId);
+		productImageEdit.setProductImage(uniqueName);
+
+		// 画像情報を更新する.
+		productInfoService.updateProductImage(productImageEdit);
+
+		return"redirect:/products/" + productId + "/info/display-details";
+
 	}
 
 	/** 商品情報削除ボタンを押してくるところ */
