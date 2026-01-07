@@ -22,7 +22,7 @@ public class AjaxController {
 	private ProductInfoService productInfoService;
 
 	@Value("${file.upload-dir}")
-	private String uploadDir;
+	private String uploadDir; 
 
 	/* ResponseEntityはHTTPレスポンスの構成(ステータス・ヘッダー・ボディー)3つを全部まとめて返せるクラス.
 	 * byte[]はbyte型の配列で画像ファイルはこの型で表すことができる(それぞれの保存形式（フォーマット）に従った「バイトの並び」になっている) */
