@@ -50,7 +50,7 @@ public class AjaxController {
 		}
 
 		// try文の外でも使うため先に宣言しておく.
-		MediaType mediaType = null;
+		MediaType mediaType = null; 
 
 		/* try文の外でも使うため先に宣言しておく.
 		 * Pathクラスはファイルシステム上のファイルやディレクトリのパス（経路）をオブジェクトとして表現し,
