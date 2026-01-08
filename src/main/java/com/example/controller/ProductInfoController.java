@@ -362,7 +362,7 @@ public class ProductInfoController {
 		return "/products/info/image-edit";
 	}
 
-	/** 画像修正フォームの修正ボタンを押してくるところ */
+	/** 画像修正フォームの確定ボタンを押してくるところ */
 	@PostMapping("/{productId}/info/imageEdit")
 	public String postImageEdit(Model model, @PathVariable Integer productId,
 			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult) {

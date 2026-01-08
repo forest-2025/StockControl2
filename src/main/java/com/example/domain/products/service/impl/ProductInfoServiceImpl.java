@@ -1,5 +1,8 @@
 package com.example.domain.products.service.impl;
 
+import java.awt.Image;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,7 +192,17 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	@Override
 	public void updateProductImage(MProduct product) {
 		// ローカルファイルストレージ保存(プロジェクト直下に保存)している画像ファイルを削除する.
-		
+		Image image = imageRepository.findById(product.getProductId())
+		        .orElseThrow(() -> new NotFoundException());
+
+		    Path base = Paths.get(uploadDir).toAbsolutePath().normalize();
+		    Path target = base.resolve(image.getFileName()).normalize();
+
+		    if (!target.startsWith(base)) {
+		        throw new SecurityException("不正なファイルパス");
+		    }
+
+		    Files.deleteIfExists(target);
 		productMapper.updateProductImage(product);
 		
 	}
