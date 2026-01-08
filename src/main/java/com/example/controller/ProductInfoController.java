@@ -122,7 +122,6 @@ public class ProductInfoController {
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
-		System.out.println(file);
 
 		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
 		String uniqueName = null;
@@ -246,32 +245,6 @@ public class ProductInfoController {
 
 		return "/products/info/display-details";
 	}
-
-	//	/**  */
-	//	@GetMapping("/{productId}/info/display-details/showImage")
-	//	public String getDisplayDetailsImage(Model model, @PathVariable Integer productId) {
-	//
-	//		// 商品IDから商品情報を取得する(削除済みは除く).
-	//		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
-	//
-	//		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
-	//		if (oneItem == null) {
-	//			return "/error";
-	//		}
-	//
-	//		// modelに格納する.
-	//		model.addAttribute("oneItem", oneItem);
-	//
-	//		// 商品IDからその商品の履歴を降順で取得してmodelに格納する.
-	//		List<HistoryDetails> historyList = productInfoService.getHistoryForOneProduct(productId);
-	//		model.addAttribute("historyList", historyList);
-	//
-	//		// ヘッダーの色と項目を設定する.
-	//		customHeader.setGray("詳細情報");
-	//		model.addAttribute("customHeader", customHeader);
-	//
-	//		return "/products/info/display-details";
-	//	}
 
 	/** 商品情報修正ボタンを押してくるところ */
 	@GetMapping("/{productId}/info/edit")
@@ -405,7 +378,6 @@ public class ProductInfoController {
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
-		System.out.println(file);
 
 		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
 		String uniqueName = null;

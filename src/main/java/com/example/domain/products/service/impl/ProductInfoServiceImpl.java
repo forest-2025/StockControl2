@@ -188,7 +188,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	/** 商品の画像情報を更新する. */
 	@Override
 	public void updateProductImage(MProduct product) {
-
+		// ローカルファイルストレージ保存(プロジェクト直下に保存)している画像ファイルを削除する.
+		
 		productMapper.updateProductImage(product);
 		
 	}

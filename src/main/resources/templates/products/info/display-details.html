@@ -63,7 +63,7 @@
 
 		<!--/* 商品情報修正・削除ボタンと位置がズレないようにme-3 mb-3で調整している */-->
 		<!-- 画像表示ボタン -->
-		<div class="col text-center mt-5" th:if="${oneItem.image != null}">
+		<div class="col text-center mt-5" th:if="${oneItem.productImage != null}">
 			<button class="btn btn-success btn-lg me-3 mb-3" id="showImageBtn"
 				th:data-product-id="${oneItem.productId}" th:text="#{showImage}">
 			</button>

@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+/* 画像ファイル選択フォームの「ファイルが選択されていません」が320pxのときにきれるためフォントサイズを小さくし,576pxのときに20pxになる. */
+.responsive-text {
+    font-size: 14px;
+}
+
+/* @media(メディアクエリ)で画面サイズの違いに対応する.(min-width: 576px)で画面サイズが576pxになったら読み込まれるようになる. */
+@media (min-width: 576px) { /* sm以上 */
+    .responsive-text {
+        font-size: 20px;
+    }
+}

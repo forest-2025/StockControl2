@@ -2,6 +2,8 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/products/info/register.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -20,7 +22,7 @@
 			<!-- 商品番号 -->
 			<div>
 				<label class="mb-1" for="productNumber" th:text="#{productNumber}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{productNumber}">
+				<input class="form-control mb-3" type="text" th:field="*{productNumber}">
 
 				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
 				<div class="alert alert-warning alert-dismissible fade show" role="alert"
@@ -39,7 +41,7 @@
 			<!-- 商品名 -->
 			<div>
 				<label class="mb-1" for="productName" th:text="#{productName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{productName}">
+				<input class="form-control mb-3" type="text" th:field="*{productName}">
 
 				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
 				<div class="alert alert-warning alert-dismissible fade show" role="alert"
@@ -57,7 +59,7 @@
 			<!-- 入荷先名 -->
 			<div>
 				<label class="mb-1" for="supplierId" th:text="#{supplierName}"></label>
-				<select class="form-select mb-3 fs-5" th:field="*{supplierId}">
+				<select class="form-select mb-3" th:field="*{supplierId}">
 					<option value="" th:text="#{select}"></option>
 					<div th:each="item:${supplierList}">
 						<option th:value="${item.supplierId}" th:label="${item.supplierName}"></option>
@@ -80,7 +82,7 @@
 			<!-- 画像 -->
 			<div>
 				<label class="mb-1" for="productFile" th:text="#{selectImage}"></label>
-				<input type="file" class="form-control mb-3 fs-5" th:field="*{productFile}" th:aria-label="#{selectImage}">
+				<input type="file" class="form-control mb-3 responsive-text" th:field="*{productFile}" th:aria-label="#{selectImage}">
 
 				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
 				<div class="alert alert-warning alert-dismissible fade show" role="alert"
