@@ -82,11 +82,6 @@ public class AjaxController {
 				// MINEタイプをJPEGにしてMediaType型で設定する.
 				mediaType = MediaType.parseMediaType("image/jpeg");
 				System.out.println(111);
-
-				//				// pathの場所がないときは代替画像を表示する.
-				//				path = Path.of(uploadDir, "no_image.jpg");
-				//				// MINEタイプをJPEGにしてMediaType型で設定する.
-				//				mediaType = MediaType.parseMediaType("image/jpeg");
 			}
 
 			/* 2MB以上になるかもしれないのでFiles.readAllBytes()でファイル全体をメモリ上に読み込むのではなく,

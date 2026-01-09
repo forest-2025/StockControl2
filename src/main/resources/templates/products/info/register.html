@@ -22,7 +22,7 @@
 			<!-- 商品番号 -->
 			<div>
 				<label class="mb-1" for="productNumber" th:text="#{productNumber}"></label>
-				<input class="form-control mb-3" type="text" th:field="*{productNumber}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{productNumber}">
 
 				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
 				<div class="alert alert-warning alert-dismissible fade show" role="alert"
@@ -41,7 +41,7 @@
 			<!-- 商品名 -->
 			<div>
 				<label class="mb-1" for="productName" th:text="#{productName}"></label>
-				<input class="form-control mb-3" type="text" th:field="*{productName}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{productName}">
 
 				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
 				<div class="alert alert-warning alert-dismissible fade show" role="alert"
@@ -59,7 +59,7 @@
 			<!-- 入荷先名 -->
 			<div>
 				<label class="mb-1" for="supplierId" th:text="#{supplierName}"></label>
-				<select class="form-select mb-3" th:field="*{supplierId}">
+				<select class="form-select mb-3 fs-5" th:field="*{supplierId}">
 					<option value="" th:text="#{select}"></option>
 					<div th:each="item:${supplierList}">
 						<option th:value="${item.supplierId}" th:label="${item.supplierName}"></option>

@@ -30,12 +30,12 @@
 				name,
 				number,
 				supplier_id,
-				productImage
+				image
 			) value (
 				#{productName},
 				#{productNumber},
 				#{supplierId},
-				#{image}
+				#{productImage}
 			)
 	</insert>
 	

@@ -1,12 +1,7 @@
 package com.example.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.InputStream;
 import java.util.List;
-import java.util.UUID;
 
-import org.apache.tika.Tika;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,8 +27,6 @@ import com.example.domain.suppliers.model.MSupplier;
 import com.example.form.products.info.ImageEditForm;
 import com.example.form.products.info.ProductEditForm;
 import com.example.form.products.info.RegisterForm;
-
-import net.coobird.thumbnailator.Thumbnails;
 
 @Controller
 @RequestMapping("/products")
@@ -85,10 +78,11 @@ public class ProductInfoController {
 		return "/products/info/register";
 	}
 
-	/** 商品登録フォーム画面で登録ボタンを押したときにくるところ. */
+	/** 商品登録フォーム画面で登録ボタンを押したときにくるところ. 
+	 * @throws Exception */
 	@PostMapping("/info/register")
 	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
-			BindingResult bindingResult) {
+			BindingResult bindingResult) throws Exception {
 
 		// 商品番号がnullや空白でないか確認する.
 		String productNumber = form.getProductNumber();
@@ -125,81 +119,12 @@ public class ProductInfoController {
 
 		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
 		String uniqueName = null;
-
-		// 画像が選択されているか分岐する(登録フォームで<input type="file" name="multipartFile">は存在し,画像が選択されている(画像が空白でない)ということ).
+		
+		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
-
-			/* InputStreamクラスは,バイト単位でデータを読み込むための抽象クラス.
-			 * MultipartFileはインターフェースで,HTTPでアップロードされたファイルのことで,
-			 * ファイル内容をバイトデータとして持っている.
-			 * そのバイトデータをInputStreamを通して順次読み込む.
-			 * つまりInputStreamはバイトデータを読み込む窓口のようなもので,
-			 * InputStream inputStream = new BufferedInputStream(file.getInputStream())で,
-			 * ファイルのデータを読み込む窓口（InputStreamオブジェクト）を生成しているだけでMultipartFileのバイトデータをBufferedInputStreamで扱う準備が整えている.
-			 * BufferedInputStreamでラップすることで,元の InputStream をそのまま読み込むより便利になる.
-			 * (内部にバッファがあるので少しずつではなくまとめて読み込めることで速くなる.
-			 * またmark/resetに対応しているため,ファイルを少し読み込むとファイルの最初に戻れずにまた読み込みたいときにオブジェクトを破棄して再取得するということをしなくていい).
-			 * tryの()はリソース宣言でリソース(InputStream)を安全に自動で閉じるために変数宣言＋初期化をおこなっている.
-			 * (tryブロック終了後inputStream.close();を自動的に呼ぶように設定している).
-			 * ここで宣言された変数のこと(inputStream)をリソースオブジェクトという.
-			 * Javaのプログラムの中で外部との接続を行うとき,必ずその対象と接続して様々な処理をするためのオブジェクトを利用する.
-			 * 処理が終了したらそのオブジェクト（接続）を閉じ（解放）なければならない.
-			 * (ファイルの場合には接続したままでは他のプログラムが同じファイルを開くことが出来ないということが起こったり,接続できる上限数に達してしまって,
-			 * 接続ができなくなるといったエラーになることがある). */
-			try (InputStream inputStream = new BufferedInputStream(file.getInputStream())) {
-
-				/* 選択された画像ファイルの大きさが20MB以内か確認する(20MBも大丈夫).
-				 * 計算の単位はバイトなので注意する(1KB = 1024 バイト, 1MB = 1024KB = 1024 * 1024 バイト, 20MB = 20 * 1024 * 1024 バイト).
-				 * 20MBより大きければエラーとエラーメッセージを追加する. */
-				long maxSize = 20 * 1024 * 1024;
-				if (file.getSize() > maxSize) {
-					bindingResult.rejectValue("multipartFile", "OverSize");
-				}
-
-				// 画像の形式がJPEGかApache Tikaを使用して確認する（MIMEタイプをString型取得してから確認する）.
-				Tika tika = new Tika();
-				String mimeType = tika.detect(inputStream);
-
-				// JPEGのMINEタイプ"image/jpeg"とおなじか確認し,違うときはエラーとエラーメッセージを追加する.
-				if (!mimeType.equals("image/jpeg")) {
-					bindingResult.rejectValue("productFile", "FileFormatsDiffer");
-				}
-
-				// エラーがあれば登録フォームに戻るため,保存先ディレクトリの確認や画像のリサイズの前に確認する.
-				if (!bindingResult.hasErrors()) {
-
-					/* Fileクラスは「ファイルやディレクトリのパス情報」を表すオブジェクト.
-					 * 保存先のディレクトリ(ファイルを入れるフォルダのようなもの)のパス情報をもつオブジェクトを作成し保存先のディレクトリが存在するかどうかを確認し,
-					 * 存在しなければディレクトリを作成する. */
-					File dir = new File(uploadDir);
-					if (!dir.exists()) { // java.lang.SecurityException(非チェック例外).
-						dir.mkdirs(); // java.lang.SecurityException(非チェック例外).
-					}
-
-					/* UUIDでユニーク名を生成する(ユニバーサル・ユニーク・アイデンティファイアとは、全世界で重複しないように設計された128ビット長の一意な識別子(ID)のこと). 
-					 * UUID.randomUUID()でランダムな一意のIDを取得し,toString()で文字列化したものにJPEGの拡張子をつけることで,
-					 * 一意のファイル名を作成できる. */
-					uniqueName = UUID.randomUUID().toString() + ".jpg";
-
-					// 保存したいディレクトリパスと一意の名前にした保存したい画像ファイル名を組み合わせたFileクラスのオブジェクトを作成する.
-					File dest = new File(uploadDir, uniqueName); // java.lang.NullPointerException(非チェック例外).
-
-					/* 画像をリサイズする（最大幅800px, 最大高さ600px）.
-					 * Thumbnails.of(in)でinputStreamを通してバイトデータを読み込む. */
-					Thumbnails.of(inputStream) // NullPointerException/IllegalArgumentException/IOException(チェック例外).
-							.size(800, 600) // このメソッドを何回も呼んだり,このメソッドの後にscale(double)メソッド(拡大縮小率の設定ができるメソッド)を呼ばなければ例外なし). 
-							.toFile(dest); // 画像をリサイズしたものを作成し,Fileクラスのオブジェクトのディレクトリとファイル名でサーバ上に画像を保存する(パソコンの元画像を消しても表示できる).
-				}
-
-			} catch (Exception e) {
-
-				e.printStackTrace();
-
-				return "/error";
-			}
-
+			uniqueName = productInfoService.checkProductImage(file, uniqueName, bindingResult);
 		}
-
+		
 		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
@@ -211,6 +136,8 @@ public class ProductInfoController {
 
 		// formクラスをエンティティクラスに変換する.
 		MProduct product = modelMapper.map(form, MProduct.class);
+		
+		// 画像ファイルが選択されなければnullにしたいのでそのまま変数uniqueNameを設定する.
 		product.setProductImage(uniqueName);
 
 		// 商品登録を行う.
@@ -362,10 +289,11 @@ public class ProductInfoController {
 		return "/products/info/image-edit";
 	}
 
-	/** 画像修正フォームの確定ボタンを押してくるところ */
+	/** 画像修正フォームの確定ボタンを押してくるところ 
+	 * @throws Exception */
 	@PostMapping("/{productId}/info/imageEdit")
 	public String postImageEdit(Model model, @PathVariable Integer productId,
-			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult) {
+			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult) throws Exception {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct product = productInfoService.getOneProduct(productId);
@@ -382,78 +310,10 @@ public class ProductInfoController {
 		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
 		String uniqueName = null;
 
-		// 画像が選択されているか分岐する(登録フォームで<input type="file" name="multipartFile">は存在し,画像が選択されている(画像が空白でない)ということ).
+
+		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
-
-			/* InputStreamクラスは,バイト単位でデータを読み込むための抽象クラス.
-			 * MultipartFileはインターフェースで,HTTPでアップロードされたファイルのことで,
-			 * ファイル内容をバイトデータとして持っている.
-			 * そのバイトデータをInputStreamを通して順次読み込む.
-			 * つまりInputStreamはバイトデータを読み込む窓口のようなもので,
-			 * InputStream inputStream = new BufferedInputStream(file.getInputStream())で,
-			 * ファイルのデータを読み込む窓口（InputStreamオブジェクト）を生成しているだけでMultipartFileのバイトデータをBufferedInputStreamで扱う準備が整えている.
-			 * BufferedInputStreamでラップすることで,元の InputStream をそのまま読み込むより便利になる.
-			 * (内部にバッファがあるので少しずつではなくまとめて読み込めることで速くなる.
-			 * またmark/resetに対応しているため,ファイルを少し読み込むとファイルの最初に戻れずにまた読み込みたいときにオブジェクトを破棄して再取得するということをしなくていい).
-			 * tryの()はリソース宣言でリソース(InputStream)を安全に自動で閉じるために変数宣言＋初期化をおこなっている.
-			 * (tryブロック終了後inputStream.close();を自動的に呼ぶように設定している).
-			 * ここで宣言された変数のこと(inputStream)をリソースオブジェクトという.
-			 * Javaのプログラムの中で外部との接続を行うとき,必ずその対象と接続して様々な処理をするためのオブジェクトを利用する.
-			 * 処理が終了したらそのオブジェクト（接続）を閉じ（解放）なければならない.
-			 * (ファイルの場合には接続したままでは他のプログラムが同じファイルを開くことが出来ないということが起こったり,接続できる上限数に達してしまって,
-			 * 接続ができなくなるといったエラーになることがある). */
-			try (InputStream inputStream = new BufferedInputStream(file.getInputStream())) {
-
-				/* 選択された画像ファイルの大きさが20MB以内か確認する(20MBも大丈夫).
-				 * 計算の単位はバイトなので注意する(1KB = 1024 バイト, 1MB = 1024KB = 1024 * 1024 バイト, 20MB = 20 * 1024 * 1024 バイト).
-				 * 20MBより大きければエラーとエラーメッセージを追加する. */
-				long maxSize = 20 * 1024 * 1024;
-				if (file.getSize() > maxSize) {
-					bindingResult.rejectValue("multipartFile", "OverSize");
-				}
-
-				// 画像の形式がJPEGかApache Tikaを使用して確認する（MIMEタイプをString型取得してから確認する）.
-				Tika tika = new Tika();
-				String mimeType = tika.detect(inputStream);
-
-				// JPEGのMINEタイプ"image/jpeg"とおなじか確認し,違うときはエラーとエラーメッセージを追加する.
-				if (!mimeType.equals("image/jpeg")) {
-					bindingResult.rejectValue("productFile", "FileFormatsDiffer");
-				}
-
-				// エラーがあれば登録フォームに戻るため,保存先ディレクトリの確認や画像のリサイズの前に確認する.
-				if (!bindingResult.hasErrors()) {
-
-					/* Fileクラスは「ファイルやディレクトリのパス情報」を表すオブジェクト.
-					 * 保存先のディレクトリ(ファイルを入れるフォルダのようなもの)のパス情報をもつオブジェクトを作成し保存先のディレクトリが存在するかどうかを確認し,
-					 * 存在しなければディレクトリを作成する. */
-					File dir = new File(uploadDir);
-					if (!dir.exists()) { // java.lang.SecurityException(非チェック例外).
-						dir.mkdirs(); // java.lang.SecurityException(非チェック例外).
-					}
-
-					/* UUIDでユニーク名を生成する(ユニバーサル・ユニーク・アイデンティファイアとは、全世界で重複しないように設計された128ビット長の一意な識別子(ID)のこと). 
-					 * UUID.randomUUID()でランダムな一意のIDを取得し,toString()で文字列化したものにJPEGの拡張子をつけることで,
-					 * 一意のファイル名を作成できる. */
-					uniqueName = UUID.randomUUID().toString() + ".jpg";
-
-					// 保存したいディレクトリパスと一意の名前にした保存したい画像ファイル名を組み合わせたFileクラスのオブジェクトを作成する.
-					File dest = new File(uploadDir, uniqueName); // java.lang.NullPointerException(非チェック例外).
-
-					/* 画像をリサイズする（最大幅800px, 最大高さ600px）.
-					 * Thumbnails.of(in)でinputStreamを通してバイトデータを読み込む. */
-					Thumbnails.of(inputStream) // NullPointerException/IllegalArgumentException/IOException(チェック例外).
-							.size(800, 600) // このメソッドを何回も呼んだり,このメソッドの後にscale(double)メソッド(拡大縮小率の設定ができるメソッド)を呼ばなければ例外なし). 
-							.toFile(dest); // 画像をリサイズしたものを作成し,Fileクラスのオブジェクトのディレクトリとファイル名でサーバ上に画像を保存する(パソコンの元画像を消しても表示できる).
-				}
-
-			} catch (Exception e) {
-
-				e.printStackTrace();
-
-				return "/error";
-			}
-
+			uniqueName = productInfoService.checkProductImage(file, uniqueName, bindingResult);
 		}
 
 		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
@@ -478,7 +338,7 @@ public class ProductInfoController {
 		// 画像情報を更新する.
 		productInfoService.updateProductImage(productImageEdit);
 
-		return"redirect:/products/" + productId + "/info/display-details";
+		return "redirect:/products/" + productId + "/info/display-details";
 
 	}
 
