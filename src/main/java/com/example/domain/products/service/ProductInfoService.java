@@ -2,10 +2,10 @@ package com.example.domain.products.service;
 
 import java.util.List;
 
-import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.domain.product.model.HistoryDetails;
+import com.example.domain.products.dto.UploadResult;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.model.ProductList;
 import com.example.domain.products.model.ProductWithSupplier;
@@ -54,14 +54,11 @@ public interface ProductInfoService {
 
 	/** 商品IDからその商品の履歴を降順で取得する. */
 	public List<HistoryDetails> getHistoryForOneProduct(Integer productId);
+	
+	/** 商品画像のバリデーションチェックとローカルファイルストレージ(プロジェクト直下)に保存する. */
+	public UploadResult validateAndUpload(MultipartFile file);
 
 	/** 商品の画像情報を更新する. */
 	public void updateProductImage(MProduct product);
 	
-	/** 商品画像のバリデーションチェックをする.　
-	 * @throws Exception */
-	public String checkProductImage(MultipartFile file, String uniqueName, BindingResult bindingResult) throws Exception;
-
-	/** 商品画像をローカルファイルストレージ保存する. */
-	//public void saveProductImage(MultipartFile file, String uniqueName, BindingResult bindingResult);
 }

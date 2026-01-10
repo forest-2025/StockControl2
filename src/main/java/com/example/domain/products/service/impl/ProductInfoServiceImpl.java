@@ -1,21 +1,25 @@
 package com.example.domain.products.service.impl;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.InputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.domain.product.model.HistoryDetails;
 import com.example.domain.product.model.TStock;
+import com.example.domain.products.dto.UploadResult;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.model.ProductList;
 import com.example.domain.products.model.ProductWithSupplier;
@@ -28,10 +32,12 @@ import com.example.repository.StockMapper;
 import com.example.repository.SupplierMapper;
 import com.example.repository.TransactionHistoryMapper;
 
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 
 @Service
 @Transactional
+@Slf4j
 public class ProductInfoServiceImpl implements ProductInfoService {
 	@Autowired
 	private ProductMapper productMapper;
@@ -53,6 +59,14 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	@Value("${file.upload-dir}")
 	private String uploadDir;
+
+	private static final String UPLOAD_DIR = "uploads";
+	private static final long MAX_SIZE = 20 * 1024 * 1024; // 20MB
+	private static final String[] ALLOWED_EXTENSIONS = { "jpg", "jpeg" };
+	private static final int MAX_WIDTH = 800;
+	private static final int MAX_HEIGHT = 600;
+
+	private final Tika tika = new Tika();
 
 	// 商品一覧・商品検索.
 	/** 削除済み以外の商品一覧を商品番号の昇順で取得する. */
@@ -198,85 +212,212 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		return historyList;
 	}
 
-	/** 商品の画像情報を更新する. */
-	@Override
-	public void updateProductImage(MProduct product) {
-		// ローカルファイルストレージ保存(プロジェクト直下に保存)している画像ファイルを削除する.
+	/**
+	 * 画像バリデーション＆保存
+	 * 複数のエラーをまとめて返す
+	 *
+	 * @param file MultipartFile
+	 * @return エラーメッセージリスト（エラーなしなら空リスト）
+	 */
+	public UploadResult validateAndUpload(MultipartFile file) {
+		List<String> errors = new ArrayList<>();
+		Path tempFile = null;
+		String savedUuid = null;
+		
+		try {
+			// ----------------------
+			// 基本バリデーション
+			// ----------------------
+			if (file.isEmpty())
+				errors.add("ファイルが選択されていません");
+			if (file.getSize() > MAX_SIZE)
+				errors.add("ファイルサイズが20MBを超えています");
 
+			String filename = file.getOriginalFilename();
+			if (filename == null || filename.isBlank()) {
+				errors.add("ファイル名が不正です");
+			} else {
+				String ext = getExtension(filename).toLowerCase();
+				boolean allowed = false;
+				for (String a : ALLOWED_EXTENSIONS) {
+					if (a.equals(ext)) {
+						allowed = true;
+						break;
+					}
+				}
+				if (!allowed)
+					errors.add("許可されていないファイル形式です（JPEGのみ）");
+			}
 
+			if (!errors.isEmpty()) {
+				return new UploadResult(errors,null);
+			}
+			// ----------------------
+			// 一時ファイル作成
+			// ----------------------
+			tempFile = Files.createTempFile("upload-", ".jpg");
+			file.transferTo(tempFile.toFile());
+
+			// ----------------------
+			// MIMEタイプチェック
+			// ----------------------
+			String mimeType = tika.detect(tempFile.toFile());
+			if (!mimeType.equalsIgnoreCase("image/jpeg")) {
+				errors.add("画像ファイルではありません（JPEGのみ）");
+			}
+
+			// ----------------------
+			// ImageIOで読み込めるか
+			// ----------------------
+			if (ImageIO.read(tempFile.toFile()) == null) {
+				errors.add("画像ファイルとして読み込めません");
+			}
+
+			if (!errors.isEmpty())
+				return new UploadResult(errors,null);
+
+			// ----------------------
+			// 保存ディレクトリ作成
+			// ----------------------
+			Path uploadPath = Paths.get(UPLOAD_DIR);
+			if (!Files.exists(uploadPath)) {
+				Files.createDirectories(uploadPath);
+			}
+
+			// ----------------------
+			// UUIDで保存 (.jpg固定)
+			// ----------------------
+			savedUuid = UUID.randomUUID() + ".jpg";
+			Path targetFile = Paths.get(UPLOAD_DIR, savedUuid);
+
+			Thumbnails.of(tempFile.toFile())
+			        .size(MAX_WIDTH, MAX_HEIGHT)
+			        .outputFormat("jpg")
+			        .toFile(targetFile.toFile());
+
+			//log.info("画像保存成功: {}", targetFile);
+
+		} catch (IOException e) {
+			errors.add("画像処理中にエラーが発生しました");
+			log.error("画像処理エラー", e);
+		} finally {
+			// ----------------------
+			// 一時ファイル削除
+			// ----------------------
+			if (tempFile != null) {
+				try {
+					Files.deleteIfExists(tempFile);
+					log.debug("一時ファイル削除成功: {}", tempFile);
+				} catch (IOException e) {
+					// 小規模・テストサーバーなので警告ログだけ
+					log.warn("一時ファイル削除失敗: {}", tempFile, e);
+				}
+			}
+		}
+
+	   return new UploadResult(errors,savedUuid );
 	}
 
-	/** 商品画像のバリデーションチェックをする.　
-	  * @throws Exception */
-	public String checkProductImage(MultipartFile file, String uniqueName, BindingResult bindingResult) throws Exception{
+	private String getExtension(String filename) {
+		int dotIndex = filename.lastIndexOf('.');
+		return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
+	}
 
-		/* InputStreamクラスは,バイト単位でデータを読み込むための抽象クラス.
-		 * MultipartFileはインターフェースで,HTTPでアップロードされたファイルのことで,
-		 * ファイル内容をバイトデータとして持っている.
-		 * そのバイトデータをInputStreamを通して順次読み込む.
-		 * つまりInputStreamはバイトデータを読み込む窓口のようなもので,
-		 * InputStream inputStream = new BufferedInputStream(file.getInputStream())で,
-		 * ファイルのデータを読み込む窓口（InputStreamオブジェクト）を生成しているだけでMultipartFileのバイトデータをBufferedInputStreamで扱う準備が整えている.
-		 * BufferedInputStreamでラップすることで,元の InputStream をそのまま読み込むより便利になる.
-		 * (内部にバッファがあるので少しずつではなくまとめて読み込めることで速くなる.
-		 * またmark/resetに対応しているため,ファイルを少し読み込むとファイルの最初に戻れずにまた読み込みたいときにオブジェクトを破棄して再取得するということをしなくていい).
-		 * tryの()はリソース宣言でリソース(InputStream)を安全に自動で閉じるために変数宣言＋初期化をおこなっている.
-		 * (tryブロック終了後inputStream.close();を自動的に呼ぶように設定している).
-		 * ここで宣言された変数のこと(inputStream)をリソースオブジェクトという.
-		 * Javaのプログラムの中で外部との接続を行うとき,必ずその対象と接続して様々な処理をするためのオブジェクトを利用する.
-		 * 処理が終了したらそのオブジェクト（接続）を閉じ（解放）なければならない.
-		 * (ファイルの場合には接続したままでは他のプログラムが同じファイルを開くことが出来ないということが起こったり,接続できる上限数に達してしまって,
-		 * 接続ができなくなるといったエラーになることがある). */
-		try (InputStream inputStream = new BufferedInputStream(file.getInputStream())) {
+	public List<String> validateAndSaveImage(Long id, MultipartFile file) {
+		List<String> errors = new ArrayList<>();
+		Path tempFile = null;
+		String newFilename = null;
 
-			/* 選択された画像ファイルの大きさが20MB以内か確認する(20MBも大丈夫).
-			 * 計算の単位はバイトなので注意する(1KB = 1024 バイト, 1MB = 1024KB = 1024 * 1024 バイト, 20MB = 20 * 1024 * 1024 バイト).
-			 * 20MBより大きければエラーとエラーメッセージを追加する. */
-			long maxSize = 20 * 1024 * 1024;
-			if (file.getSize() > maxSize) {
-				bindingResult.rejectValue("multipartFile", "OverSize");
-			}
+		//		ImageEntity existing = null;
+		//		if (id != null) {
+		//			existing = imageMapper.findById(id);
+		//		}	idが存在してるか確認している
 
-			// 画像の形式がJPEGかApache Tikaを使用して確認する（MIMEタイプをString型取得してから確認する）.
-			Tika tika = new Tika();
-			String mimeType = tika.detect(inputStream);
-
-			// JPEGのMINEタイプ"image/jpeg"とおなじか確認し,違うときはエラーとエラーメッセージを追加する.
-			if (!mimeType.equals("image/jpeg")) {
-				bindingResult.rejectValue("productFile", "FileFormatsDiffer");
-			}
-			System.out.println(bindingResult);
-
-			// エラーがあれば登録フォームに戻るため,保存先ディレクトリの確認や画像のリサイズの前に確認する.
-			if (!bindingResult.hasErrors()) {
-
-				/* Fileクラスは「ファイルやディレクトリのパス情報」を表すオブジェクト.
-				 * 保存先のディレクトリ(ファイルを入れるフォルダのようなもの)のパス情報をもつオブジェクトを作成し保存先のディレクトリが存在するかどうかを確認し,
-				 * 存在しなければディレクトリを作成する. */
-				File dir = new File(uploadDir);
-				if (!dir.exists()) { // java.lang.SecurityException(非チェック例外).
-					dir.mkdirs(); // java.lang.SecurityException(非チェック例外).
+		try {
+			// ----------------------
+			// file がある場合
+			// ----------------------
+			if (file != null && !file.isEmpty()) {
+				if (file.getSize() > MAX_SIZE) {
+					errors.add("ファイルサイズが20MBを超えています");
 				}
 
-				/* UUIDでユニーク名を生成する(ユニバーサル・ユニーク・アイデンティファイアとは、全世界で重複しないように設計された128ビット長の一意な識別子(ID)のこと). 
-				 * UUID.randomUUID()でランダムな一意のIDを取得し,toString()で文字列化したものにJPEGの拡張子をつけることで,
-				 * 一意のファイル名を作成できる. */
-				uniqueName = UUID.randomUUID().toString() + ".jpg";
+				String originalName = file.getOriginalFilename();
+				if (originalName != null && !originalName.toLowerCase().endsWith(".jpg") &&
+						!originalName.toLowerCase().endsWith(".jpeg")) {
+					errors.add("JPEG画像のみ対応しています");
+				}
 
-				// 保存したいディレクトリパスと一意の名前にした保存したい画像ファイル名を組み合わせたFileクラスのオブジェクトを作成する.
-				File dest = new File(uploadDir, uniqueName); // java.lang.NullPointerException(非チェック例外).
+				if (!errors.isEmpty())
+					return errors;
 
-				/* 画像をリサイズする（最大幅800px, 最大高さ600px）.
-				 * Thumbnails.of(in)でinputStreamを通してバイトデータを読み込む. */
-				Thumbnails.of(inputStream) // NullPointerException/IllegalArgumentException/IOException(チェック例外).
-						.size(800, 600) // このメソッドを何回も呼んだり,このメソッドの後にscale(double)メソッド(拡大縮小率の設定ができるメソッド)を呼ばなければ例外なし). 
-						.toFile(dest); // 画像をリサイズしたものを作成し,Fileクラスのオブジェクトのディレクトリとファイル名でサーバ上に画像を保存する(パソコンの元画像を消しても表示できる).
+				// 一時ファイル作成
+				tempFile = Files.createTempFile("upload-", ".jpg");
+				file.transferTo(tempFile.toFile());
+
+				String mimeType = tika.detect(tempFile.toFile());
+				if (!mimeType.equalsIgnoreCase("image/jpeg")) {
+					errors.add("JPEG画像ではありません");
+				}
+
+				if (ImageIO.read(tempFile.toFile()) == null) {
+					errors.add("画像として読み込めません");
+				}
+
+				if (!errors.isEmpty())
+					return errors;
+
+				Path uploadPath = Paths.get(UPLOAD_DIR);
+				if (!Files.exists(uploadPath))
+					Files.createDirectories(uploadPath);
+
+				newFilename = UUID.randomUUID().toString() + ".jpg";
+				Path targetFile = uploadPath.resolve(newFilename);
+
+				Thumbnails.of(tempFile.toFile())
+						.size(MAX_WIDTH, MAX_HEIGHT)
+						.toFile(targetFile.toFile());
+
+				// 既存画像削除
+				if (existing != null && existing.getFilename() != null) {
+					Path oldFile = Paths.get(UPLOAD_DIR, existing.getFilename());
+					if (Files.exists(oldFile))
+						Files.delete(oldFile);
+				}
+
+			}
+
+			// ----------------------
+			// DB登録／更新
+			// ----------------------
+			if (existing == null) {
+				ImageEntity image = new ImageEntity();
+				image.setFilename(newFilename);
+
+				imageMapper.insert(image);
+			} else {
+				if (file == null && existing.getFilename() != null) {
+					existing.setFilename(null); // 削除のみ
+				}
+				if (file != null) {
+					existing.setFilename(newFilename);
+				}
+				imageMapper.update(existing);
 			}
 
 		} catch (Exception e) {
-			throw new Exception ("商品画像の確認と保存に失敗しました", e);
+			errors.add("画像処理中にエラーが発生しました");
+			log.error("画像処理エラー", e);
+		} finally {
+			if (tempFile != null) {
+				try {
+					Files.deleteIfExists(tempFile);
+				} catch (Exception e) {
+					log.warn("一時ファイル削除失敗: {}", tempFile, e);
+				}
+			}
 		}
-		return uniqueName;
-	}
 
+		return errors;
+	}
 }

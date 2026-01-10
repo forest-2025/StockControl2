@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.component.CustomHeader;
 import com.example.domain.product.model.HistoryDetails;
+import com.example.domain.products.dto.UploadResult;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.model.ProductList;
 import com.example.domain.products.model.ProductWithSupplier;
@@ -118,27 +119,27 @@ public class ProductInfoController {
 		MultipartFile file = form.getProductFile();
 
 		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
-		String uniqueName = null;
-		
+		//String uniqueName = null;
+		UploadResult result=null;
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
-			uniqueName = productInfoService.checkProductImage(file, uniqueName, bindingResult);
-		}
-		
-		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
-		if (bindingResult.hasErrors()) {
+			result = productInfoService.validateAndUpload(file);
 
-			/* 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-			this.goToRegister(model, form);
+			// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
+			if (bindingResult.hasErrors() || result.hasErrors()) {
+				model.addAttribute("errors", result.getErrors());
+				/* 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
+				this.goToRegister(model, form);
 
-			return "/products/info/register";
+				return "/products/info/register";
+			}
 		}
 
 		// formクラスをエンティティクラスに変換する.
 		MProduct product = modelMapper.map(form, MProduct.class);
-		
+
 		// 画像ファイルが選択されなければnullにしたいのでそのまま変数uniqueNameを設定する.
-		product.setProductImage(uniqueName);
+		product.setProductImage(result.getFilename());
 
 		// 商品登録を行う.
 		productInfoService.registerProduct(product);
@@ -309,7 +310,6 @@ public class ProductInfoController {
 
 		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
 		String uniqueName = null;
-
 
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
