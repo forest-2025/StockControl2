@@ -220,50 +220,97 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	 * @return エラーメッセージリスト（エラーなしなら空リスト）
 	 */
 	public UploadResult validateAndUpload(MultipartFile file) {
+		// バリデーションエラーがあった時のメッセージを格納するListを宣言する(tryの外でも使用するためここで宣言).
 		List<String> errors = new ArrayList<>();
+
+		/* Pathクラスはファイルやディレクトリの場所（パス）を表すためのクラス(tryの外でも使用するためここで宣言). 
+		 * ファイルやディレクトリの実際の操作はFilesクラス,場所や名前などの表現はPathクラスを使用する. */
 		Path tempFile = null;
+
+		// ファイル名を取得するための変数を宣言する(tryの外でも使用するためここで宣言).
 		String savedUuid = null;
-		
+
 		try {
 			// ----------------------
 			// 基本バリデーション
 			// ----------------------
-			if (file.isEmpty())
-				errors.add("ファイルが選択されていません");
-			if (file.getSize() > MAX_SIZE)
-				errors.add("ファイルサイズが20MBを超えています");
+			//			if (file.isEmpty())
+			//				errors.add("ファイルが選択されていません");ファイルが0バイトか確認している
+			if (file.getSize() > MAX_SIZE) {
+				errors.add("画像ファイルは20MB以下にしてください");
+			}
 
+			// ファイルの元の名前(ユーザーが選択したときのファイル名)を取得する.
 			String filename = file.getOriginalFilename();
+			// ファイル名がnullまたは空白("")や空文字(" ")でないかを拡張子も含んで確認する.
 			if (filename == null || filename.isBlank()) {
 				errors.add("ファイル名が不正です");
 			} else {
-				String ext = getExtension(filename).toLowerCase();
+				// 下にあるgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している(this.は省略).
+				String extension = getExtension(filename).toLowerCase();
+
+				// 拡張子がJPEG(.jpg, .jpeg)か確認する.
 				boolean allowed = false;
-				for (String a : ALLOWED_EXTENSIONS) {
-					if (a.equals(ext)) {
+				for (String allowedExtension : ALLOWED_EXTENSIONS) {
+					if (allowedExtension.equals(extension)) {
 						allowed = true;
 						break;
 					}
 				}
 				if (!allowed)
-					errors.add("許可されていないファイル形式です（JPEGのみ）");
+					errors.add("画像ファイルはJPEG(.jpgまたは.jpeg)のみ登録できます");
 			}
 
+			// この時点でバリデーションエラーがあるときは一旦フォーム画面でエラーを表示する(このあと画像を一時保存するため).
 			if (!errors.isEmpty()) {
-				return new UploadResult(errors,null);
+				return new UploadResult(errors, null);
 			}
 			// ----------------------
 			// 一時ファイル作成
 			// ----------------------
+			/* 画像ファイルの確認や加工をするためデータを一時ファイルに移すため一時ファイルを作成する.
+			 * (複数の処理を安全に行うため).
+			 * Filesクラスは静的メソッド(staticメソッド)のみを持つユーティリティクラス
+			 * (特定のオブジェクトに属さず,様々な場所で繰り返し使う汎用的な機能（共通処理や便利なメソッド・定数など）をまとめて置いたクラス).
+			 * ファイルやディレクトリ操作を安全・簡潔に行える.
+			 * createTempFile()でOSが管理する一時ディレクトリに一時ファイルを作成している(中身は空).
+			 * 引数の"upload-", ".jpg"によってupload-xxxxxx.jpg
+			 * (xxxxxxは自動作成で名前が衝突しないようになっている)
+			 * のような名前のファイルが作成される. */
 			tempFile = Files.createTempFile("upload-", ".jpg");
-			file.transferTo(tempFile.toFile());
+			/* .transferTo(Path)のほうのメソッド(Fileよりこちらのほうが推奨されている).
+			 * 画像ファイルはアップロードされるとサーブレットコンテナが "自動的" に小さいサイズはメモリ（バイト配列）に,
+			 * 大きいサイズは一時ファイルに保存する.
+			 * この画像ファイルに直接アクセスすることはできず、MultipartFile オブジェクトを通してのみ扱える.
+			 * 小さい・大きいの判定はspring.servlet.multipart.file-size-thresholdで決まり,
+			 * デフォルトは0Bのため0Bより大きいファイルはすべて一時ファイルに保存される.
+			 * transferTo()で先ほど作成した一時ファイルにファイルを移すが,このときサーブレットコンテナが保存した保存形態によって挙動が変わる.
+			 * 一時ファイルの場合は,可能であればrename（move）によって指定先へ移動され,元の一時ファイルは消える.
+			 * そのため2回目のアクセスはできない.メモリ上の場合は、ヒープ領域上(newキーワードで生成されるオブジェクトの実体（インスタンスデータや配列）が格納される)
+			 * のバイト配列を指定先ファイルへ書き出す.このメモリはMultipartFileが不要になればガベージコレクションにより自動的に解放される.
+			 * なお,一時ファイルと保存先が異なるファイルシステムの場合はrenameができずcopy + deleteになることがあるが,
+			 * 一時ファイルは通常リクエスト終了時に自動削除される(サーブレットコンテナの一時ファイルも作成した一時ファイルもOSのディレクトリに保存されるが,
+			 * デフォルトでは場所が違う可能性が高い.). */
+			file.transferTo(tempFile);
 
 			// ----------------------
 			// MIMEタイプチェック
 			// ----------------------
-			String mimeType = tika.detect(tempFile.toFile());
+			/* MIMEタイプ(メディアタイプ)を確認する.
+			 * MIMEタイプはインターネット上でやり取りされるファイルやデータが「どのような形式（種類）か」を示すラベルで,
+			 * ヘッダーのContent-Typeで指定される(JPEGならimage/jpegのような形式).
+			 * ファイルの拡張子は偽装できるためファイル内のMIMEタイプを確認することで不適切なファイルのアップロードを防ぐことができる.
+			 * (ファイルには拡張子だけでなく,ファイルの先頭に特定のバイト列が決められているものが多く,その先頭のバイト列
+			 * (マジックナンバーまたはマジックバイト)でそのファイルの形式が判定できる.Apache Tikaを使用するとマジックナンバー,
+			 * 拡張子,ファイル内部の解析を行いファイルの形式を判定してくれる).
+			 * detect(Path)でPathのMIMEタイプを判定してくれる(ドキュメントにdetect(String)~と書いてあるのは,
+			 * detect(String)はファイルの内容を読み込まずにファイル名でMIMEタイプを判断する(もはや中身があってもなくてもいい)ので,
+			 * 内容見なくていいのならこちらを使うようにという補足情報を教えてくれているだけ).
+			 * detect(Path)の戻り値はimage/jpegのような形式の文字列. */
+			String mimeType = tika.detect(tempFile);
+			// equalsIgnoreCase("image/jpeg")で大文字小文字の区別なく文字列の比較ができる.
 			if (!mimeType.equalsIgnoreCase("image/jpeg")) {
-				errors.add("画像ファイルではありません（JPEGのみ）");
+				errors.add("画像ファイルはJPEG(.jpgまたは.jpeg)のみ登録できます");
 			}
 
 			// ----------------------
@@ -274,12 +321,12 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			}
 
 			if (!errors.isEmpty())
-				return new UploadResult(errors,null);
+				return new UploadResult(errors, null);
 
 			// ----------------------
 			// 保存ディレクトリ作成
 			// ----------------------
-			Path uploadPath = Paths.get(UPLOAD_DIR);
+			Path uploadPath = Paths.get(uploadDir);
 			if (!Files.exists(uploadPath)) {
 				Files.createDirectories(uploadPath);
 			}
@@ -288,12 +335,12 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			// UUIDで保存 (.jpg固定)
 			// ----------------------
 			savedUuid = UUID.randomUUID() + ".jpg";
-			Path targetFile = Paths.get(UPLOAD_DIR, savedUuid);
+			Path targetFile = Paths.get(uploadDir, savedUuid);
 
 			Thumbnails.of(tempFile.toFile())
-			        .size(MAX_WIDTH, MAX_HEIGHT)
-			        .outputFormat("jpg")
-			        .toFile(targetFile.toFile());
+					.size(MAX_WIDTH, MAX_HEIGHT)
+					.outputFormat("jpg")
+					.toFile(targetFile.toFile());
 
 			//log.info("画像保存成功: {}", targetFile);
 
@@ -315,11 +362,14 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			}
 		}
 
-	   return new UploadResult(errors,savedUuid );
+		return new UploadResult(errors, savedUuid);
 	}
 
+	/** ファイル名の拡張子を取得する("."は除く). */
 	private String getExtension(String filename) {
+		// 0始まりで.のインデックスを取得する("."がないときは-1になる).
 		int dotIndex = filename.lastIndexOf('.');
+		// ファイル名の"."以降を取得する(substringの開始位置をdotIndexに１足すことで"."を除く拡張子を取得できる).
 		return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
 	}
 
@@ -367,7 +417,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				if (!errors.isEmpty())
 					return errors;
 
-				Path uploadPath = Paths.get(UPLOAD_DIR);
+				Path uploadPath = Paths.get(uploadDir);
 				if (!Files.exists(uploadPath))
 					Files.createDirectories(uploadPath);
 

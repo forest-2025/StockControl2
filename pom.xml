@@ -127,7 +127,7 @@
 			<artifactId>thumbnailator</artifactId>
 			<version>0.4.21</version>
 		</dependency>
-		<!-- apache.tika/tika-core(画像ファイルのMINEタイプの確認用) -->
+		<!-- apache.tika/tika-core(画像ファイルのMIMEタイプの確認用) -->
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
