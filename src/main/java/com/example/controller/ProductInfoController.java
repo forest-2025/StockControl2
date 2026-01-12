@@ -61,6 +61,7 @@ public class ProductInfoController {
 			model.addAttribute("productList", productList);
 			model.addAttribute("search", search);
 		}
+		 System.out.println("初期確保済みヒープ(totalMemory) = " +  Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB");
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setGray("商品一覧");

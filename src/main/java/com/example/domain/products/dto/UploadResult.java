@@ -9,7 +9,7 @@ import lombok.Data;
 public class UploadResult {
 	
 	private List<String> errors = new ArrayList<>();
-    private String filename; // 保存したUUID.jpg
+    private String filename; 
 
     public UploadResult(List<String> errors,String filename) {
         this.errors = errors;
