@@ -3,7 +3,6 @@ package com.example.domain.products.service.impl;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -345,14 +344,28 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			/* Pathはファイルシステム上のファイルやディレクトリのパス（経路）を表すためのインタフェースで、インタフェースのためnewでのオブジェクト作成はできない.
 			 * PathsクラスはPathを生成するユーティリティクラスでメソッドもObjectクラスから継承したもの以外は,Pathを生成するget()メソッド(2種)しかない.
 			 * Path型の変数uploadPathに代入されているのはPathを実装した「実際のクラスのインスタンス」で,Paths.get(uploadDir)は
-			 * Paths.get(String first, String... more)で,どのOSかを判定して適切なPath実装を作る.
-			 * windowsならsun.nio.fs.WindowsPath,LinuxやmacOSではsun.nio.fs.UnixPathがつくられそれぞれPathのメソッドを実装している.
-			 * (@Overrideが少ないのはPathのdefaultメソッド(インターフェースの中に,実装（メソッド本体）を持てるメソッドのこと.
-			 * defaultメソッドがあると,実装クラスでoverrideしなくてもそのまま使える)で実装済みだから.)
-			 * 
-			 *  */
-			Path uploadPath = Paths.get(uploadDir);
+			 * Paths.get(String first, String... more)で,どのOSかを判定して適切なPath実装を作っていたが,Path.ofで同じように作れるようになった.
+			 * https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/nio/file/Path.javaで,
+			 * public static Path of(String first, String... more) {
+			 * 	return FileSystems.getDefault().getPath(first, more);}
+			 * とある.FileSystems.getDefault()で実行環境のOSに対応したFileSystemのオブジェクト(FileSystem自体は抽象クラスなので実態は実装されたクラス)を作成する.
+			 * (Windowsならsun.nio.fs.WindowsFileSystemのインスタンス,LinuxやmacOSならsun.nio.fs.UnixFileSystemのインスタンス).
+			 * WindowsFileSystemならWindowsFileSystem.getPath(first, more)となりfirstとmoreを\(バックスラッシュ)で結合していく.
+			 * (sb.append('\\');とあるが \ はエスケープ文字なので,'\\' と書くことで1文字のバックスラッシュを表す).
+			 * return WindowsPath.parse(this, path);となる(thisはこのWindowsPathインスタンス自体で,pathはfirstとmoreを結合した文字列).
+			 * WindowsPath.parse(this, path)で WindowsPathParser.Result result = WindowsPathParser.parse(path);となり,
+			 * WindowsPathParser.parse(path)で入力文字列の形式を判定(C:\Users→ドライブ付き絶対パス,foo\bar→相対パスなど)し,ルート部分（root）の取り出し
+			 * (ルートとはファイルシステム上で「最上位の基準となる場所」のことで,パスの先頭にありそのパスが絶対パスかどうかを決める(C:\Usersならルート(root)はC:\でUsersは残り(path)の扱い)),
+			 * ルート部分以外の残りのpathの部分を分割・検証（無効文字チェックなど）を行い,解析によって得られたパスの種類（絶対・相対）・ルート文字列・残りのパス部分を
+			 * WindowsPathParser.ResultというWindowsPathParserの小さなデータクラス(ネスト静的クラス（Static Nested Class）)に詰めて返す.
+			 * それをもとにreturn new WindowsPath(fs, result.type(), result.root(), result.path());が作成される.
+			 * これはsun.nio.fs.WindowsPath(LinuxやmacOSではsun.nio.fs.UnixPath)のオブジェクトが作成されていて,
+			 * WindowsPathはPathの実装クラスのためPath uploadPathで受け取っている(つまりuploadPathの中身はWindowsPathのインスタンス). */
+			Path uploadPath = Path.of(uploadDir);
+			
+			// ファイル／ディレクトリが「実際に存在しないか」を確認する.
 			if (!Files.exists(uploadPath)) {
+				// 存在しなければ作成する(親ディレクトリがなければそれも作成してくれる).
 				Files.createDirectories(uploadPath);
 			}
 
@@ -360,7 +373,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			// UUIDで保存 (.jpg固定)
 			// ----------------------
 			savedUuid = UUID.randomUUID() + ".jpg";
-			Path targetFile = Paths.get(uploadDir, savedUuid);
+			Path targetFile = Path.of(uploadDir, savedUuid);
 
 			Thumbnails.of(tempFile.toFile())
 					.size(MAX_WIDTH, MAX_HEIGHT)
