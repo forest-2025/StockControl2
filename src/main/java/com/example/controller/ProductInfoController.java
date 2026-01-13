@@ -61,7 +61,7 @@ public class ProductInfoController {
 			model.addAttribute("productList", productList);
 			model.addAttribute("search", search);
 		}
-		 System.out.println("初期確保済みヒープ(totalMemory) = " +  Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB");
+		System.out.println("初期確保済みヒープ(totalMemory) = " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB");
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setGray("商品一覧");
@@ -119,9 +119,7 @@ public class ProductInfoController {
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
 
-		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
-		//String uniqueName = null;
-		UploadResult result=null;
+		UploadResult result = null;
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
 			result = productInfoService.validateAndUpload(file);
@@ -139,8 +137,8 @@ public class ProductInfoController {
 		// formクラスをエンティティクラスに変換する.
 		MProduct product = modelMapper.map(form, MProduct.class);
 
-		// 画像ファイルが選択されなければnullにしたいのでそのまま変数uniqueNameを設定する.
-		product.setProductImage(result.getFilename());
+		// 画像ファイルが選択されなければnullにしたいのでresultを設定する.
+		product.setProductImage(result.getFileName());
 
 		// 商品登録を行う.
 		productInfoService.registerProduct(product);

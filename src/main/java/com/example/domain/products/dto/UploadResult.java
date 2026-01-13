@@ -9,11 +9,11 @@ import lombok.Data;
 public class UploadResult {
 	
 	private List<String> errors = new ArrayList<>();
-    private String filename; 
+    private String fileName; 
 
-    public UploadResult(List<String> errors,String filename) {
+    public UploadResult(List<String> errors,String fileName) {
         this.errors = errors;
-        this.filename = filename;
+        this.fileName = fileName;
     }
     
     public boolean hasErrors() {

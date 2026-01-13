@@ -227,7 +227,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		Path tempFile = null;
 
 		// ファイル名を取得するための変数を宣言する(tryの外でも使用するためここで宣言).
-		String savedUuid = null;
+		String fileName = null;
 
 		try {
 			// ----------------------
@@ -240,13 +240,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			}
 
 			// ファイルの元の名前(ユーザーが選択したときのファイル名)を取得する.
-			String filename = file.getOriginalFilename();
+			String originalFileName = file.getOriginalFilename();
 			// ファイル名がnullまたは空白("")や空文字(" ")でないかを拡張子も含んで確認する.
-			if (filename == null || filename.isBlank()) {
+			if (originalFileName == null || originalFileName.isBlank()) {
 				errors.add("ファイル名が不正です");
 			} else {
 				// 下にあるgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している(this.は省略).
-				String extension = getExtension(filename).toLowerCase();
+				String extension = getExtension(originalFileName).toLowerCase();
 
 				// 拡張子がJPEG(.jpg, .jpeg)か確認する.
 				boolean allowed = false;
@@ -372,9 +372,17 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			// ----------------------
 			// UUIDで保存 (.jpg固定)
 			// ----------------------
-			savedUuid = UUID.randomUUID() + ".jpg";
-			Path targetFile = Path.of(uploadDir, savedUuid);
+			/* savedUuidに一意のファイル名を作成し代入する.
+			 * UUID.randomUUID()の戻り値はUUIDのオブジェクトだが文字列を連結すると
+			 * UUID.randomUUID().toString();が内部でよばれてString型に自動で変換してくれる. */
+			fileName = UUID.randomUUID() + ".jpg";
+			// ディレクトリのパスにファイル名をつなげて完全なファイルのパスを作成する(パスができているだけでファイルはできていない).
+			Path targetFile = Path.of(uploadDir, fileName);
 
+			/* .ofで画像ファイルを入力画像として読み込む(Path型は受け取れないのでFile型に変換してる).
+			 * .sizeでリサイズし,.outputFormat("jpg")で強制的にJPEGに変換している(念のため).
+			 * .toFile(targetFile.toFile())でファイルを作成している.
+			 * (引数ををFile型に変換したtargetFileにすることで一意の名前に変換されてファイル名でファイルが作成される). */
 			Thumbnails.of(tempFile.toFile())
 					.size(MAX_WIDTH, MAX_HEIGHT)
 					.outputFormat("jpg")
@@ -391,6 +399,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			// ----------------------
 			if (tempFile != null) {
 				try {
+					// deleteIfExists()は,もしファイルがあれば削除し、なければ何もしないメソッド.
 					Files.deleteIfExists(tempFile);
 					log.debug("一時ファイル削除成功: {}", tempFile);
 				} catch (IOException e) {
@@ -400,7 +409,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			}
 		}
 
-		return new UploadResult(errors, savedUuid);
+		return new UploadResult(errors, fileName);
 	}
 
 	/** ファイル名の拡張子を取得する("."は除く). */
