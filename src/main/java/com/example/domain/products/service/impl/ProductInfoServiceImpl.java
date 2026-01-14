@@ -379,8 +379,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			// ディレクトリのパスにファイル名をつなげて完全なファイルのパスを作成する(パスができているだけでファイルはできていない).
 			Path targetFile = Path.of(uploadDir, fileName);
 
-			/* .ofで画像ファイルを入力画像として読み込む(Path型は受け取れないのでFile型に変換してる).
-			 * .sizeでリサイズし,.outputFormat("jpg")で強制的にJPEGに変換している(念のため).
+			/* Thumbnails.ofでThumbnails.Builder<File>オブジェクト(Builderオブジェクト)を生成する.
+			 * (Path型は受け取れないのでFile型に変換してる).
+			 * .sizeはBuilderオブジェクトのメソッドで,これでリサイズできる.
+			 * (Builder内部にサイズ設定を追加,戻り値が.ofで作成されたオブジェクトにサイズ設定を追加されたBuilderオブジェクト).
+			 * .outputFormat("jpg")で強制的にJPEGに変換している(念のため).
 			 * .toFile(targetFile.toFile())でファイルを作成している.
 			 * (引数ををFile型に変換したtargetFileにすることで一意の名前に変換されてファイル名でファイルが作成される). */
 			Thumbnails.of(tempFile.toFile())
@@ -388,23 +391,22 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 					.outputFormat("jpg")
 					.toFile(targetFile.toFile());
 
-			//log.info("画像保存成功: {}", targetFile);
-
+		/*  */
 		} catch (IOException e) {
 			errors.add("画像処理中にエラーが発生しました");
 			log.error("画像処理エラー", e);
+			throw new RuntimeException(e);
 		} finally {
-			// ----------------------
-			// 一時ファイル削除
-			// ----------------------
+			
+			// 一時ファイル削除する.
 			if (tempFile != null) {
 				try {
-					// deleteIfExists()は,もしファイルがあれば削除し、なければ何もしないメソッド.
+					// deleteIfExists()で一時ファイルを削除する.(もしファイルがあれば削除し、なければ何もしないメソッド).
 					Files.deleteIfExists(tempFile);
-					log.debug("一時ファイル削除成功: {}", tempFile);
+					log.info("一時ファイル削除成功: {}", tempFile);
 				} catch (IOException e) {
-					// 小規模・テストサーバーなので警告ログだけ
 					log.warn("一時ファイル削除失敗: {}", tempFile, e);
+					throw new RuntimeException(e);
 				}
 			}
 		}
