@@ -250,17 +250,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		String fileName = null;
 
 		try {
-			// ----------------------
-			// 基本バリデーション
-			// ----------------------
-			//			if (file.isEmpty())
-			//				errors.add("ファイルが選択されていません");ファイルが0バイトか確認している
 			if (file.getSize() > MAX_SIZE) {
 				errors.add("画像ファイルは20MB以下にしてください");
 			}
 
 			// ファイルの元の名前(ユーザーが選択したときのファイル名)を取得する.
 			String originalFileName = file.getOriginalFilename();
+			
 			// ファイル名がnullまたは空白("")や空文字(" ")でないかを拡張子も含んで確認する.
 			if (originalFileName == null || originalFileName.isBlank()) {
 				errors.add("ファイル名が不正です");
@@ -284,9 +280,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			if (!errors.isEmpty()) {
 				return new UploadResult(errors, null);
 			}
-			// ----------------------
-			// 一時ファイル作成
-			// ----------------------
+			
 			/* 画像ファイルの確認や加工をするためデータを一時ファイルに移すため一時ファイルを作成する.
 			 * (複数の処理を安全に行うため).
 			 * Filesクラスは静的メソッド(staticメソッド)のみを持つユーティリティクラス
@@ -297,6 +291,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * (xxxxxxは自動作成で名前が衝突しないようになっている)
 			 * のような名前のファイルが作成される. */
 			tempFile = Files.createTempFile("upload-", ".jpg");
+			
 			/* .transferTo(Path)のほうのメソッド(Fileよりこちらのほうが推奨されている).
 			 * 画像ファイルはアップロードされるとサーブレットコンテナが "自動的" に小さいサイズはメモリ（バイト配列）に,
 			 * 大きいサイズは一時ファイルに保存する.
@@ -312,9 +307,6 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * デフォルトでは場所が違う可能性が高い.). */
 			file.transferTo(tempFile);
 
-			// ----------------------
-			// MIMEタイプチェック
-			// ----------------------
 			/* MIMEタイプ(メディアタイプ)を確認する.
 			 * MIMEタイプはインターネット上でやり取りされるファイルやデータが「どのような形式（種類）か」を示すラベルで,
 			 * ヘッダーのContent-Typeで指定される(JPEGならimage/jpegのような形式).
@@ -332,9 +324,6 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				errors.add("画像ファイルはJPEG(.jpgまたは.jpeg)のみ登録できます");
 			}
 
-			// ----------------------
-			// ImageIOで読み込めるか
-			// ----------------------
 			/* ImageIOで読み込めるか確認する.
 			 * 圧縮されてバイナリデータの形でおくられてきたJPEGファイルをImageIO.read()で展開してピクセルに変換して読み込んでいる.
 			 * ImageIOクラスで対応しているクラスならBufferedImage(メモリ上で展開されてピクセル変換された画像の幅・高さ・色形式などのデータを持つJavaで扱えるオブジェクト)が返り,
@@ -358,10 +347,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			if (!errors.isEmpty())
 				return new UploadResult(errors, null);
 
-			// ----------------------
-			// 保存ディレクトリ作成
-			// ----------------------
-			/* Pathはファイルシステム上のファイルやディレクトリのパス（経路）を表すためのインタフェースで、インタフェースのためnewでのオブジェクト作成はできない.
+			/* 保存ディレクトリを作成する.
+			 * Pathはファイルシステム上のファイルやディレクトリのパス（経路）を表すためのインタフェースで、インタフェースのためnewでのオブジェクト作成はできない.
 			 * PathsクラスはPathを生成するユーティリティクラスでメソッドもObjectクラスから継承したもの以外は,Pathを生成するget()メソッド(2種)しかない.
 			 * Path型の変数uploadPathに代入されているのはPathを実装した「実際のクラスのインスタンス」で,Paths.get(uploadDir)は
 			 * Paths.get(String first, String... more)で,どのOSかを判定して適切なPath実装を作っていたが,Path.ofで同じように作れるようになった.
@@ -389,13 +376,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				Files.createDirectories(uploadPath);
 			}
 
-			// ----------------------
-			// UUIDで保存 (.jpg固定)
-			// ----------------------
 			/* savedUuidに一意のファイル名を作成し代入する.
 			 * UUID.randomUUID()の戻り値はUUIDのオブジェクトだが文字列を連結すると
 			 * UUID.randomUUID().toString();が内部でよばれてString型に自動で変換してくれる. */
 			fileName = UUID.randomUUID() + ".jpg";
+			
 			// ディレクトリのパスにファイル名をつなげて完全なファイルのパスを作成する(パスができているだけでファイルはできていない).
 			Path targetFile = Path.of(uploadDir, fileName);
 
@@ -438,6 +423,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	public String getExtension(String filename) {
 		// 0始まりで.のインデックスを取得する("."がないときは-1になる).
 		int dotIndex = filename.lastIndexOf('.');
+		
 		// ファイル名の"."以降を取得する(substringの開始位置をdotIndexに１足すことで"."を除く拡張子を取得できる).
 		return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
 	}
@@ -447,7 +433,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	public void updateProductImage(MProduct product, MProduct productImageEdit) {
 
 		try {
-			// 既存画像削除
+			// 既存画像を削除する.
 			if (product.getProductImage() != null) {
 				Path oldFile = Path.of(uploadDir, product.getProductImage());
 				if (Files.exists(oldFile)) {
@@ -455,8 +441,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				}
 			}
 
-			// DB登録／更新
-
+			// 商品の画像情報を更新する.
 			productMapper.updateProductImage(productImageEdit);
 
 		} catch (IOException e) {
@@ -465,101 +450,3 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		}
 	}
 }
-
-//	public List<String> validateAndSaveImage(Long id, MultipartFile file) {
-//		List<String> errors = new ArrayList<>();
-//		Path tempFile = null;
-//		String newFilename = null;
-//
-//		//		ImageEntity existing = null;
-//		//		if (id != null) {
-//		//			existing = imageMapper.findById(id);
-//		//		}	idが存在してるか確認している
-//
-//		try {
-//			// ----------------------
-//			// file がある場合
-//			// ----------------------
-//			if (file != null && !file.isEmpty()) {
-//				if (file.getSize() > MAX_SIZE) {
-//					errors.add("ファイルサイズが20MBを超えています");
-//				}
-//
-//				String originalName = file.getOriginalFilename();
-//				if (originalName != null && !originalName.toLowerCase().endsWith(".jpg") &&
-//						!originalName.toLowerCase().endsWith(".jpeg")) {
-//					errors.add("JPEG画像のみ対応しています");
-//				}
-//
-//				if (!errors.isEmpty())
-//					return errors;
-//
-//				// 一時ファイル作成
-//				tempFile = Files.createTempFile("upload-", ".jpg");
-//				file.transferTo(tempFile.toFile());
-//
-//				String mimeType = tika.detect(tempFile.toFile());
-//				if (!mimeType.equalsIgnoreCase("image/jpeg")) {
-//					errors.add("JPEG画像ではありません");
-//				}
-//
-//				if (ImageIO.read(tempFile.toFile()) == null) {
-//					errors.add("画像として読み込めません");
-//				}
-//
-//				if (!errors.isEmpty())
-//					return errors;
-//
-//				Path uploadPath = Paths.get(uploadDir);
-//				if (!Files.exists(uploadPath))
-//					Files.createDirectories(uploadPath);
-//
-//				newFilename = UUID.randomUUID().toString() + ".jpg";
-//				Path targetFile = uploadPath.resolve(newFilename);
-//
-//				Thumbnails.of(tempFile.toFile())
-//						.size(MAX_WIDTH, MAX_HEIGHT)
-//						.toFile(targetFile.toFile());
-//
-//				// 既存画像削除
-//				if (existing != null && existing.getFilename() != null) {
-//					Path oldFile = Paths.get(UPLOAD_DIR, existing.getFilename());
-//					if (Files.exists(oldFile))
-//						Files.delete(oldFile);
-//				}
-//
-//			}
-//
-//			// ----------------------
-//			// DB登録／更新
-//			// ----------------------
-//			if (existing == null) {
-//				ImageEntity image = new ImageEntity();
-//				image.setFilename(newFilename);
-//
-//				imageMapper.insert(image);
-//			} else {
-//				if (file == null && existing.getFilename() != null) {
-//					existing.setFilename(null); // 削除のみ
-//				}
-//				if (file != null) {
-//					existing.setFilename(newFilename);
-//				}
-//				imageMapper.update(existing);
-//			}
-//
-//		} catch (Exception e) {
-//			errors.add("画像処理中にエラーが発生しました");
-//			log.error("画像処理エラー", e);
-//		} finally {
-//			if (tempFile != null) {
-//				try {
-//					Files.deleteIfExists(tempFile);
-//				} catch (Exception e) {
-//					log.warn("一時ファイル削除失敗: {}", tempFile, e);
-//				}
-//			}
-//		}
-//
-//		return errors;
-//	}
