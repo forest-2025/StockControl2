@@ -190,7 +190,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 		// 商品情報の削除は物理削除ではなく論理削除のため,削除フラグ(is_deleted)を削除済みの1に変更する.
 		product.setProductIsDeleted(1);
-		
+
 		try {
 			// 画像は削除する(メモリを圧迫するため).
 			if (product.getProductImage() != null) {
@@ -198,19 +198,18 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				if (Files.exists(oldFile)) {
 					Files.delete(oldFile);
 				}
-			
+
 			}
 			product.setProductImage(null);
-			
+
 			// 削除フラグを更新する.
 			productMapper.updateIsDeleted(product);
-			
+
 		} catch (IOException e) {
 			log.error("画像処理エラー", e);
 			throw new RuntimeException(e);
 		}
 
-		
 	}
 
 	// 商品の詳細.
@@ -412,6 +411,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 					.outputFormat("jpg")
 					.toFile(targetFile.toFile());
 
+			return new UploadResult(errors, fileName);
+
 		} catch (IOException e) {
 			errors.add("画像処理中にエラーが発生しました");
 			log.error("画像処理エラー", e);
@@ -430,8 +431,6 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				}
 			}
 		}
-
-		return new UploadResult(errors, fileName);
 	}
 
 	/** ファイル名の拡張子を取得する("."は除く). */
