@@ -54,11 +54,14 @@ public interface ProductInfoService {
 
 	/** 商品IDからその商品の履歴を降順で取得する. */
 	public List<HistoryDetails> getHistoryForOneProduct(Integer productId);
-	
+
 	/** 商品画像のバリデーションチェックとローカルファイルストレージ(プロジェクト直下)に保存する. */
 	public UploadResult validateAndUpload(MultipartFile file);
+	
+	/** ファイル名の拡張子を取得する("."は除く). */
+	public String getExtension(String filename);
 
 	/** 商品の画像情報を更新する. */
-	public void updateProductImage(MProduct product);
-	
+	public void updateProductImage(MProduct product,MProduct productImageEdit);
+
 }

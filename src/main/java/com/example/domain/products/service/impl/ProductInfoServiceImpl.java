@@ -59,10 +59,12 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 
-	private static final String UPLOAD_DIR = "uploads";
 	private static final long MAX_SIZE = 20 * 1024 * 1024; // 20MB
+
 	private static final String[] ALLOWED_EXTENSIONS = { "jpg", "jpeg" };
+
 	private static final int MAX_WIDTH = 800;
+
 	private static final int MAX_HEIGHT = 600;
 
 	private final Tika tika = new Tika();
@@ -188,8 +190,27 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 		// 商品情報の削除は物理削除ではなく論理削除のため,削除フラグ(is_deleted)を削除済みの1に変更する.
 		product.setProductIsDeleted(1);
-		// 削除フラグを更新する.
-		productMapper.updateIsDeleted(product);
+		
+		try {
+			// 画像は削除する(メモリを圧迫するため).
+			if (product.getProductImage() != null) {
+				Path oldFile = Path.of(uploadDir, product.getProductImage());
+				if (Files.exists(oldFile)) {
+					Files.delete(oldFile);
+				}
+			
+			}
+			product.setProductImage(null);
+			
+			// 削除フラグを更新する.
+			productMapper.updateIsDeleted(product);
+			
+		} catch (IOException e) {
+			log.error("画像処理エラー", e);
+			throw new RuntimeException(e);
+		}
+
+		
 	}
 
 	// 商品の詳細.
@@ -333,7 +354,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			if (ImageIO.read(tempFile.toFile()) == null) {
 				errors.add("画像ファイルとして読み込めません");
 			}
-			
+
 			// errorsがあればバリデーションエラーとしてフォーム画面に戻す.
 			if (!errors.isEmpty())
 				return new UploadResult(errors, null);
@@ -362,7 +383,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * これはsun.nio.fs.WindowsPath(LinuxやmacOSではsun.nio.fs.UnixPath)のオブジェクトが作成されていて,
 			 * WindowsPathはPathの実装クラスのためPath uploadPathで受け取っている(つまりuploadPathの中身はWindowsPathのインスタンス). */
 			Path uploadPath = Path.of(uploadDir);
-			
+
 			// ファイル／ディレクトリが「実際に存在しないか」を確認する.
 			if (!Files.exists(uploadPath)) {
 				// 存在しなければ作成する(親ディレクトリがなければそれも作成してくれる).
@@ -391,13 +412,12 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 					.outputFormat("jpg")
 					.toFile(targetFile.toFile());
 
-		/*  */
 		} catch (IOException e) {
 			errors.add("画像処理中にエラーが発生しました");
 			log.error("画像処理エラー", e);
 			throw new RuntimeException(e);
 		} finally {
-			
+
 			// 一時ファイル削除する.
 			if (tempFile != null) {
 				try {
@@ -415,18 +435,37 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	}
 
 	/** ファイル名の拡張子を取得する("."は除く). */
-	private String getExtension(String filename) {
+	@Override
+	public String getExtension(String filename) {
 		// 0始まりで.のインデックスを取得する("."がないときは-1になる).
 		int dotIndex = filename.lastIndexOf('.');
 		// ファイル名の"."以降を取得する(substringの開始位置をdotIndexに１足すことで"."を除く拡張子を取得できる).
 		return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
 	}
 
+	/** 商品の画像情報を更新する. */
 	@Override
-	public void updateProductImage(MProduct product) {
-		// TODO 自動生成されたメソッド・スタブ
-		
+	public void updateProductImage(MProduct product, MProduct productImageEdit) {
+
+		try {
+			// 既存画像削除
+			if (product.getProductImage() != null) {
+				Path oldFile = Path.of(uploadDir, product.getProductImage());
+				if (Files.exists(oldFile)) {
+					Files.delete(oldFile);
+				}
+			}
+
+			// DB登録／更新
+
+			productMapper.updateProductImage(productImageEdit);
+
+		} catch (IOException e) {
+			log.error("画像処理エラー", e);
+			throw new RuntimeException(e);
+		}
 	}
+}
 
 //	public List<String> validateAndSaveImage(Long id, MultipartFile file) {
 //		List<String> errors = new ArrayList<>();
@@ -525,4 +564,3 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 //
 //		return errors;
 //	}
-}

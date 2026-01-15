@@ -78,6 +78,7 @@
 		update
 			m_product
 		set
+			image = #{productImage},
 			is_deleted = #{productIsDeleted}
 		where
 			id = #{productId}	

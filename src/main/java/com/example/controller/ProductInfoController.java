@@ -61,7 +61,6 @@ public class ProductInfoController {
 			model.addAttribute("productList", productList);
 			model.addAttribute("search", search);
 		}
-		System.out.println("初期確保済みヒープ(totalMemory) = " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB");
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setGray("商品一覧");
@@ -123,21 +122,21 @@ public class ProductInfoController {
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
 			result = productInfoService.validateAndUpload(file);
+		}
 
-			// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
-			if (bindingResult.hasErrors() || result.hasErrors()) {
-				model.addAttribute("errors", result.getErrors());
-				/* 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-				this.goToRegister(model, form);
+		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
+		if (bindingResult.hasErrors() || result.hasErrors()) {
+			model.addAttribute("errors", result.getErrors());
+			/* 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
+			this.goToRegister(model, form);
 
-				return "/products/info/register";
-			}
+			return "/products/info/register";
 		}
 
 		// formクラスをエンティティクラスに変換する.
 		MProduct product = modelMapper.map(form, MProduct.class);
 
-		// 画像ファイルが選択されなければnullにしたいのでresultを設定する.
+		// 画像ファイルを設定する(画像ファイルがなければnullがはいってる).
 		product.setProductImage(result.getFileName());
 
 		// 商品登録を行う.
@@ -306,13 +305,12 @@ public class ProductInfoController {
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
-
-		// 画像ファイルがあれば一意のファイル名をつけるためスコープの外で宣言している(画像ファイルが無ければnullで登録されるため詳細画面で画像表示ボタンが表示されないようになる).
-		String uniqueName = null;
-
+		
+		UploadResult result = null;
+		
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
-			uniqueName = productInfoService.checkProductImage(file, uniqueName, bindingResult);
+			result = productInfoService.validateAndUpload(file);
 		}
 
 		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
@@ -332,10 +330,10 @@ public class ProductInfoController {
 		// 画像情報をオブジェクトに設定する.
 		MProduct productImageEdit = new MProduct();
 		productImageEdit.setProductId(productId);
-		productImageEdit.setProductImage(uniqueName);
+		productImageEdit.setProductImage(result.getFileName());
 
 		// 画像情報を更新する.
-		productInfoService.updateProductImage(productImageEdit);
+		productInfoService.updateProductImage(product,productImageEdit);
 
 		return "redirect:/products/" + productId + "/info/display-details";
 
