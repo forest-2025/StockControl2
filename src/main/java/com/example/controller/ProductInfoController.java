@@ -306,7 +306,7 @@ public class ProductInfoController {
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
 		
-		UploadResult result = null;
+		UploadResult result = new UploadResult();
 		
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
@@ -314,7 +314,7 @@ public class ProductInfoController {
 		}
 
 		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
-		if (bindingResult.hasErrors()) {
+		if (result.hasErrors()) {
 
 			// modelに格納する.
 			model.addAttribute("product", product);
@@ -331,6 +331,7 @@ public class ProductInfoController {
 		MProduct productImageEdit = new MProduct();
 		productImageEdit.setProductId(productId);
 		productImageEdit.setProductImage(result.getFileName());
+		System.out.println(productImageEdit.getProductImage());
 
 		// 画像情報を更新する.
 		productInfoService.updateProductImage(product,productImageEdit);
