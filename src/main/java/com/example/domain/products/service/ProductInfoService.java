@@ -4,23 +4,30 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.domain.product.model.HistoryDetails;
-import com.example.domain.products.dto.UploadResult;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.model.ProductList;
 import com.example.domain.products.model.ProductWithSupplier;
 import com.example.domain.suppliers.model.MSupplier;
+import com.example.dto.products.HistoryDetails;
+import com.example.dto.products.UploadResult;
+import com.github.pagehelper.PageInfo;
 
 public interface ProductInfoService {
 
-	// 商品一覧・商品検索.
+	// 商品一覧・商品検索する.
 	/** 削除済み以外の商品一覧を商品番号の昇順で取得する. */
-	public List<ProductList> getProductList();
+	public PageInfo<ProductList> getProductList(int page, int size);
 
 	/** 削除済み以外の商品検索結果一覧を商品番号の昇順で取得する. */
-	public List<ProductList> getSearchProductList(String search);
+	public PageInfo<ProductList> getSearchProductList(int page, int size, String search);
 
-	// 商品情報の登録・修正・削除.
+	//	/** 削除済み以外の商品一覧を商品番号の昇順で取得する. */
+	//	public List<ProductList> getProductList();
+	//
+	//	/** 削除済み以外の商品検索結果一覧を商品番号の昇順で取得する. */
+	//	public List<ProductList> getSearchProductList(String search);
+
+	// 商品情報の登録・修正・削除する.
 	/** 入荷先一覧取得する. */
 	public List<MSupplier> getAllSupplier();
 
@@ -56,12 +63,12 @@ public interface ProductInfoService {
 	public List<HistoryDetails> getHistoryForOneProduct(Integer productId);
 
 	/** 商品画像のバリデーションチェックとローカルファイルストレージ(プロジェクト直下)に保存する. */
-	public UploadResult validateAndUpload(MultipartFile file);
-	
+	public UploadResult validateAndUpload(MultipartFile file, UploadResult result);
+
 	/** ファイル名の拡張子を取得する("."は除く). */
 	public String getExtension(String filename);
 
 	/** 商品の画像情報を更新する. */
-	public void updateProductImage(MProduct product,MProduct productImageEdit);
+	public void updateProductImage(MProduct product, MProduct productImageEdit);
 
 }

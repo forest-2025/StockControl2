@@ -19,8 +19,7 @@
 			text-centerで中央寄せにしている.
 			pb-4は小さい画面でユーザー登録ボタンと検索フォーム・ボタンが二段になっているときに余白をつけるためのもの. */-->
 			<div class="col-lg-6 text-center pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
-				<a class="btn btn-dark btn-lg" th:href="@{/users/register}" role="button" 
-				th:text="#{userRegister}"></a>
+				<a class="btn btn-dark btn-lg" th:href="@{/users/register}" role="button" th:text="#{userRegister}"></a>
 			</div>
 
 			<!-- 検索フォームと検索ボタン -->
@@ -32,9 +31,8 @@
 						<!--/* inputタグのw-auto d-inline-blockはform-controlのwidth:100%,
 							display:blockを上書きしていおり,これにより検索フォームとボタンの高さを合わせている. */-->
 						<label for="search"></label>
-						<input class="form-control form-control-lg w-auto d-inline-block" 
-							type="search" id="search" name="search" th:value="${search}"
-							th:placeholder="#{searchForm}">
+						<input class="form-control form-control-lg w-auto d-inline-block" type="search" id="search"
+							name="search" th:value="${search}" th:placeholder="#{searchForm}">
 						<!--/* "管理者権限で検索するときは管理者または一般で検索してください"というメッセージを表示する. */-->
 						<div class="pt-3" th:text="#{searchText1}"></div>
 						<strong class="text-danger" th:text="#{admin}"></strong>
@@ -71,9 +69,9 @@
 					</thead>
 
 					<tbody>
-						<!--/* 削除済みのユーザー以外を表示する. */-->
+						<!--/* 削除済みのユーザー以外を表示する(userListにはページの情報のほかユーザー情報が入っており,listでアクセスできる). */-->
 
-						<tr th:each="item:${pageInfo.list}">
+						<tr th:each="item:${userList.list}">
 
 							<td th:text="${item.employeeNumber}"></td>
 							<td th:text="${item.familyName}"></td>
@@ -87,8 +85,8 @@
 									th:text="#{edit}"></a>
 								<!-- パスワード修正ボタン -->
 								<a class="btn info btn-lg me-3 mb-2"
-									th:href="@{'/users/' + ${item.userId}+ '/passwordEdit'}"
-									role="button" th:text="#{editPassword}"></a>
+									th:href="@{'/users/' + ${item.userId}+ '/passwordEdit'}" role="button"
+									th:text="#{editPassword}"></a>
 								<!-- 削除ボタン -->
 								<a class="btn btn-danger btn-lg me-3 mb-2"
 									th:href="@{'/users/' + ${item.userId}+ '/delete'}" role="button"
@@ -98,7 +96,7 @@
 					</tbody>
 				</table>
 
-				<div>
+				<div class="mt-5">
 					<!--/* navタグはウェブサイトの主要なナビゲーション（案内）リンクを囲むHTML5の要素でページネーションでも利用する.
 						ARIA属性(aria-)は標準のHTML要素（<button>や<a>など）がもつ本来の意味や役割
 						（何をするボタンか,リンクかなど）が,JavaScriptで複雑なユーザーインターフェース（タブで切り替える画面や
@@ -126,8 +124,7 @@
 								 }
 								 というgetterを持つ).
 								 前のページがないときは前のページのアイコンが暗くなる(disabled). */-->
-							<li class="page-item" 
-								th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled'">
+							<li class="page-item" th:classappend="${!userList.hasPreviousPage} ? 'disabled'">
 								<!--/* page-linkで枠線・色・余白や位置などの見た目が整う.
 									prePageはPageHelperのフィールドで前のページを値に持つ.
 									private int prePage;とint型で宣言されているのでprePageは初期値が0となる
@@ -150,8 +147,8 @@
 									laquoはHTMLエンティティ名で左二重山括弧(ラフト «)のことで画面上に表示されるのは«
 									(Left-pointing double angle quotation mark
 									のleftのl・angleのa・quotationのquo). */-->
-								<a class="page-link" 
-									th:href="@{/users/list(page=${pageInfo.prePage == 0} ? '1' : ${pageInfo.prePage})}"
+								<a class="page-link"
+									th:href="@{/users/list(page=${userList.prePage == 0} ? '1' : ${userList.prePage})}"
 									aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 								</a>
@@ -164,9 +161,8 @@
 								return new PageInfo<>(result,5);など第二引数に最大表示数を数字で記載しておくとその値に変更できる.
 								この配列は内部でcalcNavigatepageNums()で計算されている(コンストラクタで呼ばれて計算する).
 								pageNumは現在のページ番号を保持しているので現在のページ番号の数字をアクティブにする(フォントの色と背景色が変わる). */-->
-							<li th:each="i : ${pageInfo.navigatepageNums}"
-								class="page-item"
-								th:classappend="${i} == ${pageInfo.pageNum} ? 'active'">
+							<li th:each="i : ${userList.navigatepageNums}" class="page-item"
+								th:classappend="${i} == ${userList.pageNum} ? 'active'">
 								<a class="page-link" th:href="@{/users/list(page=${i})}" th:text="${i}"></a>
 							</li>
 
@@ -185,10 +181,9 @@
 							&raquo;は右二重山括弧(ラウト »)のこと.
 							(right-pointing double angle quotation mark
 							のrightのr・angleのa・quotationのquo). */-->
-							<li class="page-item"
-								th:classappend="${!pageInfo.hasNextPage} ? 'disabled'">
-								<a class="page-link" 
-									th:href="@{/users/list(page=${pageInfo.nextPage == 0} ? '1' : ${pageInfo.nextPage})}"
+							<li class="page-item" th:classappend="${!userList.hasNextPage} ? 'disabled'">
+								<a class="page-link"
+									th:href="@{/users/list(page=${userList.nextPage == 0} ? '1' : ${userList.nextPage})}"
 									aria-label="Next">
 									<span aria-hidden="true">&raquo;</span>
 								</a>

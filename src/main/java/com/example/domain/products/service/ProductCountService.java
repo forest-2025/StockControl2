@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.domain.customers.model.MCustomer;
-import com.example.domain.product.model.TTransactionHistory;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.model.ProductWithSupplier;
+import com.example.dto.products.TTransactionHistory;
 
 public interface ProductCountService {
 

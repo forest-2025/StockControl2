@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.domain.products.model.ProductList;
 import com.example.domain.products.service.ProductInfoService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController // REST API用のコントローラーで戻り値はHTMLではなくそのままHTTPレスポンスのBodyになる(@Controller + @ResponseBody).
+@Slf4j
 public class AjaxController {
 
 	@Autowired
@@ -30,8 +33,7 @@ public class AjaxController {
 	// データの種類を表すMIMEタイプをJPEGにする.
 	private final String strMimeType = "image/jpeg";
 
-	/* ResponseEntityはHTTPレスポンスの構成(ステータス・ヘッダー・ボディー)3つを全部まとめて返せるクラス.
-	 * byte[]はbyte型の配列で画像ファイルはこの型で表すことができる(それぞれの保存形式（フォーマット）に従った「バイトの並び」になっている) */
+	/* ResponseEntityはHTTPレスポンスの構成(ステータス・ヘッダー・ボディー)3つを全部まとめて返せるクラス. */
 	@GetMapping("/image/{productId}")
 	public ResponseEntity<InputStreamResource> showImage(@PathVariable Integer productId) {
 
@@ -73,60 +75,29 @@ public class AjaxController {
 			 * Files.newInputStream(path)でバイト単位でpathのデータを順番に読み込む入口(ストリーム)を準備する.
 			 * InputStreamResourceはInputStreamクラスのラッパークラス.InputStreamクラスのオブジェクトを保持する(Springにとって扱いやすくしている). */
 			InputStreamResource resource = new InputStreamResource(Files.newInputStream(path));
-			/* この時点ではまだデータは流れない
-			
-			Files.newInputStream(path) はストリームを作っただけ
-			
-			InputStreamResource は「ストリームを持っているオブジェクト」
-			
-			body(resource) は「このリソースを返す準備をした」だけ
-			
-			データが実際に流れる瞬間
-			
-			Spring MVC が HTTPレスポンスをクライアントに送信する直前
-			
-			具体的には DispatcherServlet が HttpMessageConverter を呼んだとき
-			
-			ResourceHttpMessageConverter が resource.getInputStream() を開く
-			
-			そこから少しずつ読み出して HTTPレスポンスの OutputStream に書き込む
-			
-			この「読み出す」作業が 蛇口をひらく瞬間 です
-			
-			2. 「誰がひらくのか」
-			
-			Spring Framework がやる
-			
-			Controller が返した ResponseEntity<InputStreamResource> を受け取り
-			
-			ResourceHttpMessageConverter が実際にストリームを開く
-			
-			そのストリームから HTTP の OutputStream にデータをコピーする
-			
-			開発者は 自分で read したり close したりする必要はない
-			
-			3. まとめ（流れ）
-			
-			Files.newInputStream(path) → ストリーム生成（まだ流れない）
-			
-			InputStreamResource → Spring用ラップ（まだ流れない）
-			
-			return ResponseEntity.ok().body(resource) → 「流す準備完了」
-			
-			DispatcherServlet がレスポンス処理
-			
-			ResourceHttpMessageConverter が resource.getInputStream() を開く
-			
-			HTTPレスポンスの OutputStream に順次書き出す
-			
-			クライアントにデータが届く */
+
+			/* .ok()でHTTPステータスコードを200 OKに指定する.
+			 * .contentType(mediaType)で HTTPヘッダーのフィールドのContent-Typeを指定する.
+			 * .body(resourceでHTTPのボディ部分に送信するデータ本体を設定する.
+			 * これで,画像データを流す(読みだす)準備が完了する.
+			 * DispatcherServlet(クライアントからのリクエストを受信し,適切なハンドラ（Controller）に処理を委譲した後,
+			 * 最終的なレスポンスを生成するサーブレット)がレスポンスを処理する.
+			 * ResourceHttpMessageConverterがストリームを開いて情報を取得する(内部的にresource.getInputStream()).
+			 * 取得したInputStreamからデータを読み取り,HttpOutputMessageのOutputStreamへコピー（転送）する.
+			 * (InputStreamResourceの場合,getInputStream()を呼ぶと「元のストリームそのもの」を返すため,
+			 * コンバーターが読み取った時点でストリームは消費され,その後は二度と読み取ることができなくなる).
+			 * コピーが完了した後,ResourceHttpMessageConverterは取得したInputStreamをクローズする.
+			 * コンバーターが処理を終えると,Springのフレームワーク側でHTTPレスポンスのOutputStreamもflush()
+			 * （フラッシュ.バッファリングされていたすべての出力バイトを強制的に書き込む(小さいバッファ分だけ読み込んですぐに出力するが,
+			 * その小さいバッファ分に満たずに終了したとき送り残しがでるので,それをふせぐために行う)).
+			 * クライアントへの送信が完了する. */
 			return ResponseEntity.ok()
 					.contentType(mediaType)
 					.body(resource);
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			// if文でfalseで画像のpathの設定とMediaTypeへの変更をしているときにエラーになったときに画像取得できなかったときなどのcatch.
+			log.info("画像取得エラー", e);
+
 			try {
 				Path path = Path.of(uploadDir, altImage);
 				mediaType = MediaType.parseMediaType(strMimeType);
@@ -134,9 +105,10 @@ public class AjaxController {
 				return ResponseEntity.ok()
 						.contentType(mediaType)
 						.body(resource);
+
 			} catch (Exception ex) {
 				// 上のcatchでエラーになったときのcatch.
-				ex.printStackTrace();
+				log.info("画像取得失敗", ex);
 				return ResponseEntity
 						.internalServerError() // 500エラー.
 						.build();

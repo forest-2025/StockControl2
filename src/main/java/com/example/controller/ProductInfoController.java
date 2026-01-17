@@ -18,16 +18,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.component.CustomHeader;
-import com.example.domain.product.model.HistoryDetails;
-import com.example.domain.products.dto.UploadResult;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.model.ProductList;
 import com.example.domain.products.model.ProductWithSupplier;
 import com.example.domain.products.service.ProductInfoService;
 import com.example.domain.suppliers.model.MSupplier;
+import com.example.dto.products.HistoryDetails;
+import com.example.dto.products.UploadResult;
 import com.example.form.products.info.ImageEditForm;
 import com.example.form.products.info.ProductEditForm;
 import com.example.form.products.info.RegisterForm;
+import com.github.pagehelper.PageInfo;
 
 @Controller
 @RequestMapping("/products")
@@ -45,19 +46,24 @@ public class ProductInfoController {
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 
+	// 1ページで表示する商品数を10に設定する.
+	private final int SHOW_SIZE = 10;
+
 	/** 商品一覧画面（ホーム画面）へ遷移する. */
 	@GetMapping("/info/list")
-	public String getList(@RequestParam(required = false) String search, Model model) {
+	public String getList(@RequestParam(required = false) String search,
+			@RequestParam(defaultValue = "1") int page,
+			Model model) {
 
 		/*@RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
 		 * パラメータ名searchが無ければ削除されていない全商品の一覧を取得し,あればsearchの値が含まれる商品を検索する.*/
 
 		if (search == null) {
-			List<ProductList> productList = productInfoService.getProductList();
+			PageInfo<ProductList> productList = productInfoService.getProductList(page, SHOW_SIZE);
 			model.addAttribute("productList", productList);
 		} else {
-			List<ProductList> productList = productInfoService.getSearchProductList(search);
+			PageInfo<ProductList> productList = productInfoService.getSearchProductList(page, SHOW_SIZE, search);
 			model.addAttribute("productList", productList);
 			model.addAttribute("search", search);
 		}
@@ -118,10 +124,11 @@ public class ProductInfoController {
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
 
-		UploadResult result = null;
+		UploadResult result = new UploadResult();
+
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
-			result = productInfoService.validateAndUpload(file);
+			result = productInfoService.validateAndUpload(file, result);
 		}
 
 		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
@@ -305,12 +312,12 @@ public class ProductInfoController {
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
-		
+
 		UploadResult result = new UploadResult();
-		
+
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
-			result = productInfoService.validateAndUpload(file);
+			result = productInfoService.validateAndUpload(file, result);
 		}
 
 		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
@@ -334,7 +341,7 @@ public class ProductInfoController {
 		System.out.println(productImageEdit.getProductImage());
 
 		// 画像情報を更新する.
-		productInfoService.updateProductImage(product,productImageEdit);
+		productInfoService.updateProductImage(product, productImageEdit);
 
 		return "redirect:/products/" + productId + "/info/display-details";
 

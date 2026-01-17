@@ -16,20 +16,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.domain.product.model.HistoryDetails;
-import com.example.domain.product.model.TStock;
-import com.example.domain.products.dto.UploadResult;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.model.ProductList;
 import com.example.domain.products.model.ProductWithSupplier;
 import com.example.domain.products.service.ProductInfoService;
 import com.example.domain.suppliers.model.MSupplier;
+import com.example.dto.products.HistoryDetails;
+import com.example.dto.products.TStock;
+import com.example.dto.products.UploadResult;
 import com.example.repository.ProductListMapper;
 import com.example.repository.ProductMapper;
 import com.example.repository.ProductWithSupplierMapper;
 import com.example.repository.StockMapper;
 import com.example.repository.SupplierMapper;
 import com.example.repository.TransactionHistoryMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -72,19 +74,21 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	// 商品一覧・商品検索.
 	/** 削除済み以外の商品一覧を商品番号の昇順で取得する. */
 	@Override
-	public List<ProductList> getProductList() {
+	public PageInfo<ProductList> getProductList(int page, int size) {
 
+		PageHelper.startPage(page, size);
 		List<ProductList> productList = productListMapper.findAll();
 
-		return productList;
+		return new PageInfo<>(productList);
 	}
 
 	/** 削除済み以外の商品検索結果一覧を商品番号の昇順で取得する. */
 	@Override
-	public List<ProductList> getSearchProductList(String search) {
-
+	public PageInfo<ProductList> getSearchProductList(int page, int size,String search) {
+		
+		PageHelper.startPage(page, size);
 		List<ProductList> productItems = productListMapper.findSearchResults(search);
-		return productItems;
+		return new PageInfo<>(productItems);
 	}
 
 	// 商品情報の登録・修正・削除.
@@ -206,7 +210,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			productMapper.updateIsDeleted(product);
 
 		} catch (IOException e) {
-			log.error("画像処理エラー", e);
+			log.error("画像削除エラー", e);
 			throw new RuntimeException(e);
 		}
 
@@ -238,7 +242,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	 * @param file MultipartFile
 	 * @return エラーメッセージリスト（エラーなしなら空リスト）
 	 */
-	public UploadResult validateAndUpload(MultipartFile file) {
+	public UploadResult validateAndUpload(MultipartFile file, UploadResult result) {
 		// バリデーションエラーがあった時のメッセージを格納するListを宣言する(tryの外でも使用するためここで宣言).
 		List<String> errors = new ArrayList<>();
 
@@ -256,7 +260,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 			// ファイルの元の名前(ユーザーが選択したときのファイル名)を取得する.
 			String originalFileName = file.getOriginalFilename();
-			
+
 			// ファイル名がnullまたは空白("")や空文字(" ")でないかを拡張子も含んで確認する.
 			if (originalFileName == null || originalFileName.isBlank()) {
 				errors.add("ファイル名が不正です");
@@ -278,9 +282,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 			// この時点でバリデーションエラーがあるときは一旦フォーム画面でエラーを表示する(このあと画像を一時保存するため).
 			if (!errors.isEmpty()) {
-				return new UploadResult(errors, null);
+				result.setErrors(errors);
+				result.setFileName(null);
+				return result;
 			}
-			
+
 			/* 画像ファイルの確認や加工をするためデータを一時ファイルに移すため一時ファイルを作成する.
 			 * (複数の処理を安全に行うため).
 			 * Filesクラスは静的メソッド(staticメソッド)のみを持つユーティリティクラス
@@ -291,7 +297,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * (xxxxxxは自動作成で名前が衝突しないようになっている)
 			 * のような名前のファイルが作成される. */
 			tempFile = Files.createTempFile("upload-", ".jpg");
-			
+
 			/* .transferTo(Path)のほうのメソッド(Fileよりこちらのほうが推奨されている).
 			 * 画像ファイルはアップロードされるとサーブレットコンテナが "自動的" に小さいサイズはメモリ（バイト配列）に,
 			 * 大きいサイズは一時ファイルに保存する.
@@ -344,8 +350,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			}
 
 			// errorsがあればバリデーションエラーとしてフォーム画面に戻す.
-			if (!errors.isEmpty())
-				return new UploadResult(errors, null);
+			if (!errors.isEmpty()) {
+				result.setErrors(errors);
+				result.setFileName(null);
+				return result;
+			}
 
 			/* 保存ディレクトリを作成する.
 			 * Pathはファイルシステム上のファイルやディレクトリのパス（経路）を表すためのインタフェースで、インタフェースのためnewでのオブジェクト作成はできない.
@@ -380,7 +389,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * UUID.randomUUID()の戻り値はUUIDのオブジェクトだが文字列を連結すると
 			 * UUID.randomUUID().toString();が内部でよばれてString型に自動で変換してくれる. */
 			fileName = UUID.randomUUID() + ".jpg";
-			
+
 			// ディレクトリのパスにファイル名をつなげて完全なファイルのパスを作成する(パスができているだけでファイルはできていない).
 			Path targetFile = Path.of(uploadDir, fileName);
 
@@ -395,19 +404,21 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 					.size(MAX_WIDTH, MAX_HEIGHT)
 					.outputFormat("jpg")
 					.toFile(targetFile.toFile());
-
-			return new UploadResult(errors, fileName);
+			
+			result.setErrors(errors);
+			result.setFileName(fileName);
+			
+			return result;
 
 		} catch (IOException e) {
-			errors.add("画像処理中にエラーが発生しました");
 			log.error("画像処理エラー", e);
 			throw new RuntimeException(e);
+			
 		} finally {
-
 			// 一時ファイル削除する.
 			if (tempFile != null) {
 				try {
-					// deleteIfExists()で一時ファイルを削除する.(もしファイルがあれば削除し、なければ何もしないメソッド).
+					// deleteIfExists()で一時ファイルを削除する.(もしファイルがあれば削除し,なければ何もしないメソッド).
 					Files.deleteIfExists(tempFile);
 					log.info("一時ファイル削除成功: {}", tempFile);
 				} catch (IOException e) {
@@ -423,7 +434,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	public String getExtension(String filename) {
 		// 0始まりで.のインデックスを取得する("."がないときは-1になる).
 		int dotIndex = filename.lastIndexOf('.');
-		
+
 		// ファイル名の"."以降を取得する(substringの開始位置をdotIndexに１足すことで"."を除く拡張子を取得できる).
 		return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
 	}

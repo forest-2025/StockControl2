@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.customers.model.MCustomer;
-import com.example.domain.product.model.TStock;
-import com.example.domain.product.model.TTransactionHistory;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.model.ProductWithSupplier;
 import com.example.domain.products.service.ProductCountService;
 import com.example.domain.users.model.MUser;
+import com.example.dto.products.TStock;
+import com.example.dto.products.TTransactionHistory;
 import com.example.repository.CustomerMapper;
 import com.example.repository.ProductMapper;
 import com.example.repository.ProductWithSupplierMapper;

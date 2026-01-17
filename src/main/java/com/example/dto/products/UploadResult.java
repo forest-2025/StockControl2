@@ -1,4 +1,4 @@
-package com.example.domain.products.dto;
+package com.example.dto.products;
 
 import java.util.ArrayList;
 import java.util.List;

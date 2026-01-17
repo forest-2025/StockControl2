@@ -2,7 +2,7 @@ package com.example.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.domain.product.model.TStock;
+import com.example.dto.products.TStock;
 
 @Mapper
 public interface StockMapper {

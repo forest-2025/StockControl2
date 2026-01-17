@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.domain.product.model.HistoryDetails;
-import com.example.domain.product.model.TTransactionHistory;
+import com.example.dto.products.HistoryDetails;
+import com.example.dto.products.TTransactionHistory;
 
 @Mapper
 public interface TransactionHistoryMapper {

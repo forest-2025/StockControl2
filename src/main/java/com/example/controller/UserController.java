@@ -40,6 +40,9 @@ public class UserController {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	// 1ページで表示するユーザーの人数を10人に設定する.
+	private final int SHOW_SIZE = 10;
 
 	/** ユーザー一覧画面に遷移する. */
 	@GetMapping("/list")
@@ -49,22 +52,18 @@ public class UserController {
 
 		/* @RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
-		 * パラメータ名searchが無ければ削除されていない全ユーザーの一覧を取得し,あればsearchの値が含まれるユーザーを検索する.
+		 * パラメータ名searchが無ければ削除されていない全ユーザーの一覧を取得し,あればsearchの
+		 * 値が含まれるユーザーを検索する.
 		 * @RequestParam(defaultValue = "1") int pageはpage=1がデフォルト */
 
 		// 1ページに表示するデータの件数(人数)を設定する.
-		int size = 10;
 		
 		if (search == null) {
-			PageInfo<MUser> pageInfo = userService.getUsers(page, size);
-			model.addAttribute("pageInfo", pageInfo);
-//			List<MUser> userList = userService.getAll();
-//			model.addAttribute("userList", userList);
+			PageInfo<MUser> userList = userService.getUsers(page, SHOW_SIZE);
+			model.addAttribute("userList", userList);
 		} else {
-			PageInfo<MUser> pageInfo = userService.getSearchUsers(page, size, search);
-			model.addAttribute("pageInfo", pageInfo);
-//			List<MUser> userList = userService.getSearchUserList(search);
-//			model.addAttribute("userList", userList);
+			PageInfo<MUser> userList = userService.getSearchUsers(page, SHOW_SIZE, search);
+			model.addAttribute("userList", userList);
 			model.addAttribute("search", search);
 		}
 
