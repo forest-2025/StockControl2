@@ -88,57 +88,13 @@
 					</tbody>
 				</table>
 
+				<!-- ページネーション -->
 				<div class="mt-5 mb-5">
-					<!--/* navタグはウェブサイトの主要なナビゲーション（案内）リンクを囲むHTML5の要素でページネーションでも利用する.
-						ARIA属性(aria-)は標準のHTML要素（<button>や<a>など）がもつ本来の意味や役割
-						（何をするボタンか,リンクかなど）が,JavaScriptで複雑なユーザーインターフェース（タブで切り替える画面や
-						ポップアップのように表示される画面など）を作ることにより失われやすい意味(divタグをbuttonタグのように使うなど)
-						を補ったり,HTMLだけでは伝えられない情報をスクリーンリーダーなどの支援技術に伝えるための仕組みのこと.
-						aria-label属性はページネーションが「何のためのナビゲーションか」をスクリーンリーダー(読み上げソフト)に伝えるために必
-						要なものでPage navigationでページネーション用であることを伝える. */-->
 					<nav aria-label="Page navigation">
-						<!--/* paginationで体裁を整える(ボタン風にしたり,青文字にしたり,display:flex 子要素(li)を横並び).
-							pagination-lgでサイズを大きくしている.
-							 justify-content-centerで横並びの子要素(li)を中央揃えにする. */-->
 						<ul class="pagination pagination-lg justify-content-center">
 
 							<!-- 前のページ -->
-							<!--/* page-itemで個々のページのグループ化をする.また角を丸くしたりなど整える.
-								 hasPreviousPageはPageInfoクラスの前のページが存在するかをboolean型で返すメソッド.
-								 本来はisHasPreviousPage()メソッドだがTymeleafはJavaBeansの仕様
-								 (プロパティはgetter/setterで定義され,通常get~,set~だがboolean型のgetterは
-								 is~からでもよくて,プロパティ名はget・set・isをのぞいた名前が付けられる(1文字目は小文字))
-								 によりプロパティ名を通じて値にアクセスしている.
-								 (PageHelperのPageInfoはprivate boolean hasPreviousPage = false;
-								 というフィールドを保持し,
-								 public boolean isHasPreviousPage() {
-								        return hasPreviousPage;
-								 }
-								 というgetterを持つ).
-								 前のページがないときは前のページのアイコンが暗くなる(disabled). */-->
 							<li class="page-item" th:classappend="${!productList.hasPreviousPage} ? 'disabled'">
-								<!--/* page-linkで枠線・色・余白や位置などの見た目が整う.
-									prePageはPageHelperのフィールドで前のページを値に持つ.
-									private int prePage;とint型で宣言されているのでprePageは初期値が0となる
-									(プリミティブ型はnullがない).
-							 		calcPage()メソッドでprePageを更新するとき,
-							 		if (pageNum > 1) {
-                						prePage = pageNum - 1;
-           							 } という条件分岐となっている.
-            				 		現在ページが1より大きくなったらprePageは更新されず初期値0のままのためprePage = 0になる.
-            				 		そもそも前のページがなければ
-            				 		th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled'"
-            				 		で選択できないようにしているが,開発者ツールやページのソース表示で選択できるため0のときは1になるようにしている.
-									aria-label="Previous"はスクリーンリーダーで前のページという意味を表す
-									(画面表示に影響はない).
-									aria-hiddenはこの要素を画面では表示するがスクリーンリーダーからは隠す時に指定する.
-									それがtrueなので読み上げられないようにしている.
-									&laquo;は文字実体参照(HTMLでそのまま書くと問題が起きる文字や,直接入力しにくい文字を
-									安全に表すための特別な書き方のこと).
-									&○○;が基本形.HTMLエンティティ名の方法と数値文字参照(Unicodeコードポイント)の方法があり,
-									laquoはHTMLエンティティ名で左二重山括弧(ラフト «)のことで画面上に表示されるのは«
-									(Left-pointing double angle quotation mark
-									のleftのl・angleのa・quotationのquo). */-->
 								<a class="page-link"
 									th:href="@{/products/info/list(page=${productList.prePage == 0} ? '1' : ${productList.prePage})}"
 									aria-label="Previous">
@@ -147,35 +103,16 @@
 							</li>
 
 							<!-- ページ番号 -->
-							<!--/* navigatepageNumsは現在のページを中心にして,ページ番号ナビゲーション( << 1 2 3 4 5 >>
-								の数字のところ)に使える数字の配列のこと.ページ番号ナビゲーションの最大表示数はデフォルトで8つで
-								UserServiceImplのreturn new PageInfo<>(result);を
-								return new PageInfo<>(result,5);など第二引数に最大表示数を数字で記載しておくとその値に変更できる.
-								この配列は内部でcalcNavigatepageNums()で計算されている(コンストラクタで呼ばれて計算する).
-								pageNumは現在のページ番号を保持しているので現在のページ番号の数字をアクティブにする(フォントの色と背景色が変わる). */-->
 							<li th:each="i : ${productList.navigatepageNums}" class="page-item"
 								th:classappend="${i} == ${productList.pageNum} ? 'active'">
 								<a class="page-link" th:href="@{/products/info/list(page=${i})}" th:text="${i}"></a>
 							</li>
 
 							<!-- 次のページ -->
-							<!--/* hasNextPage次のページが存在するかを表す真偽値で,!をつけて存在しなければ
-							 次のページのアイコンが暗くなる(disabled). 
-							 nextPageは次のページ番号を表すフィールドでそれが private int nextPage;
-							 int型で宣言されているのでnextPageは初期値が0となる(プリミティブ型はnullがない).
-							 calcPage()メソッドでnextPageを更新するとき,
-							 if (pageNum < pages) {
-               					 nextPage = pageNum + 1;
-            				 } という条件分岐となっている.
-            				 現在ページが総ページより大きくなったらnextPageは更新されず初期値0のままのためnextPage = 0になる.
-            				 aria-label="Next"はスクリーンリーダーで次のページという意味を表す
-							(画面表示に影響はない).
-							&raquo;は右二重山括弧(ラウト »)のこと.
-							(right-pointing double angle quotation mark
-							のrightのr・angleのa・quotationのquo). */-->
 							<li class="page-item" th:classappend="${!productList.hasNextPage} ? 'disabled'">
 								<a class="page-link"
-									th:href="@{/products/info/list(page=${productList.nextPage == 0} ? '1' : ${productList.nextPage})}"
+									th:href="@{/products/info/list(page=${productList.nextPage == 0} ? '1' : ${productList.nextPage},
+									search=${search})}"
 									aria-label="Next">
 									<span aria-hidden="true">&raquo;</span>
 								</a>
