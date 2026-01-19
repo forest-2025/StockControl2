@@ -137,6 +137,8 @@
             				 		そもそも前のページがなければ
             				 		th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled'"
             				 		で選択できないようにしているが,開発者ツールやページのソース表示で選択できるため0のときは1になるようにしている.
+            				 		検索フォームで検索した語句があればその条件のリストの前のページに戻らないといけない.
+            				 		そのため生成するURLに検索語句のクエリパラメータ(search=${search})を追加する.
 									aria-label="Previous"はスクリーンリーダーで前のページという意味を表す
 									(画面表示に影響はない).
 									aria-hiddenはこの要素を画面では表示するがスクリーンリーダーからは隠す時に指定する.
@@ -148,7 +150,8 @@
 									(Left-pointing double angle quotation mark
 									のleftのl・angleのa・quotationのquo). */-->
 								<a class="page-link"
-									th:href="@{/users/list(page=${userList.prePage == 0} ? '1' : ${userList.prePage})}"
+									th:href="@{/users/list(page=${userList.prePage == 0} ? '1' : ${userList.prePage},
+									search=${search})}"
 									aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 								</a>
@@ -160,10 +163,13 @@
 								UserServiceImplのreturn new PageInfo<>(result);を
 								return new PageInfo<>(result,5);など第二引数に最大表示数を数字で記載しておくとその値に変更できる.
 								この配列は内部でcalcNavigatepageNums()で計算されている(コンストラクタで呼ばれて計算する).
-								pageNumは現在のページ番号を保持しているので現在のページ番号の数字をアクティブにする(フォントの色と背景色が変わる). */-->
+								pageNumは現在のページ番号を保持しているので現在のページ番号の数字をアクティブにする(フォントの色と背景色が変わる).
+								最大表示数を越えるページ数があるとき,6ページ目を選択した瞬間,
+								表示が[2, 3, 4, 5, 6, 7, 8, 9]とズレていく. */-->
 							<li th:each="i : ${userList.navigatepageNums}" class="page-item"
 								th:classappend="${i} == ${userList.pageNum} ? 'active'">
-								<a class="page-link" th:href="@{/users/list(page=${i})}" th:text="${i}"></a>
+								<a class="page-link" th:href="@{/users/list(page=${i},search=${search})}" 
+								th:text="${i}"></a>
 							</li>
 
 							<!-- 次のページ -->
@@ -183,7 +189,8 @@
 							のrightのr・angleのa・quotationのquo). */-->
 							<li class="page-item" th:classappend="${!userList.hasNextPage} ? 'disabled'">
 								<a class="page-link"
-									th:href="@{/users/list(page=${userList.nextPage == 0} ? '1' : ${userList.nextPage})}"
+									th:href="@{/users/list(page=${userList.nextPage == 0} ? '1' : ${userList.nextPage},
+									search=${search})}"
 									aria-label="Next">
 									<span aria-hidden="true">&raquo;</span>
 								</a>

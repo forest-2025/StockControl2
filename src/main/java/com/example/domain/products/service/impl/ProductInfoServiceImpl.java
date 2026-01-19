@@ -228,11 +228,12 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	/** 商品IDからその商品の履歴を降順で取得する. */
 	@Override
-	public List<HistoryDetails> getHistoryForOneProduct(Integer productId) {
+	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, int size, Integer productId) {
 
+		PageHelper.startPage(page, size);
 		List<HistoryDetails> historyList = transactionHistoryMapper.findByProductId(productId);
 
-		return historyList;
+		return new PageInfo<>(historyList);
 	}
 
 	/**

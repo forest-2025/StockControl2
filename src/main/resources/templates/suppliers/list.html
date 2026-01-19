@@ -59,21 +59,25 @@
 							<th scope="col">
 								<div class="mb-3" th:text="#{supplierId}"></div>
 								<!-- 昇順ボタン -->
-								<a class="btn btn-outline-danger btn-lg me-3 mb-2" 
-									th:href="@{/suppliers/list(sortItem='id',sort='asc',search=${search})}" role="button" th:text="#{asc}"></a>
+								<a class="btn btn-outline-danger btn-lg me-3 mb-2"
+									th:href="@{/suppliers/list(sortItem='id',sort='asc',search=${search})}"
+									role="button" th:text="#{asc}"></a>
 								<!-- 降順ボタン -->
-								<a class="btn btn-outline-primary btn-lg me-3 mb-2" 
-									th:href="@{/suppliers/list(sortItem='id',sort='desc',search=${search})}" role="button" th:text="#{desc}"></a>
+								<a class="btn btn-outline-primary btn-lg me-3 mb-2"
+									th:href="@{/suppliers/list(sortItem='id',sort='desc',search=${search})}"
+									role="button" th:text="#{desc}"></a>
 							</th>
 							<!-- 入荷先名 -->
 							<th scope="col">
 								<div class="mb-3" th:text="#{supplierName}"></div>
 								<!-- 昇順ボタン -->
-								<a class="btn btn-outline-danger btn-lg me-3 mb-2" 
-									th:href="@{/suppliers/list(sortItem='furigana',sort='asc',search=${search})}" role="button" th:text="#{asc}"></a>
+								<a class="btn btn-outline-danger btn-lg me-3 mb-2"
+									th:href="@{/suppliers/list(sortItem='furigana',sort='asc',search=${search})}"
+									role="button" th:text="#{asc}"></a>
 								<!-- 降順ボタン -->
-								<a class="btn btn-outline-primary btn-lg me-3 mb-2" 
-									th:href="@{/suppliers/list(sortItem='furigana',sort='desc',search=${search})}" role="button" th:text="#{desc}"></a>
+								<a class="btn btn-outline-primary btn-lg me-3 mb-2"
+									th:href="@{/suppliers/list(sortItem='furigana',sort='desc',search=${search})}"
+									role="button" th:text="#{desc}"></a>
 							</th>
 							<th scope="col"></th>
 						</tr>
@@ -84,7 +88,7 @@
 					<tbody>
 						<!--/* 削除済みの入荷先以外を表示する. */-->
 
-						<tr th:each="item:${supplierList}">
+						<tr th:each="item:${supplierList.list}">
 
 							<td th:text="${item.supplierId}"></td>
 							<td th:text="${item.supplierName}"></td>
@@ -101,6 +105,39 @@
 						</tr>
 					</tbody>
 				</table>
+
+				<!-- ページネーション -->
+				<div class="mt-5 mb-5">
+					<nav aria-label="Page navigation">
+						<ul class="pagination pagination-lg justify-content-center">
+
+							<!-- 前のページ -->
+							<li class="page-item" th:classappend="${!supplierList.hasPreviousPage} ? 'disabled'">
+								<a class="page-link" th:href="@{/suppliers/list(page=${supplierList.prePage == 0} ? '1' : ${supplierList.prePage},
+									sortItem=${sortItem},sort=${sort},search=${search})}" aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+
+							<!-- ページ番号 -->
+							<li th:each="i : ${supplierList.navigatepageNums}" class="page-item"
+								th:classappend="${i} == ${supplierList.pageNum} ? 'active'">
+								<a class="page-link" th:href="@{/suppliers/list(page=${i},
+								sortItem=${sortItem},sort=${sort},search=${search})}"
+									th:text="${i}"></a>
+							</li>
+
+							<!-- 次のページ -->
+							<li class="page-item" th:classappend="${!supplierList.hasNextPage} ? 'disabled'">
+								<a class="page-link" th:href="@{/suppliers/list(page=${supplierList.nextPage == 0} ? '1' : ${supplierList.nextPage},
+									sortItem=${sortItem},sort=${sort},search=${search})}" aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+
+						</ul>
+					</nav>
+				</div>
 			</div>
 		</div>
 

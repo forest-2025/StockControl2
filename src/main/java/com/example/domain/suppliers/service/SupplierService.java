@@ -1,16 +1,15 @@
 package com.example.domain.suppliers.service;
 
-import java.util.List;
-
 import com.example.domain.suppliers.model.MSupplier;
+import com.github.pagehelper.PageInfo;
 
 public interface SupplierService {
 	
 	/** 入荷先一覧を入荷先IDの昇順で取得する. */
-	public List<MSupplier> getAllInAscById();
+	public PageInfo<MSupplier> getAllInAscById(int page, int size);
 	
 	/** 入荷先検索結果一覧を取得する(入荷先ID・入荷先名・入荷先名ふりがなで検索する). */
-	public List<MSupplier> getSearchResults(String search ,String sortItem,String sort);
+	public PageInfo<MSupplier> getSearchResults(int page, int size,String search ,String sortItem,String sort);
 	
 	/** 入荷先を登録する. */
 	public void registerOne(MSupplier supplier);

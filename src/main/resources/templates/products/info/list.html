@@ -75,13 +75,13 @@
 							<td th:text="${item.stockQuantity}"></td>
 							<td>
 								<a class="btn btn-danger btn-lg me-3 mb-2"
-									th:href="@{'/products/' + ${item.productId}+ '/count/arrive'}" role="button"
+									th:href="@{'/products/' + ${item.productId} + '/count/arrive'}" role="button"
 									th:text="#{arrival}"></a>
 								<a class="btn btn-primary btn-lg me-3 mb-2"
-									th:href="@{'/products/' + ${item.productId}+ '/count/ship'}" role="button"
+									th:href="@{'/products/' + ${item.productId} + '/count/ship'}" role="button"
 									th:text="#{shipping}"></a>
 								<a class="btn btn-success btn-lg me-3 mb-2"
-									th:href="@{'/products/' + ${item.productId}+ '/info/display-details'}" role="button"
+									th:href="@{'/products/' + ${item.productId} + '/info/display-details'}" role="button"
 									th:text="#{details}"></a>
 							</td>
 						</tr>
@@ -96,7 +96,8 @@
 							<!-- 前のページ -->
 							<li class="page-item" th:classappend="${!productList.hasPreviousPage} ? 'disabled'">
 								<a class="page-link"
-									th:href="@{/products/info/list(page=${productList.prePage == 0} ? '1' : ${productList.prePage})}"
+									th:href="@{/products/info/list(page=${productList.prePage == 0} ? '1' : ${productList.prePage},
+									search=${search})}"
 									aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 								</a>
@@ -105,7 +106,7 @@
 							<!-- ページ番号 -->
 							<li th:each="i : ${productList.navigatepageNums}" class="page-item"
 								th:classappend="${i} == ${productList.pageNum} ? 'active'">
-								<a class="page-link" th:href="@{/products/info/list(page=${i})}" th:text="${i}"></a>
+								<a class="page-link" th:href="@{/products/info/list(page=${i},search=${search})}" th:text="${i}"></a>
 							</li>
 
 							<!-- 次のページ -->

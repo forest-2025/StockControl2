@@ -51,7 +51,7 @@
 			<a class="btn btn-primary btn-lg me-3 mb-3" sec:authorize="hasAuthority('ROLE_ADMIN')"
 				th:href="@{'/products/' + ${oneItem.productId} + '/info/edit'}" role="button"
 				th:text="#{productInformationEdit}"></a>
-				<!-- 画像修正ボタン -->
+			<!-- 画像修正ボタン -->
 			<a class="btn btn-secondary btn-lg me-3 mb-3" sec:authorize="hasAuthority('ROLE_ADMIN')"
 				th:href="@{'/products/' + ${oneItem.productId} + '/info/imageEdit'}" role="button"
 				th:text="#{productImageEdit}"></a>
@@ -64,15 +64,14 @@
 		<!--/* 商品情報修正・削除ボタンと位置がズレないようにme-3 mb-3で調整している */-->
 		<!-- 画像表示ボタン -->
 		<div class="col text-center mt-5" th:if="${oneItem.productImage != null}">
-			<button class="btn btn-success btn-lg me-3 mb-3" id="showImageBtn"
-				th:data-product-id="${oneItem.productId}" th:text="#{showImage}">
+			<button class="btn btn-success btn-lg me-3 mb-3" id="showImageBtn" th:data-product-id="${oneItem.productId}"
+				th:text="#{showImage}">
 			</button>
 		</div>
 
 		<div class="mt-4 position-relative">
 			<!-- 画像 -->
-			<img class="rounded mx-auto d-block img-fluid d-none" id="resultImage"
-			title="#{productImage}">
+			<img class="rounded mx-auto d-block img-fluid d-none" id="resultImage" title="#{productImage}">
 			<!-- ×ボタン -->
 			<button type="button" class="btn-close position-absolute top-0 end-0 m-3 d-none" aria-label="Close"
 				id="closeImageBtn"></button>
@@ -100,7 +99,7 @@
 				<tbody>
 					<!--/* 増加修正のレコードは背景色が赤、減少修正のレコードは青になるように設定する */-->
 
-					<tr class="fs-5" th:each="item:${historyList}" th:classappend="${item.amountOfChange > 0 and item.supplierId == null ? 'table-danger' : ''}
+					<tr class="fs-5" th:each="item:${historyList.list}" th:classappend="${item.amountOfChange > 0 and item.supplierId == null ? 'table-danger' : ''}
 					 + ${item.amountOfChange < 0 and item.customerId == null ? 'table-primary' : ''}">
 
 						<!--/* 登録日を表示する */-->
@@ -127,6 +126,40 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<!-- ページネーション -->
+			<div class="mt-5 mb-5">
+				<nav aria-label="Page navigation">
+					<ul class="pagination pagination-lg justify-content-center">
+
+						<!-- 前のページ -->
+						<li class="page-item" th:classappend="${!historyList.hasPreviousPage} ? 'disabled'">
+							<a class="page-link" 
+							 th:href="@{'/products/' + ${oneItem.productId} + '/info/display-details'(page=${historyList.prePage == 0} ? '1' : ${historyList.prePage})}"
+							 aria-label="Previous">
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+
+						<!-- ページ番号 -->
+						<li th:each="i : ${historyList.navigatepageNums}" class="page-item"
+							th:classappend="${i} == ${historyList.pageNum} ? 'active'">
+							<a class="page-link" th:href="@{'/products/' + ${oneItem.productId} + '/info/display-details'(page=${i})}"
+								th:text="${i}"></a>
+						</li>
+
+						<!-- 次のページ -->
+						<li class="page-item" th:classappend="${!historyList.hasNextPage} ? 'disabled'">
+							<a class="page-link"
+							 th:href="@{'/products/' + ${oneItem.productId} + '/info/display-details'(page=${historyList.nextPage == 0} ? '1' : ${historyList.nextPage})}"
+							 aria-label="Next">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+
+					</ul>
+				</nav>
+			</div>
 		</div>
 
 		<!-- 戻るボタン -->

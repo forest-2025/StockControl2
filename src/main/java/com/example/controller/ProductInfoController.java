@@ -46,8 +46,8 @@ public class ProductInfoController {
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 
-	// 1ページで表示する商品数を10に設定する.
-	private final int SHOW_SIZE = 10;
+	// 1ページで表示する商品数・入出荷履歴数を10に設定する.
+	private static final int SHOW_SIZE = 10;
 
 	/** 商品一覧画面（ホーム画面）へ遷移する. */
 	@GetMapping("/info/list")
@@ -85,11 +85,10 @@ public class ProductInfoController {
 		return "/products/info/register";
 	}
 
-	/** 商品登録フォーム画面で登録ボタンを押したときにくるところ. 
-	 * @throws Exception */
+	/** 商品登録フォーム画面で登録ボタンを押したときにくるところ. */
 	@PostMapping("/info/register")
 	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
-			BindingResult bindingResult) throws Exception {
+			BindingResult bindingResult) {
 
 		// 商品番号がnullや空白でないか確認する.
 		String productNumber = form.getProductNumber();
@@ -155,7 +154,8 @@ public class ProductInfoController {
 
 	/** 詳細ボタンを押してくるところ. */
 	@GetMapping("/{productId}/info/display-details")
-	public String getDisplayDetails(Model model, @PathVariable Integer productId) {
+	public String getDisplayDetails(@RequestParam(defaultValue = "1") int page,
+			Model model, @PathVariable Integer productId) {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
@@ -169,7 +169,7 @@ public class ProductInfoController {
 		model.addAttribute("oneItem", oneItem);
 
 		// 商品IDからその商品の履歴を降順で取得してmodelに格納する.
-		List<HistoryDetails> historyList = productInfoService.getHistoryForOneProduct(productId);
+		PageInfo<HistoryDetails> historyList = productInfoService.getHistoryForOneProduct(page, SHOW_SIZE, productId);
 		model.addAttribute("historyList", historyList);
 
 		// ヘッダーの色と項目を設定する.

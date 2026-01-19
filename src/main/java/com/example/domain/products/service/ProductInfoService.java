@@ -60,7 +60,7 @@ public interface ProductInfoService {
 	public ProductList getOneItemInTheList(Integer productId);
 
 	/** 商品IDからその商品の履歴を降順で取得する. */
-	public List<HistoryDetails> getHistoryForOneProduct(Integer productId);
+	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, int size, Integer productId);
 
 	/** 商品画像のバリデーションチェックとローカルファイルストレージ(プロジェクト直下)に保存する. */
 	public UploadResult validateAndUpload(MultipartFile file, UploadResult result);
