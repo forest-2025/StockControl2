@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.domain.customers.model.MCustomer;
 import com.example.domain.customers.service.CustomerService;
 import com.example.repository.CustomerMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Service
 @Transactional
@@ -19,20 +21,23 @@ public class CustomerServiceImpl implements CustomerService {
 
 	/** 削除済み以外の出荷先一覧を出荷先IDの昇順で取得する. */
 	@Override
-	public List<MCustomer> getAllInAscById() {
+	public PageInfo<MCustomer> getAllInAscById(int page, int size) {
 
+		PageHelper.startPage(page, size);
 		List<MCustomer> customerList = customerMapper.findAllInAscById();
 
-		return customerList;
+		return new PageInfo<>(customerList);
 	}
 
 	/** 削除済み以外の出荷先検索結果一覧を取得する(出荷先ID・出荷先名・出荷先名ふりがなで検索する). */
 	@Override
-	public List<MCustomer> getSearchResults(String search ,String sortItem,String sort) {
+	public PageInfo<MCustomer> getSearchResults(
+			int page, int size, String search, String sortItem, String sort) {
 
-		List<MCustomer> customerList = customerMapper.findSearchResults(search,sortItem,sort);
+		PageHelper.startPage(page, size);
+		List<MCustomer> customerList = customerMapper.findSearchResults(search, sortItem, sort);
 
-		return customerList;
+		return new PageInfo<>(customerList);
 	}
 
 	/** 出荷先を登録する. */

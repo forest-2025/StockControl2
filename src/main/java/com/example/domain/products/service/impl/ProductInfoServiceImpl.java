@@ -262,7 +262,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			// ファイルの元の名前(ユーザーが選択したときのファイル名)を取得する.
 			String originalFileName = file.getOriginalFilename();
 
-			// ファイル名がnullまたは空白("")や空文字(" ")でないかを拡張子も含んで確認する.
+			// ファイル名がnullまたは空白("")や空文字(" ")でないかを拡張子も含めて確認する.
 			if (originalFileName == null || originalFileName.isBlank()) {
 				errors.add("ファイル名が不正です");
 			} else {

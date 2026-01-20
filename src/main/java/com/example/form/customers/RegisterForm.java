@@ -11,10 +11,18 @@ public class RegisterForm {
 	@NotBlank
 	@Size(min = 1, max = 100)
 	private String customerName; // 出荷先名.
-	
+
 	@NotBlank
 	@Size(min = 1, max = 100)
-	@Pattern(regexp = "^[ぁ-んー]+$", message = "ひらがなで入力してください")
+	/* ^[\\p{InHiragana}ー]+$でひらがなと長音符号（ー）だけで構成された文字列か確認できる.
+	 * ^（キャレット） 正規表現の先頭を意味する
+	 * [\p{InHiragana}ー] で1文字分の条件を表し,
+	 * \p{InHiragana} でユニコードのひらがなブロックを表す(ユニコードのひらがなにすることで,ゔ ゑ ゐ等もカバーできる).
+	 * \pの前にもう一つ\がついているのはエスケープ文字.
+	 * ー は長音符号でこれはカタカナに分類されるためここで足している.
+	 * + 直前の文字（この場合 [\\p{InHiragana}ー] の1文字）が1回以上連続することを意味する(1文字以上ということ).
+	 * $ 正規表現の末尾を意味する. */
+	@Pattern(regexp = "^[\\p{InHiragana}ー]+$", message = "ひらがなで入力してください")
 	private String customerFurigana; // 出荷先名ふりがな.
 
 }

@@ -14,7 +14,7 @@ public class EditForm {
 	
 	@NotBlank
 	@Size(min = 1, max = 100)
-	@Pattern(regexp = "^[ぁ-んー]+$", message = "ひらがなで入力してください")
+	@Pattern(regexp = "^[\\p{InHiragana}ー]+$", message = "ひらがなで入力してください")
 	private String customerFurigana; // 出荷先名ふりがな.
 
 }

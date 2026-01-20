@@ -1,8 +1,5 @@
 package com.example.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +18,7 @@ import com.example.domain.customers.model.MCustomer;
 import com.example.domain.customers.service.CustomerService;
 import com.example.form.customers.EditForm;
 import com.example.form.customers.RegisterForm;
+import com.github.pagehelper.PageInfo;
 
 @Controller
 @RequestMapping("/customers")
@@ -35,54 +33,56 @@ public class CustomerController {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	// 1ページで表示する入荷先情報を10に設定する.
+	private static final int SHOW_SIZE = 10;
+
 	/** 出荷先一覧画面に遷移する. */
 	@GetMapping("/list")
-	public String getList(@RequestParam(required = false) String sortItem,
-			@RequestParam(required = false) String sort,
+	public String getList(
 			@RequestParam(required = false) String search,
+			@RequestParam(defaultValue = "id") String sortItem,
+			@RequestParam(defaultValue = "asc") String sort,
+			@RequestParam(defaultValue = "1") int page,
 			Model model) {
 
-		/* 出荷先情報を取得するがif文内の分岐により取得する情報の並び方を変える.
-		 * その後modelに格納するので変数の宣言とオブジェクトの初期化をif文の前に行う(if文内で宣言するとスコープ外のため変数を参照できない). 
-		 * 順序保持のためArrayListを使用する. */
-		List<MCustomer> customerList = new ArrayList<>();
+		/* 出荷先一覧を押して遷移してきたとき,search(検索語句)はrequired = falseのためnull,
+		 * sortItem(並び替え項目)とsort(並び替え順序)はdefaultValueの値がそれぞれ入っている. */
 
-		// 出荷先一覧画面に遷移したとき(sortItem・sort・searchはnullになる).
+		// if文内の分岐により変数に代入する情報を決定し,modelに格納するので変数の宣言とオブジェクトの初期化をif文の前に行う.
+		PageInfo<MCustomer> customerList = null;
+
+		// 出荷先一覧画面に遷移したとき(削除済み以外の出荷先一覧を出荷先IDの昇順で取得する).
 		if (search == null) {
-			customerList = customerService.getAllInAscById();
-			
-		// 検索ボタンまたは各種昇順・降順ボタンを押したとき.
-		} else {
-			// 並び替え項目(sortItem)がnullかどうかで分岐する.
-			if (sortItem == null) {
-				
-				/* 検索ボタンを押した状態なので、検索語句で検索した情報を出荷先IDで昇順に並べられるように並び替え項目と順序を設定し,
-				 * 出荷先一覧を取得する. */
-				sortItem ="id";
-				sort = "asc";
-				customerList = customerService.getSearchResults(search, sortItem, sort);
-				
-			// 並び替え項目がnullでなくidまたはfuriganaのときで分岐する.
-			} else if (sortItem.equals("id") || sortItem.equals("furigana")) {
-				
-				// 並び替え順序(sort)がascかdescならそれらの並び替え項目と順序の条件で出荷先一覧を取得する(searchは検索語句または空文字が入っているので何もしない).
-				if (sort.equals("asc") || sort.equals("desc")) {
-					customerList = customerService.getSearchResults(search, sortItem, sort);
-					
-				// 並び替え順序がascまたはdescでないときは出荷先IDで昇順に並べた出荷先一覧を取得する.
-				} else {
-					customerList = customerService.getAllInAscById();
-				}
+			customerList = customerService.getAllInAscById(page, SHOW_SIZE);
 
-			// 並び替え項目がnullでなくidまたはfuriganaでもないときは出荷先IDで昇順に並べた出荷先一覧を取得する.
+			/* 検索ボタン,各種昇順・降順ボタンを押したときのsearchには,検索フォームに何も入っていなければ空白が入るのでnullではないためこちらに分岐する.
+			 * sortItem(並び替え項目)がidまたはfuriganaか確認する. */
+		} else if (sortItem.equals("id") || sortItem.equals("furigana")) {
+
+			// sort(並び替え順序)がascかdescか確認する.
+			if (sort.equals("asc") || sort.equals("desc")) {
+				customerList = customerService.getSearchResults(page, SHOW_SIZE, search, sortItem, sort);
+
+			/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
+			 * 削除済み以外の入荷先情報を出荷先IDで昇順に並べた入荷先一覧を取得する. */
 			} else {
-				customerList = customerService.getAllInAscById();
+				customerList = customerService.getAllInAscById(page, SHOW_SIZE);
+				// 検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
+				search = "";
 			}
+
+		/* sortItem(並べ替え項目)がidやfuriganaでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
+		 * 削除済み以外の入荷先情報を入荷先IDで昇順に並べた出荷先一覧を取得する. */
+		} else {
+			customerList = customerService.getAllInAscById(page, SHOW_SIZE);
+			// 検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
+			search = "";
 		}
 
-		// 出荷先一覧と検索語句をmodelに格納する.
 		model.addAttribute("customerList", customerList);
 		model.addAttribute("search", search);
+		model.addAttribute("sortItem", sortItem);
+		model.addAttribute("sort", sort);
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setBlue("出荷先一覧");
@@ -227,7 +227,7 @@ public class CustomerController {
 
 		return "redirect:/customers/list";
 	}
-	
+
 	/** 出荷先情報修正フォーム画面への遷移と出荷先情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.　*/
 	private void goToEdit(Model model, MCustomer customer) {
 

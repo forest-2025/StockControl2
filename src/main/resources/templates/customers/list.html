@@ -60,21 +60,25 @@
 								<div class="mb-3" th:text="#{customerId}"></div>
 								<!-- 昇順ボタン -->
 								<a class="btn btn-outline-danger btn-lg me-3 mb-2"
-									th:href="@{/customers/list(sortItem='id',sort='asc',search=${search})}" role="button" th:text="#{asc}"></a>
+									th:href="@{/customers/list(sortItem='id',sort='asc',search=${search})}"
+									role="button" th:text="#{asc}"></a>
 								<!-- 降順ボタン -->
 								<a class="btn btn-outline-primary btn-lg me-3 mb-2"
-									th:href="@{/customers/list(sortItem='id',sort='desc',search=${search})}" role="button" th:text="#{desc}"></a>
+									th:href="@{/customers/list(sortItem='id',sort='desc',search=${search})}"
+									role="button" th:text="#{desc}"></a>
 							</th>
-							
+
 							<!-- 出荷先名 -->
 							<th scope="col">
 								<div class="mb-3" th:text="#{customerName}"></div>
 								<!-- 昇順ボタン -->
-								<a class="btn btn-outline-danger btn-lg me-3 mb-2" 
-									th:href="@{/customers/list(sortItem='furigana',sort='asc',search=${search})}" role="button" th:text="#{asc}"></a>
+								<a class="btn btn-outline-danger btn-lg me-3 mb-2"
+									th:href="@{/customers/list(sortItem='furigana',sort='asc',search=${search})}"
+									role="button" th:text="#{asc}"></a>
 								<!-- 降順ボタン -->
-								<a class="btn btn-outline-primary btn-lg me-3 mb-2" 
-									th:href="@{/customers/list(sortItem='furigana',sort='desc',search=${search})}" role="button" th:text="#{desc}"></a>
+								<a class="btn btn-outline-primary btn-lg me-3 mb-2"
+									th:href="@{/customers/list(sortItem='furigana',sort='desc',search=${search})}"
+									role="button" th:text="#{desc}"></a>
 							</th>
 							<th scope="col"></th>
 						</tr>
@@ -84,7 +88,7 @@
 
 					<tbody>
 
-						<tr th:each="item:${customerList}">
+						<tr th:each="item:${customerList.list}">
 
 							<td th:text="${item.customerId}"></td>
 							<td th:text="${item.customerName}"></td>
@@ -101,6 +105,41 @@
 						</tr>
 					</tbody>
 				</table>
+				
+				<!-- ページネーション -->
+				<div class="mt-5 mb-5">
+					<nav aria-label="Page navigation">
+						<ul class="pagination pagination-lg justify-content-center">
+
+							<!-- 前のページ -->
+							<li class="page-item" th:classappend="${!customerList.hasPreviousPage} ? 'disabled'">
+								<a class="page-link" 
+									th:href="@{/customers/list(page=${customerList.prePage == 0} ? '1' : ${customerList.prePage},
+									sortItem=${sortItem},sort=${sort},search=${search})}" aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+
+							<!-- ページ番号 -->
+							<li th:each="i : ${customerList.navigatepageNums}" class="page-item"
+								th:classappend="${i} == ${customerList.pageNum} ? 'active'">
+								<a class="page-link" 
+								th:href="@{/customers/list(page=${i},sortItem=${sortItem},sort=${sort},search=${search})}"
+								th:text="${i}"></a>
+							</li>
+
+							<!-- 次のページ -->
+							<li class="page-item" th:classappend="${!customerList.hasNextPage} ? 'disabled'">
+								<a class="page-link" 
+									th:href="@{/customers/list(page=${customerList.nextPage == 0} ? '1' : ${customerList.nextPage},
+									sortItem=${sortItem},sort=${sort},search=${search})}" aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+
+						</ul>
+					</nav>
+				</div>
 			</div>
 		</div>
 

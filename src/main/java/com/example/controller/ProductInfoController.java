@@ -299,7 +299,7 @@ public class ProductInfoController {
 	 * @throws Exception */
 	@PostMapping("/{productId}/info/imageEdit")
 	public String postImageEdit(Model model, @PathVariable Integer productId,
-			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult) throws Exception {
+			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult){
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct product = productInfoService.getOneProduct(productId);
@@ -325,7 +325,7 @@ public class ProductInfoController {
 
 			// modelに格納する.
 			model.addAttribute("product", product);
-			model.addAttribute("imageEditForm", form);
+			model.addAttribute("errors", result.getErrors());
 
 			// ヘッダーの色と項目を設定する.
 			customHeader.setGray("画像修正");
