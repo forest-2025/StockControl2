@@ -34,7 +34,6 @@ $(function() {
 			},
 			error: function() {
 				alert("画像の取得に失敗しました");
-				//window.location.href = '/error.html';
 			}
 		});
 
@@ -42,6 +41,10 @@ $(function() {
 
 	// ×ボタンで非表示
 	$("#closeImageBtn").click(function() {
+		if (oldUrl) {
+			URL.revokeObjectURL(oldUrl);
+			oldUrl = null;
+		}
 		$("#resultImage").addClass("d-none");
 		$("#closeImageBtn").addClass("d-none");
 	});

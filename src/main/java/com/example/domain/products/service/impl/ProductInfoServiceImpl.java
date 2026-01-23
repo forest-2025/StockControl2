@@ -261,8 +261,15 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 			// ファイルの元の名前(ユーザーが選択したときのファイル名)を取得する.
 			String originalFileName = file.getOriginalFilename();
-
-			// ファイル名がnullまたは空白("")や空文字(" ")でないかを拡張子も含めて確認する.
+			
+			/* ファイル名がnullまたは空白("")や空文字(" ")でないかを拡張子も含めて確認する.
+			 * (画像ファイルを選択しなかった場合,空文字になるためnullにならなかったがブラウザによってはnullになる).
+			 * (ファイル名を拡張子含めて空白または空文字にすることは基本的に(拡張子の.がつくため)難しい(Unix系なら理論上可能らしい).
+			 * キーボードのAltキーを押したまま,右側のテンキーで255を入力し,Altキーを離すと拡張子なしのファイル名ができるが,
+			 * その場合isBlank()では判別できない(Alt + 255はU+00A0という一般的なノーブレーキングスペース
+			 * (NBSP コンピュータ上で扱う特殊な空白文字のことで,その前後で強制的な改行（自動折り返し）をさせないスペース)で,
+			 * isBlank()は内部でCharacter.isWhitespace()を使用するが,Character.isWhitespace()で
+			 * U+00A0は対応してないから).あとの拡張子チェックでみつけられるためU+00A0などのチェックまではしていない. */
 			if (originalFileName == null || originalFileName.isBlank()) {
 				errors.add("ファイル名が不正です");
 			} else {

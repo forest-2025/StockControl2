@@ -53,7 +53,7 @@ public class ProductInfoController {
 	@GetMapping("/info/list")
 	public String getList(@RequestParam(required = false) String search,
 			@RequestParam(defaultValue = "1") int page,
-			Model model) {
+			Model model){
 
 		/*@RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
@@ -124,8 +124,8 @@ public class ProductInfoController {
 		MultipartFile file = form.getProductFile();
 
 		UploadResult result = new UploadResult();
-
-		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
+		
+		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う(画像選択していなければnullではないがfile.isEmpty()がTrueになる).
 		if (file != null && !file.isEmpty()) {
 			result = productInfoService.validateAndUpload(file, result);
 		}
@@ -312,6 +312,11 @@ public class ProductInfoController {
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
+		String originalFileName = file.getOriginalFilename();
+		System.out.println(111);
+		System.out.println(originalFileName);
+		System.out.println(222);
+		System.out.println(file);
 
 		UploadResult result = new UploadResult();
 
@@ -341,7 +346,7 @@ public class ProductInfoController {
 		System.out.println(productImageEdit.getProductImage());
 
 		// 画像情報を更新する.
-		productInfoService.updateProductImage(product, productImageEdit);
+		//productInfoService.updateProductImage(product, productImageEdit);
 
 		return "redirect:/products/" + productId + "/info/display-details";
 
