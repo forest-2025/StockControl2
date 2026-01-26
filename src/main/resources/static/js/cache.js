@@ -1,18 +1,17 @@
 /**
  * cache.js
  *
- * ログアウト後にブラウザバックしたときに
- * ページを再読み込みして表示させない
+ * ログアウト後にブラウザバックしたときに,キャッシュを無視してページを再読み込みすることで前の画面に戻らないようにする
+ * (セッションが無効なのでログインページにリダイレクトされる)
  *
  * @example
  * <script th:src="@{/js/cache.js}" defer></script>
+ * 
  */
 /*  ログアウト後もブラウザバックすると前の画面に戻れるのはブラウザのBack-ForwardCache,
 	（BFCache(バックフォワードキャッシュ) ブラウザがページ全体のスナップショットを丸ごと保存して瞬時に戻る仕組みのこと)が有効になっているからで,
 	<meta http-equiv="Cache-Control" content="no-store">では制御できない.
-	そのためJavaScriptでページが表示されるイベント時にevent.persistedがtrue(BFCacheからの復元のとき.通常の読み込などはfalseになる)なら,
-	そのページのURLにもう一度アクセス(つまり再読み込み)することにより,最新版のブラウザでもキャッシュを無視した再読み込みができる.
-	location.reload(true);は非推奨.
+	そのためJavaScriptでブラウザのキャッシュを無視してページを強制的に再読み込みする.
 	このjsはログアウトしたときに戻れないようにしたい画面に使用するのでlogin-layoutではそもそもログアウトができないため使用しない(意味がない).
 	レイアウトcommon-layoutはlogoutがログアウト後の画面なのでログアウトできないことと,404エラーページではログアウトできないことと,
 	errorページではBFCacheが無効になるブラウザが多いためspringsecurityのデフォルト設定で対応できることからこのjsを使用しなくてもよいが,
@@ -22,7 +21,7 @@
 window.addEventListener("pageshow", function (event) {
   const nav = performance.getEntriesByType("navigation")[0];
   if (event.persisted || nav.type === "back_forward") {
-    location.reload();
+    window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
   }
 });
 
@@ -92,5 +91,23 @@ window.addEventListener("pageshow", function (event) {
 	ただし,このプロパティをtrueにするかfalseにするかはそれぞれのブラウザやバージョンの基準によるためこれがfalseだからといってBFCacheではないということではない.
 	そのため,nav.type === "back_forward"で1回のページ遷移に関する詳細な計測情報オブジェクトのtypeプロパティがback_forwardか確認している.
 	(typeプロパティはこのページ遷移がどの種類かを表す値を保持するプロパティ.BFCacheを含むブラウザの戻る・進むボタンによる遷移の場合,値がback_forwardになる).
-
+	
+	BFCacheなら,
+	windowオブジェクトのプロパティlocation（location型のオブジェクトでURL情報を保持する）のhrefプロパティ(現在のページの完全なURL（文字列）をもつ),
+	つまりブラウザで現在表示しているページのURLに,ブラウザで現在表示しているページのURLをsplitメソッドでURLをメイン部分とクエリパラメータ部分とに分割し,
+	[0]でURLのメイン部分のみ取得することでクエリパラメータ部分を削除する。そのメイン部分だけのURLに文字列"？t="をつけることでtクエリパラメータを新しく作り,
+	その値を現在のタイムスタンプ（1970年1月1日からのミリ秒）にすることで,ブラウザに新しいページとして認識させキャッシュを回避する.
+	window.location.hrefが今見ているページのURLなので,それに代入するということは新しいURLに遷移する操作とブラウザは認識する.
+	これにより,ブラウザはサーバーに対して新しいリクエストを送るか,キャッシュを確認してページを表示する.
+	このとき代入するURLが以前と同じURLであれば,ブラウザはキャッシュを使う可能性がある(キャッシュはURL単位で保存される).
+	そのため'?t=' + new Date().getTime();で現在のタイムスタンプをURLの末尾につけることで別のURLと認識させられる.
+	別のURLならブラウザは必ずサーバーにリクエストを送ることになるが,springsecurityの.invalidateHttpSession(true)と,
+	.deleteCookies("JSESSIONID")で現在のHTTPセッションの破棄・ブラウザ側のクッキーの削除が行われているため,ユーザーは未認証状態と判断され,
+	(直リンク状態?).loginPage("/login")で設定したURLにリダイレクトする.
+	別のURLにしたいだけなら'?t=' + new Date().getTime()ではなく適当に"a"とかじゃダメなのかと思うが,タイムスタンプをしようすることで,
+	一意の(安全な)URLになるためこちらがベスト.
+	ほかにも方法はあるが,
+	location.reload(true);	非推奨.
+	location.reload();		ページをリロードするがキャッシュ利用の可能性あり.
+	のためこの方法とする.
  */
