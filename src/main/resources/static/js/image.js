@@ -14,7 +14,7 @@ $(function() {
 	let oldUrl = null;
 
 	$("#showImageBtn").on("click", function() {
-		var productId = $(this).data("product-id");
+		const productId = $(this).data("product-id");
 		$.ajax({
 			url: "/image/" + productId,
 			method: "GET",
@@ -70,13 +70,29 @@ $(function() {
 //        $("#image").attr("src", "/images/default.png");
 //    });
 //});
-/* 	$(function() はjQueryの「DOMが完全に読み込まれたら実行」する書き方.ページ内のHTMLが読み込まれてから中の処理を実行することで,
+/* 	jQueryを使用している.
+	jQueryはブラウザがHTMLを読み込みjsでも操作できるよう生のDOM（DOMオブジェクト）に変換する.
+	それをjQueryでラップすることで,jQueryの便利なメソッドが使えるようになる.
+	
+	$(function() はjQueryの「DOMが完全に読み込まれたら実行」する書き方.ページ内のHTMLが読み込まれてから中の処理を実行することで,
 	まだDOMがない状態で$("#showImageBtn")を操作してエラーになるのを防げる.
-	$はjQueryの省略したもの(jQuery(...)といっしょ).DOMを探して,jQueryオブジェクトとして返す関数のこと.
+	$はjQueryの省略したもの(jQuery(...)といっしょ).生のDOMを探して,jQueryオブジェクトとして返す関数のこと(ラップしている).
+	
+	
 	#はidセレクタ(id属性を持つ要素を指定するためのCSSセレクタ)を指定している.$("#showImageBtn")でid = showImageBtnの要素,
 	画像表示ボタンのbuttonタグを指定している.
 	.onメソッドはHTML要素に対してクリックやホバーなどのイベントハンドラ（動作）を登録するメソッド(基本形は $(セレクタ).on("イベント名", 関数);).
-	イベント名はブラウザがあらかじめ用意しているものが決まって存在する(自作もできる).イベント名clickはクリックしたときの動作の登録となる.
+	イベント名はブラウザがあらかじめ用意しているものが決まって存在する(自作もできる).イベント名clickはクリックしたときの動作を表す.
+	$(function{ ～ alert("画像の取得に失敗しました"); } });までが.onメソッドの第2引数になる.
+	画像表示ボタンをクリックしたら、function()の｛｝の中の処理を実行するように登録している.
+	
+	const productIdで変数productIdに再代入しない値(参照先を変更しない)を入れれるようになる.
+	$(this)はイベントが発生した要素そのもの(ここでは#showImageBtnのこと)を指す.
+	.data("product-id")はjQueryオブジェクトの.data()ソッドのことで,
+	引数に生のDOMにあるdata-* 属性(ここでは(th:)data-product-idのことを指す)を入れることで,
+	その属性の値を取得したり,操作したりできる.今回は値を取得して変数productIdに代入している.
+	
+	
 	let oldUrl = null;ブラウザのメモリ上に一時的に存在するバイナリデータ（Blob）を参照するための特殊なURL
     */
 
