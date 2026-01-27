@@ -8,6 +8,14 @@
  * <script th:src="@{/js/cache.js}" defer></script>
  * 
  */
+
+window.addEventListener("pageshow", function (event) {
+  const nav = performance.getEntriesByType("navigation")[0];
+  if (event.persisted || nav.type === "back_forward") {
+    window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
+  }
+});
+
 /*  ログアウト後もブラウザバックすると前の画面に戻れるのはブラウザのBack-ForwardCache,
 	（BFCache(バックフォワードキャッシュ) ブラウザがページ全体のスナップショットを丸ごと保存して瞬時に戻る仕組みのこと)が有効になっているからで,
 	<meta http-equiv="Cache-Control" content="no-store">では制御できない.
@@ -17,14 +25,6 @@
 	errorページではBFCacheが無効になるブラウザが多いためspringsecurityのデフォルト設定で対応できることからこのjsを使用しなくてもよいが,
 	BFCacheが無効にならないブラウザが存在することを考慮して使用している. 
 */
-
-window.addEventListener("pageshow", function (event) {
-  const nav = performance.getEntriesByType("navigation")[0];
-  if (event.persisted || nav.type === "back_forward") {
-    window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
-  }
-});
-
 
 /* 　windowはブラウザの「窓」そのもの を表すオブジェクト.
 	addEventListenerは指定した要素でクリックやキー入力などの「イベント」が発生した際にあらかじめ設定しておいた関数を実行させ,
