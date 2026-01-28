@@ -143,6 +143,45 @@ $(function() {
 	error:はjQueryのajax()メソッドのオプションの一つ.HTTPリクエストが失敗したとき(サーバーが404や500を返したとやネットワークエラーが発生したなど),
 	実行される関数（コールバック関数）を指定する.
 	alert()はjsの組み込み関数で画面にポップアップのダイアログを表示するために使う.
+	$(function () {
+		let oldUrl = null;
+
+		$(document).on("click", "#showImageBtn", function () {
+			const productId = $(this).data("product-id");
+
+			$.ajax({
+				url: "/image/" + productId,
+				method: "GET",
+				xhrFields: { responseType: "blob" }
+			})
+			.done(function (blob, status, xhr) {
+				const type = xhr.getResponseHeader("Content-Type");
+				if (!type || !type.startsWith("image/")) {
+					alert("画像データではありません");
+					return;
+				}
+
+				if (oldUrl) URL.revokeObjectURL(oldUrl);
+
+				oldUrl = URL.createObjectURL(blob);
+				$("#result").attr("src", oldUrl).removeClass("d-none");
+				$("#closeBtn").removeClass("d-none");
+			})
+			.fail(function (xhr) {
+				console.error(xhr.status, xhr.responseText);
+				alert("画像の取得に失敗しました");
+			});
+		});
+
+		$("#closeBtn").on("click", function () {
+			if (oldUrl) {
+				URL.revokeObjectURL(oldUrl);
+				oldUrl = null;
+			}
+			$("#result, #closeBtn").addClass("d-none");
+		});
+	});
+
 	
 	let oldUrl = null;ブラウザのメモリ上に一時的に存在するバイナリデータ（Blob）を参照するための特殊なURL
     */
