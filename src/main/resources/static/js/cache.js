@@ -8,7 +8,7 @@
  * <script th:src="@{/js/cache.js}" defer></script>
  * 
  */
-
+"use strict";
 window.addEventListener("pageshow", function (event) {
   const nav = performance.getEntriesByType("navigation")[0];
   if (event.persisted || nav.type === "back_forward") {

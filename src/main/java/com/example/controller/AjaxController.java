@@ -17,6 +17,10 @@ import com.example.domain.products.service.ProductInfoService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Ajax通信で画像を表示するためのコントローラクラス.
+ * 
+ */
 @RestController // REST API用のコントローラーで戻り値はHTMLではなくそのままHTTPレスポンスのBodyになる(@Controller + @ResponseBody).
 @Slf4j
 public class AjaxController {
@@ -33,7 +37,13 @@ public class AjaxController {
 	// データの種類を表すMIMEタイプをJPEGにする.
 	private final String strMimeType = "image/jpeg";
 
-	/* ResponseEntityはHTTPレスポンスの構成(ステータス・ヘッダー・ボディー)3つを全部まとめて返せるクラス. */
+	/**
+	 * 商品詳細画面の画像表示ボタンを押してくるところ.
+	 *
+	 * @param productId 画像表示したい商品のID.
+	 * @return HTTPレスポンスの構成(ステータス・ヘッダー・ボディー)を返す.
+	 */
+	// ResponseEntityはHTTPレスポンスの構成(ステータス・ヘッダー・ボディー)3つを全部まとめて返せるクラス.
 	@GetMapping("/image/{productId}")
 	public ResponseEntity<InputStreamResource> showImage(@PathVariable Integer productId) {
 

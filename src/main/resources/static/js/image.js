@@ -9,6 +9,7 @@
  * 
  */
 
+"use strict";
 $(function() {
 	// 前回のBlob URLを保持（メモリ解放用）
 	let oldUrl = null;
@@ -18,33 +19,28 @@ $(function() {
 		$.ajax({
 			url: "/image/" + productId,
 			method: "GET",
-			xhrFields: {
-				responseType: "blob"
-			},
-			success: function(blob) {
-				// 以前のURLを解放
+			xhrFields: { responseType: "blob" }
+		})
+			.done(function(blob, _, jqXHR) {
+				const type = jqXHR.getResponseHeader("Content-Type");
+				if (!type || !type.startsWith("image/jpg")) {
+					alert("画像データがjpgではありません");
+					return;
+				}
+
 				if (oldUrl) {
 					URL.revokeObjectURL(oldUrl);
 				}
-
-				// 新しいBlob URLを作成して表示
-				const url = URL.createObjectURL(blob);
-				$("#resultImage")
-					.attr("src", url)
-					.removeClass("d-none");
-				$("#closeImageBtn")
-					.removeClass("d-none");
-
-				// 今回のURLを保持
-				oldUrl = url;
-
-			},
-			error: function() {
+				oldUrl = URL.createObjectURL(blob);
+				$("#resultImage").attr("src", oldUrl).removeClass("d-none");
+				$("#closeImageBtn").removeClass("d-none");
+			})
+			.fail(function() {
 				alert("画像の取得に失敗しました");
-			}
-		});
-
+			});
 	});
+
+
 
 	// ×ボタンで非表示にする.
 	$("#closeImageBtn").click(function() {
@@ -55,21 +51,8 @@ $(function() {
 		$("#resultImage").addClass("d-none");
 		$("#closeImageBtn").addClass("d-none");
 	});
+	
 });
-//$(function () {
-//    $.ajax({
-//        url: "/images/sample.png",
-//        method: "GET",
-//        xhrFields: { responseType: "blob" }
-//    })
-//    .done(function (blob) {
-//        const url = URL.createObjectURL(blob);
-//        $("#image").attr("src", url);
-//    })
-//    .fail(function (jqXHR) {
-//        $("#image").attr("src", "/images/default.png");
-//    });
-//});
 
 /* 	jQueryを使用している.
 	jQueryはブラウザがHTMLを読み込みjsでも操作できるよう生のDOM（DOMオブジェクト）に変換する.
@@ -86,6 +69,8 @@ $(function() {
 	$はjQueryの省略したもの(jQuery(...)といっしょでエイリアス(別名・ニックネームのようなもの))でこれ自体はグローバル関数.
 	(プログラム全体からどこからでも呼び出し（アクセス）可能な関数のこと).
 	
+	let oldUrl = null;ブラウザのメモリ上に一時的に存在するバイナリデータ（Blob）を参照するための特殊なURL.
+		
 	#はidセレクタ(id属性を持つ要素を指定するためのCSSセレクタ)を指定している.$("#showImageBtn")でid = showImageBtnの要素,
 	画像表示ボタンのbuttonタグを指定していて,これでbuttonタグををラップしたjQueryオブジェクトを返すことができる.
 	
@@ -95,7 +80,7 @@ $(function() {
 	$(function{ ～ alert("画像の取得に失敗しました"); } });までが.onメソッドの第2引数になる.
 	画像表示ボタンをクリックしたら、function()の｛｝の中の処理を実行するように登録している.
 	
-	const productIdで変数productIdに再代入しない値(参照先を変更しない)を入れれるようになる.
+	const productIdで変数productIdに再代入しない値(参照先を変更しない)を入れられるようになる.
 	$(this)はイベントが発生した要素そのもの(ここでは#showImageBtnのこと)を指す.
 	.data("product-id")はjQueryオブジェクトの.data()メソッドのことで,
 	引数に生のDOMにあるdata-* 属性(ここでは(th:)data-product-idのことを指す)を入れることで,
@@ -119,7 +104,8 @@ $(function() {
 	HTTPリクエストを作成して送る→サーバー(AjaxControllerクラスの@GetMapping("/image/{productId}"))にいくという流れ.
 	url: でどこのURLに, method: でどのHTTPメソッドで,xhrFields: {} でどんなものを取りに行くのかを設定している.
 	(これらはjQueryのajax()メソッドのオプションで,ajax()メソッドに渡す設定値のこと).
-	XHRを操作するためにXMLHttpRequestクラスあり,そのオブジェクトがXMLHttpReques（XHR）オブジェクト.これによりXHRを操作する.
+	XHRを操作するためにXMLHttpRequestクラスがあり,そのオブジェクトがXMLHttpReques（XHR）オブジェクトでそれをラッパーしたjqXHRオブジェクトが返る.
+	jqXHRオブジェクトを通してXHRを操作する.
 	xhrFields（エックスエイチアール・フィールズ）は,ajax()メソッドのオプションの一つで,内部で生成されるXHRオブジェクトのプロパティを設定できる.
 	これにより,HTTPリクエストの通信状態による処理の変更や,レスポンスの受け取り方,HTTPリクエストに関する詳細な設定などを指定できる.
 	xhrFields:{}の{}はjsのオブジェクトリテラル({}を使って,コード内で直接オブジェクトを定義・生成する方法のこと).
@@ -128,7 +114,7 @@ $(function() {
 	responseTypeはXHRオブジェクトのプロパティの1つで,サーバーから返ってきたレスポンス（データ）をどの形式で受け取るかを指定するもの.
 	"blob"はバイナリデータ（画像やPDFなど）として受け取ることを指定している.
 	(Binary Large OBject（バイナリ(コンピュータが扱う「0と1の並び」で構成されたデータ)の大きなオブジェクト） の略).
-	success:はHTTPリクエストが成功したときに実行される関数を設定するjQueryのajax()のオプション.
+	
 	AjaxでresponseType: "blob" を使うと,サーバーから返ってきたバイナリデータをブラウザがBlobオブジェクトにラップ(変換)する.
 	このオブジェクトを慣習的にblobといい(別に何でもいい,便宜上の名前)関数の引数に渡されている.
 	URLはブラウザが提供する組み込みのグローバルオブジェクト（クラスのようなもの）.jsの標準オブジェクトで,URLを扱うための便利なメソッドがいくつか用意されている.
@@ -140,49 +126,7 @@ $(function() {
 	$("#resultImage").attr("src", url)でid属性がresultImageの要素(imgタグ)にsrc属性を追加または上書き）して,
 	その値に変数urlの文字列を代入している.
 	.removeClass("d-none");でclass属性のd-noneを削除している(もしclass属性に"d-none"が含まれていなければ何も起きない).
-	error:はjQueryのajax()メソッドのオプションの一つ.HTTPリクエストが失敗したとき(サーバーが404や500を返したとやネットワークエラーが発生したなど),
-	実行される関数（コールバック関数）を指定する.
 	alert()はjsの組み込み関数で画面にポップアップのダイアログを表示するために使う.
-	$(function () {
-		let oldUrl = null;
-
-		$(document).on("click", "#showImageBtn", function () {
-			const productId = $(this).data("product-id");
-
-			$.ajax({
-				url: "/image/" + productId,
-				method: "GET",
-				xhrFields: { responseType: "blob" }
-			})
-			.done(function (blob, status, xhr) {
-				const type = xhr.getResponseHeader("Content-Type");
-				if (!type || !type.startsWith("image/")) {
-					alert("画像データではありません");
-					return;
-				}
-
-				if (oldUrl) URL.revokeObjectURL(oldUrl);
-
-				oldUrl = URL.createObjectURL(blob);
-				$("#result").attr("src", oldUrl).removeClass("d-none");
-				$("#closeBtn").removeClass("d-none");
-			})
-			.fail(function (xhr) {
-				console.error(xhr.status, xhr.responseText);
-				alert("画像の取得に失敗しました");
-			});
-		});
-
-		$("#closeBtn").on("click", function () {
-			if (oldUrl) {
-				URL.revokeObjectURL(oldUrl);
-				oldUrl = null;
-			}
-			$("#result, #closeBtn").addClass("d-none");
-		});
-	});
-
 	
-	let oldUrl = null;ブラウザのメモリ上に一時的に存在するバイナリデータ（Blob）を参照するための特殊なURL
-    */
+	*/
 

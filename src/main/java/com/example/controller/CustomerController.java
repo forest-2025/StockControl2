@@ -20,6 +20,12 @@ import com.example.form.customers.EditForm;
 import com.example.form.customers.RegisterForm;
 import com.github.pagehelper.PageInfo;
 
+
+/**
+ * 出荷先情報に関するコントローラクラス.
+ *
+ */
+
 @Controller
 @RequestMapping("/customers")
 public class CustomerController {
@@ -36,7 +42,18 @@ public class CustomerController {
 	// 1ページで表示する入荷先情報を10に設定する.
 	private static final int SHOW_SIZE = 10;
 
-	/** 出荷先一覧画面に遷移する. */
+
+	/**
+	 * 出荷先一覧画面に遷移する.
+	 * ページネーションで1ページ10件の出荷先情報を表示する.
+	 * 
+	 * @param search 出荷先を検索するときの検索語句.
+	 * @param sortItem 出荷先を並び替えるときの並び替え項目(IDまたはふりがな)
+	 * @param sort 出荷先を並び替えるときの並び替え順序(昇順または降順)
+	 * @param　page 取得するページ番号.
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @return 出荷先一覧画面のビュー名.
+	 */
 	@GetMapping("/list")
 	public String getList(
 			@RequestParam(required = false) String search,
@@ -92,7 +109,13 @@ public class CustomerController {
 
 	}
 
-	/** 出荷先登録ボタンを押してくるところ. */
+	/**
+	 * 出荷先登録ボタンを押してくるところ.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param form 出荷先登録フォーム.
+	 * @return 出荷先登録画面のビュー名.
+	 */
 	@GetMapping("/register")
 	public String getRegister(Model model, @ModelAttribute RegisterForm form) {
 
@@ -103,7 +126,15 @@ public class CustomerController {
 		return "/customers/register";
 	}
 
-	/** 出荷先登録フォーム画面の登録を押してくるところ. */
+	/**
+	 * 出荷先登録フォーム画面の登録を押してくるところ.
+	 * 出荷先情報の登録内容を確認して登録する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param form 出荷先登録フォーム.
+	 * @param　bindingResult　バリデーションエラー.
+	 * @return バリデーションエラーがあれば出荷先登録画面のビュー名,なければ出荷先一覧画面.のビュー名.
+	 */
 	@PostMapping("/register")
 	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
 			BindingResult bindingResult) {
