@@ -30,6 +30,10 @@ import com.example.form.products.info.ProductEditForm;
 import com.example.form.products.info.RegisterForm;
 import com.github.pagehelper.PageInfo;
 
+/**
+ * 商品の情報に関するコントローラクラス.
+ *
+ */
 @Controller
 @RequestMapping("/products")
 public class ProductInfoController {
@@ -49,15 +53,23 @@ public class ProductInfoController {
 	// 1ページで表示する商品数・入出荷履歴数を10に設定する.
 	private static final int SHOW_SIZE = 10;
 
-	/** 商品一覧画面（ホーム画面）へ遷移する. */
+	/**
+	 * 商品一覧画面（ホーム画面）へ遷移する.
+	 * ページネーションで1ページ10件の商品情報を表示する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param search 商品を検索するときの検索語句.
+	 * @param　page 取得するページ番号.
+	 * @return 商品一覧画面のビュー名.
+	 */
 	@GetMapping("/info/list")
-	public String getList(@RequestParam(required = false) String search,
-			@RequestParam(defaultValue = "1") int page,
-			Model model){
+	public String getList(Model model,
+			@RequestParam(required = false) String search,
+			@RequestParam(defaultValue = "1") int page) {
 
 		/*@RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
-		 * パラメータ名searchが無ければ削除されていない全商品の一覧を取得し,あればsearchの値が含まれる商品を検索する.*/
+		 * パラメータ名searchが無ければ削除されていない全商品の一覧を取得し,あればsearchの値が含まれる商品を検索する. */
 
 		if (search == null) {
 			PageInfo<ProductList> productList = productInfoService.getProductList(page, SHOW_SIZE);
@@ -75,7 +87,14 @@ public class ProductInfoController {
 		return "/products/info/list";
 	}
 
-	/** 商品登録フォーム画面へ遷移する. */
+	/**
+	 * 商品登録ボタンを押してくるところ.
+	 * 商品登録フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param form 商品登録フォーム.
+	 * @return 商品登録フォーム画面のビュー名.
+	 */
 	@GetMapping("/info/register")
 	public String getRegister(Model model, @ModelAttribute RegisterForm form) {
 
@@ -85,9 +104,18 @@ public class ProductInfoController {
 		return "/products/info/register";
 	}
 
-	/** 商品登録フォーム画面で登録ボタンを押したときにくるところ. */
+	/**
+	 * 商品登録フォーム画面で登録ボタンを押したときにくるところ.
+	 * 商品情報の登録内容を確認して登録する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param form 商品登録フォーム.
+	 * @param　bindingResult　バリデーションエラー.
+	 * @return バリデーションエラーがあれば商品登録フォーム画面のビュー名,なければ商品一覧画面のビュー名.
+	 */
 	@PostMapping("/info/register")
-	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
+	public String postRegister(Model model,
+			@ModelAttribute @Validated RegisterForm form,
 			BindingResult bindingResult) {
 
 		// 商品番号がnullや空白でないか確認する.
@@ -124,7 +152,7 @@ public class ProductInfoController {
 		MultipartFile file = form.getProductFile();
 
 		UploadResult result = new UploadResult();
-		
+
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う(画像選択していなければnullではないがfile.isEmpty()がTrueになる).
 		if (file != null && !file.isEmpty()) {
 			result = productInfoService.validateAndUpload(file, result);
@@ -299,7 +327,7 @@ public class ProductInfoController {
 	 * @throws Exception */
 	@PostMapping("/{productId}/info/imageEdit")
 	public String postImageEdit(Model model, @PathVariable Integer productId,
-			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult){
+			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult) {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct product = productInfoService.getOneProduct(productId);

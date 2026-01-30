@@ -20,7 +20,6 @@ import com.example.form.customers.EditForm;
 import com.example.form.customers.RegisterForm;
 import com.github.pagehelper.PageInfo;
 
-
 /**
  * 出荷先情報に関するコントローラクラス.
  *
@@ -42,25 +41,23 @@ public class CustomerController {
 	// 1ページで表示する入荷先情報を10に設定する.
 	private static final int SHOW_SIZE = 10;
 
-
 	/**
 	 * 出荷先一覧画面に遷移する.
 	 * ページネーションで1ページ10件の出荷先情報を表示する.
 	 * 
+	 * @param model ビューにデータを渡すためのモデル.
 	 * @param search 出荷先を検索するときの検索語句.
 	 * @param sortItem 出荷先を並び替えるときの並び替え項目(IDまたはふりがな)
 	 * @param sort 出荷先を並び替えるときの並び替え順序(昇順または降順)
 	 * @param　page 取得するページ番号.
-	 * @param model ビューにデータを渡すためのモデル.
 	 * @return 出荷先一覧画面のビュー名.
 	 */
 	@GetMapping("/list")
-	public String getList(
+	public String getList(Model model,
 			@RequestParam(required = false) String search,
 			@RequestParam(defaultValue = "id") String sortItem,
 			@RequestParam(defaultValue = "asc") String sort,
-			@RequestParam(defaultValue = "1") int page,
-			Model model) {
+			@RequestParam(defaultValue = "1") int page) {
 
 		/* 出荷先一覧を押して遷移してきたとき,search(検索語句)はrequired = falseのためnull,
 		 * sortItem(並び替え項目)とsort(並び替え順序)はdefaultValueの値がそれぞれ入っている. */
@@ -80,16 +77,16 @@ public class CustomerController {
 			if (sort.equals("asc") || sort.equals("desc")) {
 				customerList = customerService.getSearchResults(page, SHOW_SIZE, search, sortItem, sort);
 
-			/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
-			 * 削除済み以外の入荷先情報を出荷先IDで昇順に並べた入荷先一覧を取得する. */
+				/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
+				 * 削除済み以外の入荷先情報を出荷先IDで昇順に並べた入荷先一覧を取得する. */
 			} else {
 				customerList = customerService.getAllInAscById(page, SHOW_SIZE);
 				// 検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
 				search = "";
 			}
 
-		/* sortItem(並べ替え項目)がidやfuriganaでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
-		 * 削除済み以外の入荷先情報を入荷先IDで昇順に並べた出荷先一覧を取得する. */
+			/* sortItem(並べ替え項目)がidやfuriganaでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
+			 * 削除済み以外の入荷先情報を入荷先IDで昇順に並べた出荷先一覧を取得する. */
 		} else {
 			customerList = customerService.getAllInAscById(page, SHOW_SIZE);
 			// 検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
@@ -111,17 +108,17 @@ public class CustomerController {
 
 	/**
 	 * 出荷先登録ボタンを押してくるところ.
+	 * 出荷先登録フォーム画面へ遷移する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param form 出荷先登録フォーム.
-	 * @return 出荷先登録画面のビュー名.
+	 * @return 出荷先登録フォーム画面のビュー名.
 	 */
 	@GetMapping("/register")
 	public String getRegister(Model model, @ModelAttribute RegisterForm form) {
 
-		// ヘッダーの色と項目を設定する.
-		customHeader.setBlue("出荷先登録");
-		model.addAttribute("customHeader", customHeader);
+		// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
+		this.goToRegister(model);
 
 		return "/customers/register";
 	}
@@ -133,7 +130,7 @@ public class CustomerController {
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param form 出荷先登録フォーム.
 	 * @param　bindingResult　バリデーションエラー.
-	 * @return バリデーションエラーがあれば出荷先登録画面のビュー名,なければ出荷先一覧画面.のビュー名.
+	 * @return バリデーションエラーがあれば出荷先登録フォーム画面のビュー名,なければ出荷先一覧画面のビュー名(こちらならリダイレクト).
 	 */
 	@PostMapping("/register")
 	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
@@ -142,9 +139,8 @@ public class CustomerController {
 		// バリデーションエラーがあれば出荷先登録フォームへ戻る.
 		if (bindingResult.hasErrors()) {
 
-			// ヘッダーの色と項目を設定する.
-			customHeader.setBlue("出荷先登録");
-			model.addAttribute("customHeader", customHeader);
+			// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
+			this.goToRegister(model);
 
 			return "/customers/register";
 		}
@@ -158,7 +154,15 @@ public class CustomerController {
 		return "redirect:/customers/list";
 	}
 
-	/** 出荷先情報修正ボタンを押してくるところ. */
+	/**
+	 * 出荷先情報修正ボタンを押してくるところ.
+	 * 出荷先情報修正フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param customerId 修正する出荷先のID.
+	 * @param　form 出荷先修正フォーム.
+	 * @return 出荷先情報修正フォーム画面のビュー名.
+	 */
 	@GetMapping("/{customerId}/edit")
 	public String getEdit(Model model, @PathVariable Integer customerId, @ModelAttribute EditForm form) {
 
@@ -181,7 +185,16 @@ public class CustomerController {
 		return "/customers/edit";
 	}
 
-	/** 出荷先情報修正フォーム画面の確定ボタンを押してくるところ. */
+	/**
+	 * 出荷先情報修正フォーム画面の確定ボタンを押してくるところ.
+	 * 出荷先情報の修正内容を確認して更新する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param customerId 修正する出荷先のID.
+	 * @param　form 出荷先修正フォーム.
+	 * @param　bindingResult　バリデーションエラー.
+	 * @return バリデーションエラーがあれば出荷先情報修正フォーム画面のビュー名,なければ出荷先一覧画面のビュー名(こちらならリダイレクト).
+	 */
 	@PostMapping("/{customerId}/edit")
 	public String postEdit(Model model, @PathVariable Integer customerId,
 			@ModelAttribute @Validated EditForm form,
@@ -219,7 +232,14 @@ public class CustomerController {
 
 	}
 
-	/** 出荷先情報削除ボタンを押してくるところ */
+	/**
+	 * 出荷先情報削除ボタンを押してくるところ.
+	 * 出荷先情報削除フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param customerId 削除する出荷先のID.
+	 * @return 出荷先情報削除フォーム画面のビュー名.
+	 */
 	@GetMapping("/{customerId}/delete")
 	public String getDelete(Model model, @PathVariable Integer customerId) {
 
@@ -241,7 +261,15 @@ public class CustomerController {
 		return "/customers/delete";
 	}
 
-	/** 出荷先情報削除フォーム画面の削除ボタンを押してくるところ. */
+	/**
+	 * 出荷先情報削除フォーム画面の削除ボタンを押してくるところ.
+	 * 出荷先情報の削除フラグを更新(1にして論理削除)する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param customerId 削除する出荷先のID.
+	 * @param　bindingResult　バリデーションエラー.
+	 * @return 出荷先一覧画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/{customerId}/delete")
 	public String postDelete(Model model, @PathVariable Integer customerId) {
 
@@ -259,7 +287,31 @@ public class CustomerController {
 		return "redirect:/customers/list";
 	}
 
-	/** 出荷先情報修正フォーム画面への遷移と出荷先情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.　*/
+	// ==========================================
+	//    privateメソッド.
+	// ==========================================
+
+	/**
+	 * 出荷先情報登録フォーム画面への遷移と,
+	 * 出荷先情報登録フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 */
+	private void goToRegister(Model model) {
+
+		// ヘッダーの色と項目を設定する.
+		customHeader.setBlue("出荷先登録");
+		model.addAttribute("customHeader", customHeader);
+
+	}
+
+	/**
+	 * 出荷先情報修正フォーム画面への遷移と,
+	 * 出荷先情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param customer 出荷先情報.
+	 */
 	private void goToEdit(Model model, MCustomer customer) {
 
 		// 取得した出荷先情報を出荷先情報修正フォーム画面に渡すためmodelに格納する(customerIdを渡すため).
