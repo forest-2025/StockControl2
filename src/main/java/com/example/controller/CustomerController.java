@@ -24,7 +24,6 @@ import com.github.pagehelper.PageInfo;
  * 出荷先情報に関するコントローラクラス.
  *
  */
-
 @Controller
 @RequestMapping("/customers")
 public class CustomerController {
@@ -43,13 +42,12 @@ public class CustomerController {
 
 	/**
 	 * 出荷先一覧画面に遷移する.
-	 * ページネーションで1ページ10件の出荷先情報を表示する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param search 出荷先を検索するときの検索語句.
 	 * @param sortItem 出荷先を並び替えるときの並び替え項目(IDまたはふりがな)
 	 * @param sort 出荷先を並び替えるときの並び替え順序(昇順または降順)
-	 * @param　page 取得するページ番号.
+	 * @param page 取得するページ番号.
 	 * @return 出荷先一覧画面のビュー名.
 	 */
 	@GetMapping("/list")
@@ -129,8 +127,9 @@ public class CustomerController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param form 出荷先登録フォーム.
-	 * @param　bindingResult　バリデーションエラー.
-	 * @return バリデーションエラーがあれば出荷先登録フォーム画面のビュー名,なければ出荷先一覧画面のビュー名(こちらならリダイレクト).
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	バリデーションエラーがあれば出荷先登録フォーム画面のビュー名.
+	 * 			正常に完了した場合,出荷先一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/register")
 	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
@@ -160,8 +159,9 @@ public class CustomerController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param customerId 修正する出荷先のID.
-	 * @param　form 出荷先修正フォーム.
-	 * @return 出荷先情報修正フォーム画面のビュー名.
+	 * @param form 出荷先修正フォーム.
+	 * @return 	パスパラメータの出荷先IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,出荷先情報修正フォーム画面のビュー名.
 	 */
 	@GetMapping("/{customerId}/edit")
 	public String getEdit(Model model, @PathVariable Integer customerId, @ModelAttribute EditForm form) {
@@ -191,9 +191,11 @@ public class CustomerController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param customerId 修正する出荷先のID.
-	 * @param　form 出荷先修正フォーム.
-	 * @param　bindingResult　バリデーションエラー.
-	 * @return バリデーションエラーがあれば出荷先情報修正フォーム画面のビュー名,なければ出荷先一覧画面のビュー名(こちらならリダイレクト).
+	 * @param form 出荷先修正フォーム.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの出荷先IDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあれば出荷先情報修正フォーム画面のビュー名.
+	 * 			正常に完了した場合,出荷先一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/{customerId}/edit")
 	public String postEdit(Model model, @PathVariable Integer customerId,
@@ -238,7 +240,8 @@ public class CustomerController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param customerId 削除する出荷先のID.
-	 * @return 出荷先情報削除フォーム画面のビュー名.
+	 * @return 	パスパラメータの出荷先IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,出荷先情報削除フォーム画面のビュー名.
 	 */
 	@GetMapping("/{customerId}/delete")
 	public String getDelete(Model model, @PathVariable Integer customerId) {
@@ -267,8 +270,9 @@ public class CustomerController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param customerId 削除する出荷先のID.
-	 * @param　bindingResult　バリデーションエラー.
-	 * @return 出荷先一覧画面のビュー名(リダイレクト).
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの出荷先IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,出荷先一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/{customerId}/delete")
 	public String postDelete(Model model, @PathVariable Integer customerId) {

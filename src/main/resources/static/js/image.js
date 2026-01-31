@@ -23,7 +23,7 @@ $(function() {
 		})
 			.done(function(blob, _, jqXHR) {
 				const type = jqXHR.getResponseHeader("Content-Type");
-				if (!type || !type.startsWith("image/jpg")) {
+				if (!type || !type.startsWith("image/jpeg")) {
 					alert("画像データがjpgではありません");
 					return;
 				}

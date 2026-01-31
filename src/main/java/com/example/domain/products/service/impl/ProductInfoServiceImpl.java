@@ -437,16 +437,6 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		}
 	}
 
-	/** ファイル名の拡張子を取得する("."は除く). */
-	@Override
-	public String getExtension(String filename) {
-		// 0始まりで.のインデックスを取得する("."がないときは-1になる).
-		int dotIndex = filename.lastIndexOf('.');
-
-		// ファイル名の"."以降を取得する(substringの開始位置をdotIndexに１足すことで"."を除く拡張子を取得できる).
-		return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
-	}
-
 	/** 商品の画像情報を更新する. */
 	@Override
 	public void updateProductImage(MProduct product, MProduct productImageEdit) {
@@ -467,5 +457,14 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			log.error("画像処理エラー", e);
 			throw new RuntimeException(e);
 		}
+	}
+	
+	/** ファイル名の拡張子を取得する("."は除く). */
+	private String getExtension(String filename) {
+		// 0始まりで.のインデックスを取得する("."がないときは-1になる).
+		int dotIndex = filename.lastIndexOf('.');
+
+		// ファイル名の"."以降を取得する(substringの開始位置をdotIndexに１足すことで"."を除く拡張子を取得できる).
+		return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
 	}
 }

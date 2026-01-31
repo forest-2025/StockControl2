@@ -65,9 +65,6 @@ public interface ProductInfoService {
 	/** 商品画像のバリデーションチェックとローカルファイルストレージ(プロジェクト直下)に保存する. */
 	public UploadResult validateAndUpload(MultipartFile file, UploadResult result);
 
-	/** ファイル名の拡張子を取得する("."は除く). */
-	public String getExtension(String filename);
-
 	/** 商品の画像情報を更新する. */
 	public void updateProductImage(MProduct product, MProduct productImageEdit);
 

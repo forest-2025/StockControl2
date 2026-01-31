@@ -55,11 +55,10 @@ public class ProductInfoController {
 
 	/**
 	 * 商品一覧画面（ホーム画面）へ遷移する.
-	 * ページネーションで1ページ10件の商品情報を表示する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param search 商品を検索するときの検索語句.
-	 * @param　page 取得するページ番号.
+	 * @param page 取得するページ番号.
 	 * @return 商品一覧画面のビュー名.
 	 */
 	@GetMapping("/info/list")
@@ -99,7 +98,7 @@ public class ProductInfoController {
 	public String getRegister(Model model, @ModelAttribute RegisterForm form) {
 
 		/* 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-		this.goToRegister(model, form);
+		this.goToRegister(model);
 
 		return "/products/info/register";
 	}
@@ -110,8 +109,9 @@ public class ProductInfoController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param form 商品登録フォーム.
-	 * @param　bindingResult　バリデーションエラー.
-	 * @return バリデーションエラーがあれば商品登録フォーム画面のビュー名,なければ商品一覧画面のビュー名.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	バリデーションエラーがあれば商品登録フォーム画面のビュー名.
+	 * 			正常に完了した場合,商品一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/info/register")
 	public String postRegister(Model model,
@@ -162,7 +162,7 @@ public class ProductInfoController {
 		if (bindingResult.hasErrors() || result.hasErrors()) {
 			model.addAttribute("errors", result.getErrors());
 			/* 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-			this.goToRegister(model, form);
+			this.goToRegister(model);
 
 			return "/products/info/register";
 		}
@@ -180,10 +180,19 @@ public class ProductInfoController {
 
 	}
 
-	/** 詳細ボタンを押してくるところ. */
+	/**
+	 * 詳細ボタンを押したときにくるところ.
+	 * 詳細情報画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param productId 詳細を表示する商品のID.
+	 * @param page 取得するページ番号.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,詳細情報画面のビュー名.
+	 */
 	@GetMapping("/{productId}/info/display-details")
-	public String getDisplayDetails(@RequestParam(defaultValue = "1") int page,
-			Model model, @PathVariable Integer productId) {
+	public String getDisplayDetails(Model model, @PathVariable Integer productId,
+			@RequestParam(defaultValue = "1") int page) {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
@@ -207,7 +216,16 @@ public class ProductInfoController {
 		return "/products/info/display-details";
 	}
 
-	/** 商品情報修正ボタンを押してくるところ */
+	/**
+	 * 商品情報修正ボタンを押してくるところ.
+	 * 商品情報修正フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param productId 商品情報を修正する商品のID.
+	 * @param form 商品情報修正フォーム.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,商品情報修正フォーム画面のビュー名.
+	 */
 	@GetMapping("/{productId}/info/edit")
 	public String getEdit(Model model, @PathVariable Integer productId, @ModelAttribute ProductEditForm form) {
 
@@ -230,7 +248,18 @@ public class ProductInfoController {
 		return "/products/info/edit";
 	}
 
-	/** 商品情報修正フォーム画面の確定ボタンを押してくるところ. */
+	/**
+	 * 商品情報修正フォーム画面の確定ボタンを押してくるところ.
+	 * 商品情報の修正内容を確認して更新する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param productId 商品情報を修正する商品のID.
+	 * @param form 商品情報修正フォーム.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあれば商品情報修正フォーム画面のビュー名.
+	 * 			正常に完了した場合,商品情報を修正した商品の詳細画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/{productId}/info/edit")
 	public String postEdit(Model model, @PathVariable Integer productId,
 			@ModelAttribute @Validated ProductEditForm form,
@@ -239,8 +268,7 @@ public class ProductInfoController {
 
 		/* 商品IDから商品情報を取得する.
 		 * (削除済みは除く.また商品番号が変更されていない場合,商品番号の重複チェックを行う際に元の商品番号と重複していると誤判断することを防ぐために比較対象として取得する.
-		 * また,MProductではなくProductWithSupplierで情報を取得するのはバリデーションエラーがあったときにproductIdを商品情報修正画面に渡したいが,
-		 * 商品情報修正画面でProductWithSupplierで渡されるように設定してあるため(158行目もみる). */
+		 * また,MProductではなくProductWithSupplierで情報を取得するのは,バリデーションエラーがあったときに商品IDと入荷先名と入荷先IDを商品情報修正画面に渡したいから. */
 		ProductWithSupplier productWithSupplier = productInfoService.getOneProductWithSupplier(productId);
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
@@ -300,7 +328,16 @@ public class ProductInfoController {
 
 	}
 
-	/** 画像修正ボタンを押してくるところ */
+	/**
+	 * 画像修正ボタンを押してくるところ.
+	 * 画像修正フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param productId 画像を修正する商品のID.
+	 * @param form 画像修正フォーム.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,画像修正フォーム画面のビュー名.
+	 */
 	@GetMapping("/{productId}/info/imageEdit")
 	public String getImageEdit(Model model, @PathVariable Integer productId, @ModelAttribute ImageEditForm form) {
 
@@ -323,8 +360,18 @@ public class ProductInfoController {
 		return "/products/info/image-edit";
 	}
 
-	/** 画像修正フォームの確定ボタンを押してくるところ 
-	 * @throws Exception */
+	/**
+	 * 画像修正フォームの確定ボタンを押してくるところ.
+	 * 画像の修正内容を確認して更新する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param productId 画像を修正する商品のID.
+	 * @param form 画像修正フォーム.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあれば画像修正フォーム画面のビュー名.
+	 * 			正常に完了した場合,画像を修正した商品の詳細画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/{productId}/info/imageEdit")
 	public String postImageEdit(Model model, @PathVariable Integer productId,
 			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult) {
@@ -340,11 +387,6 @@ public class ProductInfoController {
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
-		String originalFileName = file.getOriginalFilename();
-		System.out.println(111);
-		System.out.println(originalFileName);
-		System.out.println(222);
-		System.out.println(file);
 
 		UploadResult result = new UploadResult();
 
@@ -371,16 +413,23 @@ public class ProductInfoController {
 		MProduct productImageEdit = new MProduct();
 		productImageEdit.setProductId(productId);
 		productImageEdit.setProductImage(result.getFileName());
-		System.out.println(productImageEdit.getProductImage());
 
 		// 画像情報を更新する.
-		//productInfoService.updateProductImage(product, productImageEdit);
+		productInfoService.updateProductImage(product, productImageEdit);
 
 		return "redirect:/products/" + productId + "/info/display-details";
 
 	}
 
-	/** 商品情報削除ボタンを押してくるところ */
+	/**
+	 * 商品情報削除ボタンを押してくるところ.
+	 * 商品情報削除フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param productId 商品情報を削除する商品のID.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,商品情報削除フォーム画面のビュー名.
+	 */
 	@GetMapping("/{productId}/info/delete")
 	public String getDelete(Model model, @PathVariable Integer productId) {
 
@@ -402,7 +451,15 @@ public class ProductInfoController {
 		return "/products/info/delete";
 	}
 
-	/** 商品情報削除フォーム画面の削除ボタンを押してくるところ */
+	/**
+	 * 商品情報削除フォーム画面の削除ボタンを押してくるところ.
+	 * 商品情報の削除フラグを更新(1にして論理削除)する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param productId 商品情報を削除する商品のID.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,商品一覧画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/{productId}/info/delete")
 	public String postDelete(Model model, @PathVariable Integer productId) {
 
@@ -414,14 +471,23 @@ public class ProductInfoController {
 			return "/error";
 		}
 
-		// 商品情報の更新を行う.
+		// 商品情報(削除フラグ)を更新する.
 		productInfoService.updateIsDeleted(productOne);
 
 		return "redirect:/products/info/list";
 	}
 
-	/** 商品登録フォーム画面への遷移と商品登録フォーム画面で登録ボタンを押した後のバリデーションエラー時にフォーム画面に戻るときの共通処理をまとめたメソッド　*/
-	private void goToRegister(Model model, RegisterForm form) {
+	// ==========================================
+	//    privateメソッド.
+	// ==========================================
+
+	/**
+	 *  商品登録フォーム画面への遷移と,
+	 *  商品登録フォーム画面で登録ボタンを押した後のバリデーションエラー時にフォーム画面に戻るときの共通処理をまとめたメソッド.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 */
+	private void goToRegister(Model model) {
 
 		// 削除済み以外の入荷先名を取得し、modelに格納して画面に渡す.
 		List<MSupplier> supplierList = productInfoService.getAllSupplier();
@@ -432,10 +498,16 @@ public class ProductInfoController {
 		model.addAttribute("customHeader", customHeader);
 	}
 
-	/** 商品情報修正フォーム画面への遷移と商品情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド　*/
+	/**
+	 * 商品情報修正フォーム画面への遷移と,
+	 * 商品情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param productWithSupplier 商品情報を修正する商品の情報と入荷先の情報.
+	 */
 	private void goToEdit(Model model, ProductWithSupplier productWithSupplier) {
 
-		// 取得した商品情報と入荷情報をmodelに格納する.
+		// 取得した商品情報と入荷先情報をmodelに格納する.
 		model.addAttribute("productWithSupplier", productWithSupplier);
 
 		// 削除済み以外の入荷先名を全件取得し,modelに格納して画面に渡す.

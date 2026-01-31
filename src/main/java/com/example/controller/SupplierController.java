@@ -20,6 +20,10 @@ import com.example.form.suppliers.EditForm;
 import com.example.form.suppliers.RegisterForm;
 import com.github.pagehelper.PageInfo;
 
+/**
+ * 入荷先情報に関するコントローラクラス.
+ * 
+ * */
 @Controller
 @RequestMapping("/suppliers")
 public class SupplierController {
@@ -36,14 +40,22 @@ public class SupplierController {
 	// 1ページで表示する入荷先情報を10に設定する.
 	private static final int SHOW_SIZE = 10;
 
-	/** 入荷先一覧画面に遷移する. */
+	/**
+	 * 入荷先一覧画面に遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param search 入荷先を検索するときの検索語句.
+	 * @param sortItem 入荷先を並び替えるときの並び替え項目(IDまたはふりがな)
+	 * @param sort 入荷先を並び替えるときの並び替え順序(昇順または降順)
+	 * @param page 取得するページ番号.
+	 * @return 入荷先一覧画面のビュー名.
+	 */
 	@GetMapping("/list")
-	public String getList(
+	public String getList(Model model,
 			@RequestParam(required = false) String search,
 			@RequestParam(defaultValue = "id") String sortItem,
 			@RequestParam(defaultValue = "asc") String sort,
-			@RequestParam(defaultValue = "1") int page,
-			Model model) {
+			@RequestParam(defaultValue = "1") int page) {
 		/* 入荷先一覧を押して遷移してきたとき,search(検索語句)はrequired = falseのためnull,
 		 * sortItem(並び替え項目)とsort(並び替え順序)はdefaultValueの値がそれぞれ入っている. */
 
@@ -54,24 +66,24 @@ public class SupplierController {
 		if (search == null) {
 			supplierList = supplierService.getAllInAscById(page, SHOW_SIZE);
 
-		/* 検索ボタン,各種昇順・降順ボタンを押したときのsearchには,検索フォームに何も入っていなければ空白が入るのでnullではないためこちらに分岐する.
-		 * sortItem(並び替え項目)がidまたはfuriganaか確認する. */
+			/* 検索ボタン,各種昇順・降順ボタンを押したときのsearchには,検索フォームに何も入っていなければ空白が入るのでnullではないためこちらに分岐する.
+			 * sortItem(並び替え項目)がidまたはfuriganaか確認する. */
 		} else if (sortItem.equals("id") || sortItem.equals("furigana")) {
 
 			// sort(並び替え順序)がascかdescか確認する.
 			if (sort.equals("asc") || sort.equals("desc")) {
 				supplierList = supplierService.getSearchResults(page, SHOW_SIZE, search, sortItem, sort);
 
-			/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
-			 * 削除済み以外の入荷先情報を入荷先IDで昇順に並べた入荷先一覧を取得する. */
+				/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
+				 * 削除済み以外の入荷先情報を入荷先IDで昇順に並べた入荷先一覧を取得する. */
 			} else {
 				supplierList = supplierService.getAllInAscById(page, SHOW_SIZE);
 				// 検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
 				search = "";
 			}
-			
-		/* sortItem(並べ替え項目)がidやfuriganaでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
-		 * 削除済み以外の入荷先情報を入荷先IDで昇順に並べた入荷先一覧を取得する. */
+
+			/* sortItem(並べ替え項目)がidやfuriganaでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
+			 * 削除済み以外の入荷先情報を入荷先IDで昇順に並べた入荷先一覧を取得する. */
 		} else {
 			supplierList = supplierService.getAllInAscById(page, SHOW_SIZE);
 			// 検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
@@ -91,18 +103,33 @@ public class SupplierController {
 
 	}
 
-	/** 入荷先登録ボタンを押してくるところ. */
+	/**
+	 * 入荷先登録ボタンを押してくるところ.
+	 * 入荷先登録フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param form 入荷先登録フォーム.
+	 * @return 入荷先登録フォーム画面のビュー名.
+	 */
 	@GetMapping("/register")
 	public String getRegister(Model model, @ModelAttribute RegisterForm form) {
 
-		// ヘッダーの色と項目を設定する.
-		customHeader.setRed("入荷先登録");
-		model.addAttribute("customHeader", customHeader);
+		// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
+		this.goToRegister(model);
 
 		return "/suppliers/register";
 	}
 
-	/** 入荷先登録フォーム画面の登録を押してくるところ. */
+	/**
+	 * 入荷先登録フォーム画面の登録を押してくるところ.
+	 * 入荷先情報の登録内容を確認して登録する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param form 入荷先登録フォーム.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	バリデーションエラーがあれば入荷先登録フォーム画面のビュー名.
+	 * 			正常に完了した場合,入荷先一覧画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/register")
 	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
 			BindingResult bindingResult) {
@@ -110,9 +137,8 @@ public class SupplierController {
 		// バリデーションエラーがあれば入荷先登録フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
-			// ヘッダーの色と項目を設定する.
-			customHeader.setRed("入荷先登録");
-			model.addAttribute("customHeader", customHeader);
+			// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
+			this.goToRegister(model);
 
 			return "/suppliers/register";
 		}
@@ -126,7 +152,16 @@ public class SupplierController {
 		return "redirect:/suppliers/list";
 	}
 
-	/** 入荷先情報修正ボタンを押してくるところ. */
+	/**
+	 * 入荷先情報修正ボタンを押してくるところ.
+	 * 入荷先情報修正フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param supplierId 修正する入荷先のID.
+	 * @param form 入荷先修正フォーム.
+	 * @return 	パスパラメータの入荷先IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,入荷先情報修正フォーム画面のビュー名.
+	 */
 	@GetMapping("/{supplierId}/edit")
 	public String getEdit(Model model, @PathVariable Integer supplierId, @ModelAttribute EditForm form) {
 
@@ -149,7 +184,18 @@ public class SupplierController {
 		return "/suppliers/edit";
 	}
 
-	/** 入荷先情報修正フォーム画面の確定ボタンを押してくるところ. */
+	/**
+	 * 入荷先情報修正フォーム画面の確定ボタンを押してくるところ.
+	 * 入荷先情報の修正内容を確認して更新する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param supplierId 修正する入荷先のID.
+	 * @param form 入荷先修正フォーム.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの入荷先IDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあれば入荷先情報修正フォーム画面のビュー名.
+	 * 			正常に完了した場合,入荷先一覧画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/{supplierId}/edit")
 	public String postEdit(Model model, @PathVariable Integer supplierId,
 			@ModelAttribute @Validated EditForm form,
@@ -187,7 +233,15 @@ public class SupplierController {
 
 	}
 
-	/** 入荷先情報削除ボタンを押してくるところ */
+	/**
+	 * 入荷先情報削除ボタンを押してくるところ.
+	 * 入荷先情報削除フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param supplierId 削除する入荷先のID.
+	 * @return 	パスパラメータの入荷先IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,入荷先情報削除フォーム画面のビュー名.
+	 */
 	@GetMapping("/{supplierId}/delete")
 	public String getDelete(Model model, @PathVariable Integer supplierId) {
 
@@ -209,7 +263,16 @@ public class SupplierController {
 		return "/suppliers/delete";
 	}
 
-	/** 入荷先情報削除フォーム画面の削除ボタンを押してくるところ. */
+	/**
+	 * 入荷先情報削除フォーム画面の削除ボタンを押してくるところ.
+	 * 入荷先情報の削除フラグを更新(1にして論理削除)する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param supplierId 削除する入荷先のID.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの入荷先IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,入荷先一覧画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/{supplierId}/delete")
 	public String postDelete(Model model, @PathVariable Integer supplierId) {
 
@@ -227,7 +290,31 @@ public class SupplierController {
 		return "redirect:/suppliers/list";
 	}
 
-	/** 入荷先情報修正フォーム画面への遷移と入荷先情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.　*/
+	// ==========================================
+	//    privateメソッド.
+	// ==========================================
+
+	/**
+	 * 入荷先情報登録フォーム画面への遷移と,
+	 * 入荷先情報登録フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 */
+	private void goToRegister(Model model) {
+
+		// ヘッダーの色と項目を設定する.
+		customHeader.setRed("入荷先登録");
+		model.addAttribute("customHeader", customHeader);
+
+	}
+
+	/**
+	 * 入荷先情報修正フォーム画面への遷移と,
+	 * 入荷先情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param supplier 入荷先情報.
+	 */
 	private void goToEdit(Model model, MSupplier supplier) {
 
 		// 取得した入荷先情報を入荷先情報修正フォーム画面に渡すためmodelに格納する(supplierIdを渡すため).

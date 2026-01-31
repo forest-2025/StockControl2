@@ -53,10 +53,11 @@ public class ProductCountController {
 	 * 入荷フォーム画面へ遷移する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param productId　入荷する商品のID.
-	 * @param fullNameUser　ログイン中のユーザーのフルネーム(姓 + 名).
+	 * @param productId 入荷する商品のID.
+	 * @param fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
 	 * @param form 入荷フォーム.
-	 * @return 入荷フォーム画面のビュー名.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,入荷フォーム画面のビュー名.
 	 */
 	@GetMapping("/{productId}/count/arrive")
 	public String getArrive(Model model, @PathVariable Integer productId,
@@ -83,12 +84,14 @@ public class ProductCountController {
 	 * 入荷フォームの内容を確認して入荷処理を行う.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param productId　入荷する商品のID.
-	 * @param fullNameUser　ログイン中のユーザーのフルネーム(姓 + 名).
+	 * @param productId 入荷する商品のID.
+	 * @param fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
 	 * @param userDetails ログイン中のユーザーの情報.
 	 * @param form 入荷フォーム.
-	 * @param　bindingResult　バリデーションエラー.
-	 * @return バリデーションエラーがあれば入荷フォーム画面のビュー名,なければ商品一覧画面のビュー名(こちらならリダイレクト).
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあれば入荷フォーム画面のビュー名.
+	 * 			正常に完了した場合,商品一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/{productId}/count/arrive")
 	public String postArrive(Model model, @PathVariable Integer productId,
@@ -147,10 +150,11 @@ public class ProductCountController {
 	 * 出荷フォーム画面へ遷移する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param productId　出荷する商品のID.
-	 * @param fullNameUser　ログイン中のユーザーのフルネーム(姓 + 名).
+	 * @param productId 出荷する商品のID.
+	 * @param fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
 	 * @param form 出荷フォーム.
-	 * @return 出荷フォーム画面のビュー名.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,出荷フォーム画面のビュー名.
 	 */
 	@GetMapping("/{productId}/count/ship")
 	public String getShip(Model model, @PathVariable Integer productId,
@@ -177,12 +181,14 @@ public class ProductCountController {
 	 * 出荷フォームの内容を確認して出荷処理を行う.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param productId　出荷する商品のID.
-	 * @param fullNameUser　ログイン中のユーザーのフルネーム(姓 + 名).
+	 * @param productId 出荷する商品のID.
+	 * @param fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
 	 * @param userDetails ログイン中のユーザーの情報.
 	 * @param form 出荷フォーム.
-	 * @param　bindingResult　バリデーションエラー.
-	 * @return バリデーションエラーがあれば出荷フォーム画面のビュー名,なければ商品一覧画面のビュー名(こちらならリダイレクト).
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあれば出荷フォーム画面のビュー名.
+	 * 			正常に完了した場合,商品一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/{productId}/count/ship")
 	public String postShip(Model model, @PathVariable Integer productId,
@@ -260,10 +266,11 @@ public class ProductCountController {
 	 * 在庫修正フォーム画面へ遷移する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param productId　在庫修正する商品のID.
-	 * @param fullNameUser　ログイン中のユーザーのフルネーム(姓 + 名).
+	 * @param productId 在庫修正する商品のID.
+	 * @param fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
 	 * @param form 在庫修正フォーム.
-	 * @return 在庫修正フォーム画面のビュー名.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,在庫修正フォーム画面のビュー名.
 	 */
 	@GetMapping("/{productId}/count/edit")
 	public String getEdit(Model model, @PathVariable Integer productId,
@@ -291,12 +298,14 @@ public class ProductCountController {
 	 * 在庫修正フォームの内容を確認して修正処理を行う.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param productId　在庫修正する商品のID.
-	 * @param fullNameUser　ログイン中のユーザーのフルネーム(姓 + 名).
+	 * @param productId 在庫修正する商品のID.
+	 * @param fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
 	 * @param userDetails ログイン中のユーザーの情報.
 	 * @param form 在庫修正フォーム.
-	 * @param　bindingResult　バリデーションエラー.
-	 * @return バリデーションエラーがあれば在庫修正フォーム画面のビュー名,なければ在庫修正した商品の詳細画面のビュー名(こちらならリダイレクト).
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあれば在庫修正フォーム画面のビュー名.
+	 * 			正常に完了した場合,在庫修正した商品の詳細画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/{productId}/count/edit")
 	public String postEdit(Model model, @PathVariable Integer productId,
@@ -365,7 +374,7 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param productWithSupplier 入荷する商品の情報.
-	 * @param　fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
+	 * @param fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
 	 */
 	private void goToArrive(Model model, ProductWithSupplier productWithSupplier,
 			FullNameUser fullNameUser) {
@@ -389,7 +398,7 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param product 出荷する商品の情報.
-	 * @param　fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
+	 * @param fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
 	 */
 	private void goToShip(Model model, MProduct product, FullNameUser fullNameUser) {
 
@@ -416,9 +425,8 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param product 在庫修正する商品の情報.
-	 * @param　fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
+	 * @param fullNameUser ログイン中のユーザーのフルネーム(姓 + 名).
 	 */
-	/** 在庫修正フォーム画面への遷移と在庫修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド　*/
 	private void goToEdit(Model model, MProduct product, FullNameUser fullNameUser) {
 
 		// 商品情報をmodelに格納する.
