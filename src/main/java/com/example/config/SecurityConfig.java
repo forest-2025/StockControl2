@@ -40,7 +40,8 @@ public class SecurityConfig {
 				).logout(logout -> logout
 						.logoutUrl("/logout") 			// ログアウトのURLパスを指定する(POSTリクエスト).
 						.logoutSuccessUrl("/logout") 	// ログアウト成功時の遷移先URLパス(リダイレクトするのでGETリクエストでURLパスに遷移する).
-						.invalidateHttpSession(true)	// 現在のHTTPセッションを破棄する.
+						.invalidateHttpSession(true)	// サーバー側のHTTPセッションを破棄(デフォルトで有効だが明示的に記載している).
+						.clearAuthentication(true)		// 現在のThreadLocalのSecurityContextに入っているAuthenticationをクリア(デフォルトで有効だが明示的に記載している).
 					    .deleteCookies("JSESSIONID")	// ブラウザ側のクッキーを削除する.
 						.permitAll()					// 独自のログアウト成功エンドポイントを指定したので、未ログインユーザーでもアクセスできるようにする.
 

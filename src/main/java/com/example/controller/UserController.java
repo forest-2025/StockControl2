@@ -28,6 +28,10 @@ import com.github.pagehelper.PageInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/** 
+ * ユーザーの情報に関するコントローラクラス.
+ * 
+ *  */
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -40,24 +44,29 @@ public class UserController {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	// 1ページで表示するユーザーの人数を10人に設定する.
 	private final int SHOW_SIZE = 10;
 
-	/** ユーザー一覧画面に遷移する. */
+	/**
+	 * ユーザー一覧画面に遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param search ユーザーを検索するときの検索語句.
+	 * @param page 取得するページ番号.
+	 * @return ユーザー一覧画面のビュー名.
+	 */
 	@GetMapping("/list")
-	public String getList(@RequestParam(required = false) String search,
-			@RequestParam(defaultValue = "1") int page,
-			Model model) {
+	public String getList(Model model,
+			@RequestParam(required = false) String search,
+			@RequestParam(defaultValue = "1") int page) {
 
 		/* @RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
 		 * パラメータ名searchが無ければ削除されていない全ユーザーの一覧を取得し,あればsearchの
 		 * 値が含まれるユーザーを検索する.
-		 * @RequestParam(defaultValue = "1") int pageはpage=1がデフォルト */
+		 * @RequestParam(defaultValue = "1") int pageはpage=1がデフォルト. */
 
-		// 1ページに表示するデータの件数(人数)を設定する.
-		
 		if (search == null) {
 			PageInfo<MUser> userList = userService.getUsers(page, SHOW_SIZE);
 			model.addAttribute("userList", userList);
@@ -67,7 +76,6 @@ public class UserController {
 			model.addAttribute("search", search);
 		}
 
-		
 		// ヘッダーの色と項目を設定する.
 		customHeader.setYellow("ユーザー一覧");
 		model.addAttribute("customHeader", customHeader);
@@ -75,17 +83,33 @@ public class UserController {
 		return "/users/list";
 	}
 
-	/** ユーザー登録ボタンを押してくるところ. */
+	/**
+	 * ユーザー登録ボタンを押してくるところ.
+	 * ユーザー登録フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param form ユーザー登録フォーム.
+	 * @return ユーザー登録フォーム画面のビュー名.
+	 */
 	@GetMapping("/register")
 	public String getRegister(Model model, @ModelAttribute RegisterForm form) {
 
-		// ヘッダーの色と項目を設定する.
-		customHeader.setYellow("ユーザー登録");
-		model.addAttribute("customHeader", customHeader);
+		// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
+		this.goToRegister(model);
+
 		return "/users/register";
 	}
 
-	/** ユーザー登録フォーム画面の登録を押してくるところ. */
+	/**
+	 * ユーザー登録フォーム画面の登録を押してくるところ.
+	 * ユーザー情報の登録内容を確認して登録する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param form ユーザー登録フォーム.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	バリデーションエラーがあればユーザー登録フォーム画面のビュー名.
+	 * 			正常に完了した場合,ユーザー一覧画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/register")
 	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
 			BindingResult bindingResult) {
@@ -123,9 +147,9 @@ public class UserController {
 		// バリデーションエラーがあればユーザー登録フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
-			// ヘッダーの色と項目を設定する.
-			customHeader.setYellow("ユーザー登録");
-			model.addAttribute("customHeader", customHeader);
+			// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
+			this.goToRegister(model);
+
 			return "/users/register";
 		}
 
@@ -138,7 +162,16 @@ public class UserController {
 		return "redirect:/users/list";
 	}
 
-	/** ユーザー情報修正ボタンを押してくるところ */
+	/**
+	 * ユーザー情報修正ボタンを押してくるところ.
+	 * ユーザー情報修正フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param userId 修正するユーザーのID.
+	 * @param form ユーザー修正フォーム.
+	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,ユーザー情報修正フォーム画面のビュー名.
+	 */
 	@GetMapping("/{userId}/edit")
 	public String getEdit(Model model, @PathVariable Integer userId, @ModelAttribute EditForm form) {
 
@@ -161,7 +194,22 @@ public class UserController {
 		return "/users/edit";
 	}
 
-	/** ユーザー情報修正フォーム画面の確定ボタンを押してくるところ. */
+	/**
+	 * ユーザー情報修正フォーム画面の確定ボタンを押してくるところ.
+	 * ユーザー情報の修正内容を確認して更新する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param productId 修正するユーザーのID.
+	 * @param userDetails ログイン中のユーザーの情報.
+	 * @param authentication 
+	 * @param request	
+	 * @param response
+	 * @param form 入荷フォーム.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあれば入荷フォーム画面のビュー名.
+	 * 			正常に完了した場合,商品一覧画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/{userId}/edit")
 	public String postEdit(Model model, @PathVariable Integer userId,
 			@AuthenticationPrincipal UserDetails userDetails,
@@ -241,7 +289,18 @@ public class UserController {
 			 * ユーザーをログアウトさせる処理を簡単に行える. */
 			SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
-			// 認証情報のクリア・セッション破棄・Cookieの削除を行い,ユーザーをログアウト状態にする.
+			/* スレッドはプログラムを実行する作業単位のことで(1リクエスト = 1スレッド,オブジェクトでもある),
+			 * その作業を行う専用の場所がThreadLocal(オブジェクト)でJVMのヒープメモリ上に保存される.
+			 * そのThreadLocalの中にSecurityContextというコンテナがあり(インターフェースなので実際は実装したオブジェクトが入っている),
+			 * そのコンテナの中にAuthenticationというユーザーのユーザー名・権限・認証をもつオブジェクト(インターフェースなので実際は実装したオブジェクトが入っている)
+			 * があり,そのAuthenticationの中のフィールドprincipalがユーザーの詳細情報を保持しているUserDetailsオブジェクト.
+			 * (インターフェースなので実際は実装したオブジェクトが入っている).
+			 * これは現在のリクエスト用で,次回のリクエスト用にHTTPセッションにも同じSecurityContextを保存する.
+			 * (SPRING_SECURITY_CONTEXTというキー名で保存).
+			 * このような関係があり,SecurityContextLogoutHandlerのlogoutメソッドがSecurityContextを取得しクリアすることで,
+			 * その中に保持されていたAuthentication(principal(UserDetails)を含む)への参照がなくなり,
+			 * SpringSecurityから見て「ログインユーザーが存在しない状態」になる.
+			 * また,logoutメソッドは内部的にsession.invalidate();が実行される.これによりセッションが破棄される. */
 			logoutHandler.logout(request, response, authentication);
 
 			return "redirect:/logout";
@@ -362,6 +421,24 @@ public class UserController {
 		}
 
 		return "redirect:/users/list";
+	}
+
+	// ==========================================
+	//    privateメソッド.
+	// ==========================================
+
+	/**
+	 * ユーザー情報登録フォーム画面への遷移と,
+	 * ユーザー情報登録フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 */
+	private void goToRegister(Model model) {
+
+		// ヘッダーの色と項目を設定する.
+		customHeader.setYellow("ユーザー登録");
+		model.addAttribute("customHeader", customHeader);
+
 	}
 
 	/** ユーザー情報修正フォーム画面への遷移とユーザー情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.　*/
