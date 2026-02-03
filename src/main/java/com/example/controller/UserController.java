@@ -25,6 +25,7 @@ import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;
 import com.github.pagehelper.PageInfo;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -167,7 +168,7 @@ public class UserController {
 	 * ユーザー情報修正フォーム画面へ遷移する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param userId 修正するユーザーのID.
+	 * @param userId ユーザー情報を修正するユーザーのID.
 	 * @param form ユーザー修正フォーム.
 	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
 	 * 			正常に完了した場合,ユーザー情報修正フォーム画面のビュー名.
@@ -199,23 +200,24 @@ public class UserController {
 	 * ユーザー情報の修正内容を確認して更新する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param productId 修正するユーザーのID.
+	 * @param userId ユーザー情報を修正するユーザーのID.
 	 * @param userDetails ログイン中のユーザーの情報.
-	 * @param authentication 
-	 * @param request	
-	 * @param response
+	 * @param request HTTPリクエストをJavaで扱いやすい形にしたHttpServletRequestインターフェースの実装オブジェクト.
+	 * @param response HTTPレスポンスをJavaで扱いやすい形にしたHttpServletResponseインターフェースの実装オブジェクト.
+	 * @param authentication Authenticationインターフェースを実装したオブジェクトで,認証状態を保持する(ユーザー情報・権限・認証済みか等).
 	 * @param form 入荷フォーム.
 	 * @param bindingResult バリデーションエラー.
-	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
-	 * 			バリデーションエラーがあれば入荷フォーム画面のビュー名.
-	 * 			正常に完了した場合,商品一覧画面のビュー名(リダイレクト).
+	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあればユーザー情報修正フォーム画面のビュー名.
+	 * 			ユーザーが自身の管理者権限を管理者から一般に変更した場合,ユーザーに関する情報の閲覧権限を失うためログアウト画面のビュー名(リダイレクト).
+	 * 			正常に完了した場合,ユーザー一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/{userId}/edit")
 	public String postEdit(Model model, @PathVariable Integer userId,
 			@AuthenticationPrincipal UserDetails userDetails,
-			Authentication authentication,
 			HttpServletRequest request,
 			HttpServletResponse response,
+			Authentication authentication,
 			@ModelAttribute @Validated EditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
@@ -300,8 +302,15 @@ public class UserController {
 			 * このような関係があり,SecurityContextLogoutHandlerのlogoutメソッドがSecurityContextを取得しクリアすることで,
 			 * その中に保持されていたAuthentication(principal(UserDetails)を含む)への参照がなくなり,
 			 * SpringSecurityから見て「ログインユーザーが存在しない状態」になる.
-			 * また,logoutメソッドは内部的にsession.invalidate();が実行される.これによりセッションが破棄される. */
+			 * logoutメソッドは内部的にsession.invalidate();が実行され,これによりHTTPセッションが破棄される.
+			 * またCookie(JSESSIONID)を削除してくれる.
+			 * 
+			 *  */
 			logoutHandler.logout(request, response, authentication);
+
+			// Cookieを削除する(下にあるprivateメソッド).
+			this.deleteCookie(response, "JSESSIONID"); // 上のlogout()でも削除してくれているが念のため.
+			this.deleteCookie(response, "remember-me");
 
 			return "redirect:/logout";
 		}
@@ -310,9 +319,19 @@ public class UserController {
 
 	}
 
-	/** パスワード修正ボタンを押してくるところ */
+	/**
+	 * パスワード修正ボタンを押してくるところ.
+	 * パスワード修正フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param userId パスワードを修正するユーザーのID.
+	 * @param form パスワード修正フォーム.
+	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合,パスワード修正フォーム画面のビュー名.
+	 */
 	@GetMapping("/{userId}/passwordEdit")
-	public String getPasswordEdit(Model model, @PathVariable Integer userId, @ModelAttribute PasswordEditForm form) {
+	public String getPasswordEdit(Model model, @PathVariable Integer userId, 
+			@ModelAttribute PasswordEditForm form) {
 
 		// ユーザーIDから情報を取得する.
 		MUser user = userService.getByUserId(userId);
@@ -329,7 +348,18 @@ public class UserController {
 		return "/users/password-edit";
 	}
 
-	/** パスワード修正フォーム画面の確定ボタンを押してくるところ. */
+	/**
+	 * パスワード修正フォーム画面の確定ボタンを押してくるところ.
+	 * パスワードの修正内容を確認して更新する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param userId パスワードを修正するユーザーのID.
+	 * @param form パスワード修正フォーム.
+	 * @param bindingResult バリデーションエラー.
+	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
+	 * 			バリデーションエラーがあればパスワード修正フォーム画面のビュー名.
+	 * 			正常に完了した場合,ユーザー一覧画面のビュー名(リダイレクト).
+	 */
 	@PostMapping("/{userId}/passwordEdit")
 	public String postPasswordEdit(Model model, @PathVariable Integer userId,
 			@ModelAttribute @Validated PasswordEditForm form,
@@ -366,7 +396,15 @@ public class UserController {
 
 	}
 
-	/** ユーザー情報削除ボタンを押してくるところ */
+	/**
+	 * ユーザー情報削除ボタンを押してくるところ.
+	 * ユーザー情報削除フォーム画面へ遷移する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param userId ユーザー情報を削除するユーザーのID.
+	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
+	 * 			正常に完了した場合ユーザー情報削除フォーム画面のビュー名.
+	 */
 	@GetMapping("/{userId}/delete")
 	public String getDelete(Model model, @PathVariable Integer userId) {
 
@@ -387,14 +425,28 @@ public class UserController {
 
 		return "/users/delete";
 	}
+	
+	/**
+	 * ユーザー情報削除フォーム画面の削除ボタンを押してくるところ.
+	 * ユーザー情報の削除フラグを更新(1にして論理削除)する.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param userId ユーザー情報を削除するユーザーのID.
+	 * @param userDetails ログイン中のユーザーの情報.
+	 * @param request HTTPリクエストをJavaで扱いやすい形にしたHttpServletRequestインターフェースの実装オブジェクト.
+	 * @param response HTTPレスポンスをJavaで扱いやすい形にしたHttpServletResponseインターフェースの実装オブジェクト.
+	 * @param authentication Authenticationインターフェースを実装したオブジェクトで,認証状態を保持する(ユーザー情報・権限・認証済みか等).
+	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
+	 * 			ログインユーザーが自身のユーザー情報を削除した場合,アプリを使用する権限を失うためログアウト画面のビュー名(リダイレクト).
+	 * 			正常に完了した場合,ユーザー一覧画面のビュー名(リダイレクト).
+	 */
 
-	/** ユーザー情報削除フォーム画面の削除ボタンを押してくるところ. */
 	@PostMapping("/{userId}/delete")
 	public String postDelete(Model model, @PathVariable Integer userId,
 			@AuthenticationPrincipal UserDetails userDetails,
-			Authentication authentication,
 			HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response,
+			Authentication authentication) {
 
 		// ユーザーIDから情報を取得する.
 		MUser user = userService.getByUserId(userId);
@@ -407,7 +459,7 @@ public class UserController {
 		// ユーザーの削除フラグを削除済みに変更する.
 		userService.updateIsDeleted(user);
 
-		// ログインユーザーが自身の管理者権限を管理者から一般に変更した場合はリダイレクト先のユーザー情報一覧について閲覧権限がなくなるためログアウトさせる.
+		// ログインユーザーが自身のユーザー情報を削除させた場合,アプリを使用する権限を失うためログアウトさせる.
 		if (userDetails.getUsername().equals(user.getEmailAddress())) {
 
 			/* SecurityContextLogoutHandlerはSpringSecurityのログアウト用のユーティリティクラス(補助クラス)で,
@@ -416,6 +468,10 @@ public class UserController {
 
 			// 認証情報のクリア・セッション破棄・Cookieの削除を行い,ユーザーをログアウト状態にする.
 			logoutHandler.logout(request, response, authentication);
+			
+			// Cookieを削除する(下にあるprivateメソッド).
+			this.deleteCookie(response, "JSESSIONID"); // 上のlogout()でも削除してくれているが念のため.
+			this.deleteCookie(response, "remember-me");
 
 			return "redirect:/logout";
 		}
@@ -441,7 +497,13 @@ public class UserController {
 
 	}
 
-	/** ユーザー情報修正フォーム画面への遷移とユーザー情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.　*/
+	/**
+	 * ユーザー情報修正フォーム画面への遷移と,
+	 * ユーザー情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param user ユーザー情報を修正するユーザーの情報.
+	 */
 	private void goToEdit(Model model, MUser user) {
 
 		// 取得したユーザー情報をユーザー情報修正フォーム画面に渡すためmodelに格納する(userIdを渡すため).
@@ -452,7 +514,13 @@ public class UserController {
 		model.addAttribute("customHeader", customHeader);
 	}
 
-	/** パスワード修正フォーム画面への遷移とパスワード修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.　*/
+	/**
+	 * パスワード修正フォーム画面への遷移と,
+	 * パスワード修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
+	 * 
+	 * @param model ビューにデータを渡すためのモデル.
+	 * @param user パスワードを修正するユーザーの情報.
+	 */
 	private void goToPasswordEdit(Model model, MUser user) {
 
 		// 取得したユーザー情報をパスワード修正フォーム画面に渡すためmodelに格納する(userIdを渡すため).
@@ -461,6 +529,26 @@ public class UserController {
 		// ヘッダーの色と項目を設定する.
 		customHeader.setYellow("パスワード修正");
 		model.addAttribute("customHeader", customHeader);
+	}
+
+	/**
+	 * Cookieを削除するメソッド.
+	 * 
+	 * @param response HTTPレスポンスをJavaで扱いやすい形にしたHttpServletResponseインターフェースの実装オブジェクト.
+	 * @param name 削除したいCookieの名前.
+	 */
+	private void deleteCookie(HttpServletResponse response, String name) {
+		/* Cookieはブラウザに保存される小さなデータで,サーバーはそれを送ったり受け取ったりしてユーザーの状態（ログイン状態や設定など）を管理する.
+		 * Cookieは名前(Name) + パス (Path) + ドメイン (Domain) で識別される.
+		 * 削除したいCookieと同じ名前・Path・Domainを指定して値をnullにし,setMaxAge(0)を設定すると,ブラウザはそのCookieを即座に削除する.
+		 * (PathはどのURLにそのCookieを送るかをブラウザに指示するスコープで"/"に設定するとサイト全体（ルート配下のすべてのURL）が対象になる.
+		 * ()で指定した秒数だけクッキーがブラウザに保存（保持）されるため,0だと即座に無効化(削除)される).
+		 * 最後にresponse.addCookie(cookie)で,この削除指示をレスポンスに追加する.
+		 * (まだ削除されない.削除する設定をレスポンスに設定しただけ.) */
+		Cookie cookie = new Cookie(name, null);
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
 	}
 
 }

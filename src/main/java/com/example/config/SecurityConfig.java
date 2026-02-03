@@ -9,6 +9,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * SpringSecurityのフィルタチェーンと,
+ * パスワードエンコーダーを定義する設定クラス.
+ * 
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -38,7 +43,7 @@ public class SecurityConfig {
 
 				// ログアウト処理.
 				).logout(logout -> logout
-						.logoutUrl("/logout") 			// ログアウトのURLパスを指定する(POSTリクエスト).
+						.logoutUrl("/logout") 			// ログアウトのURLパスを指定する(POSTリクエストで送られてくるものを受け付ける).
 						.logoutSuccessUrl("/logout") 	// ログアウト成功時の遷移先URLパス(リダイレクトするのでGETリクエストでURLパスに遷移する).
 						.invalidateHttpSession(true)	// サーバー側のHTTPセッションを破棄(デフォルトで有効だが明示的に記載している).
 						.clearAuthentication(true)		// 現在のThreadLocalのSecurityContextに入っているAuthenticationをクリア(デフォルトで有効だが明示的に記載している).
