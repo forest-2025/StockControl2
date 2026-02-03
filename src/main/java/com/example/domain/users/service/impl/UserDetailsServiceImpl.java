@@ -15,12 +15,26 @@ import com.example.component.FullNameUser;
 import com.example.domain.users.model.MUser;
 import com.example.domain.users.service.UserService;
 
+/**
+ * ログイン時に入力されたユーザー名をもとにデータベースからユーザー情報を取得し,
+ * SpringSecurity が扱える UserDetails オブジェクトを生成するサービスクラス.
+ * 
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private UserService loginService;
 
+	/**
+	 * ログイン処理で使用されるメソッド.
+	 * 入力されたユーザー名をもとにユーザーを検索し,認証に必要な情報を返す.
+	 * 
+	 * @param emailAddress ログイン画面で入力されたメールアドレス.
+	 * @return Spring Security が認証処理に使用するUserDetailsオブジェクト.
+	 * @throws UsernameNotFoundException
+	 *         指定されたユーザー名のユーザーが存在しない場合.
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {
 
@@ -57,7 +71,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		FullNameUser fullNameUser = new FullNameUser(loginUser.getEmailAddress(), loginUser.getPassword(),
 				authorities, loginUser.getFamilyName(), loginUser.getFirstName());
 
-		// UserDetails生成する.
+		// UserDetailsを生成する.
 		UserDetails userDetails = (UserDetails) fullNameUser;
 
 		return userDetails;
