@@ -6,9 +6,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 /**
- * SpringSecurityのUserクラスを拡張して,独自のユーザー情報を持たせたクラス.
- * Userクラスは基本的にusername・password・権限（roles / authorities）しか保持しないため,
- * このクラスでfamilyNameとfirstNameを追加して保持することで,ログイン中のユーザーの名前をログインしているあいだ画面に表示し続けることができる.
+ * SpringSecurity の User クラスを拡張して,独自のユーザー情報を持たせたクラス.
+ * User クラスは基本的に username ・ password ・権限（roles / authorities）しか保持しないため,
+ * このクラスで familyName と firstName を追加して保持することで,
+ * ログイン中のユーザーの名前をログインしているあいだ画面に表示し続けることができる.
  *
  */
 public class FullNameUser extends User{
@@ -17,8 +18,8 @@ public class FullNameUser extends User{
 	private final String firstName;
 
 	/**
-	 * SpringSecurityのUserクラスの情報にフルネームを保持する,
-	 * FullNameUserのインスタンスを生成する.
+	 * SpringSecurity の User クラスの情報にフルネームを保持する,
+	 * FullNameUser のインスタンスを生成する.
 	 *
 	 * @param username 認証に使用するユーザのメールアドレス.
 	 * @param password 認証に使用するパスワード.

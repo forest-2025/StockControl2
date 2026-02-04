@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	 * 入力されたユーザー名をもとにユーザーを検索し,認証に必要な情報を返す.
 	 * 
 	 * @param emailAddress ログイン画面で入力されたメールアドレス.
-	 * @return Spring Security が認証処理に使用するUserDetailsオブジェクト.
+	 * @return Spring Security が認証処理に使用する UserDetails オブジェクト.
 	 * @throws UsernameNotFoundException
 	 *         指定されたユーザー名のユーザーが存在しない場合.
 	 */
@@ -52,7 +52,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		// 権限リストを作成する(リストなのはユーザーが複数権限を持つ可能性があるから).
 		List<GrantedAuthority> authorities = new ArrayList<>();
 
-		/* isAdminが0なら管理者権限なし(GENERAL).
+		/* isAdmin が0なら管理者権限なし(GENERAL).
 		 * 1なら管理者権限あり(ROLE_ADMIN)を設定. */
 		if (userAuthorityNo == 0) {
 

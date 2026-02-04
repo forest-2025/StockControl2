@@ -8,13 +8,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * SpringSecurityのフィルタチェーンを設定するクラス.
+ * SpringSecurity のフィルタチェーンを設定するクラス.
  * 
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+	/**
+	 * アプリケーション全体のセキュリティ設定を行う SecurityFilterChain を Bean として定義する.
+	 *
+	 * どのURLに認証が必要か,ログインやログアウトの方法などWebセキュリティの基本的な動作をここで設定する.
+	 *
+	 * @param http HttpSecurity オブジェクト.セキュリティ設定の操作対象.
+	 * @return セキュリティ設定が適用された SecurityFilterChain.
+	 * @throws Exception 設定時にエラーが発生した場合.
+	 * 
+	 */
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -26,7 +36,7 @@ public class SecurityConfig {
 				// ログインに関する設定.
 				.formLogin(login -> login
 						.loginPage("/login") 				// 自作ログインページのためURLパスを指定する(GETリクエスト).
-						.loginProcessingUrl("/login") 		// ログインページでログインボタンを押した時の遷移先のURLパス.(POSTリクエストでこちらに遷移したら認証処理が行われる).
+						.loginProcessingUrl("/login") 		// ログインページでログインボタンを押した時の遷移先の URLパス.(POSTリクエストでこちらに遷移したら認証処理が行われる).
 						.failureUrl("/login?error") 		// ログイン失敗時の遷移先URLパスを指定する(リダイレクトなのでGETリクエスト).
 						.usernameParameter("emailAddress") 	// ログインページのメールアドレス.
 						.passwordParameter("password") 		// ログインページのパスワード.
@@ -38,7 +48,7 @@ public class SecurityConfig {
 						.logoutUrl("/logout") 			// ログアウトのURLパスを指定する(POSTリクエストで送られてくるものを受け付ける).
 						.logoutSuccessUrl("/logout") 	// ログアウト成功時の遷移先URLパス(リダイレクトするのでGETリクエストでURLパスに遷移する).
 						.invalidateHttpSession(true)	// サーバー側のHTTPセッションを破棄(デフォルトで有効だが明示的に記載している).
-						.clearAuthentication(true)		// 現在のThreadLocalのSecurityContextに入っているAuthenticationをクリア(デフォルトで有効だが明示的に記載している).
+						.clearAuthentication(true)		// 現在の ThreadLocal の SecurityContext に入っている Authentication をクリア(デフォルトで有効だが明示的に記載している).
 					    .deleteCookies("JSESSIONID")	// ブラウザ側のクッキーを削除する.
 						.permitAll()					// 独自のログアウト成功エンドポイントを指定したので、未ログインユーザーでもアクセスできるようにする.
 
@@ -61,7 +71,7 @@ public class SecurityConfig {
  * 0は有効期限が0(有効期限なし)なのでキャッシュが無効のためサーバーに問い合わせて最新の情報を取得するということ.
  * (保存するが期限切れで使用しないか,そもそも保存しないかはブラウザによる).
  * これらは BFCache には完全には効かないが、通常のキャッシュは無効化できる.
- * <meta>タグも似ているが<meta>タグは適用タイミングが遅く,無視されやすい.
+ * <meta>タグも似ているが <meta> タグは適用タイミングが遅く,無視されやすい.
  * 今回は SpringSecurity を使用しているので <meta> タグは記載してない. 
  * 
  * アプリが起動される.
