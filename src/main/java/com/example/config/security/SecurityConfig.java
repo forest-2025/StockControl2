@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * SpringSecurityのフィルタチェーンを設定クラス.
+ * SpringSecurityのフィルタチェーンを設定するクラス.
  * 
  */
 @Configuration
@@ -27,10 +27,10 @@ public class SecurityConfig {
 				.formLogin(login -> login
 						.loginPage("/login") 				// 自作ログインページのためURLパスを指定する(GETリクエスト).
 						.loginProcessingUrl("/login") 		// ログインページでログインボタンを押した時の遷移先のURLパス.(POSTリクエストでこちらに遷移したら認証処理が行われる).
-						.failureUrl("/login?error") 		// ログイン失敗時の遷移先URLパスを指定する.
+						.failureUrl("/login?error") 		// ログイン失敗時の遷移先URLパスを指定する(リダイレクトなのでGETリクエスト).
 						.usernameParameter("emailAddress") 	// ログインページのメールアドレス.
 						.passwordParameter("password") 		// ログインページのパスワード.
-						.defaultSuccessUrl("/products/info/list", true) // ログイン成功後の遷移先URLパスを指定.
+						.defaultSuccessUrl("/products/info/list", true) // ログイン成功後の遷移先URLパスを指定する(リダイレクトなのでGETリクエスト).
 						.permitAll()						// 未ログインのユーザーでもログインページにアクセスできるようにする.﻿
 
 				// ログアウト処理.
@@ -49,17 +49,31 @@ public class SecurityConfig {
 
 }
 
-/* springsecurityではキャッシュについてはデフォルトでブラウザのキャッシュが無効になるようにHTTPレスポンスヘッダが付与されるため,
+/* SpringSecurity ではキャッシュについてはデフォルトでブラウザのキャッシュが無効になるようにHTTPレスポンスヘッダが付与されるため,
  * 基本的には何も設定しなくていい.
  * Cache-Control: no-cache, no-store, max-age=0, must-revalidate と,
  * Pragma: no-cache と,
  * Expires: 0 が自動的に設定される.
- * Cache-Controlヘッダーはブラウザなどがコンテンツをキャッシュする方法や、期間、再利用のルールなどを制御するためのHTTPヘッダ-のこと.
- * no-cache, no-store, max-age=0, must-revalidateはCache-Controlヘッダーのディレクティブ(指示語).
+ * Cache-Control ヘッダーはブラウザなどがコンテンツをキャッシュする方法や、期間、再利用のルールなどを制御するためのHTTPヘッダ-のこと.
+ * no-cache, no-store, max-age=0, must-revalidate は Cache-Control ヘッダーのディレクティブ(指示語).
  * PragmaヘッダーはHTTP/1.0時代のヘッダーであり、古いシステムとの下位互換性のために使用される. 
- * Expiresヘッダーはブラウザやプロキシが、そのレスポンスをいつまでキャッシュしてよいかを示すための日時を指定するヘッダーで,
+ * Expires ヘッダーはブラウザやプロキシが、そのレスポンスをいつまでキャッシュしてよいかを示すための日時を指定するヘッダーで,
  * 0は有効期限が0(有効期限なし)なのでキャッシュが無効のためサーバーに問い合わせて最新の情報を取得するということ.
  * (保存するが期限切れで使用しないか,そもそも保存しないかはブラウザによる).
- * これらはBFCacheには完全には効かないが、通常のキャッシュは無効化できる.
+ * これらは BFCache には完全には効かないが、通常のキャッシュは無効化できる.
  * <meta>タグも似ているが<meta>タグは適用タイミングが遅く,無視されやすい.
- * 今回はspringsecurityを使用しているので<meta>タグは記載してない. */
+ * 今回は SpringSecurity を使用しているので <meta> タグは記載してない. 
+ * 
+ * アプリが起動される.
+ * 		↓
+ * @Bean で SecurityFilterChain が作られる.
+ * 		↓
+ * Spring が ApplicationContext に登録する.
+ * 		↓
+ * SpringSecurity が起動時に ApplicationContext から すべての SecurityFilterChain Bean を探す.
+ * 		↓
+ * FilterChainProxy (全リクエストを横取りするフィルタ)の内部に取り込む. 
+ * 		↓
+ * リクエストが来れば FilterChainProxy が適切な SecurityFilterChain を選択してチェーン内のフィルター順に実行する.
+ * 		↓
+ * 問題なければ Controller に到達する. */

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.component.CustomHeader;
+import com.example.config.security.SecurityBeanConfig;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.model.ProductList;
 import com.example.domain.products.model.ProductWithSupplier;
@@ -52,6 +53,9 @@ public class ProductInfoController {
 
 	// 1ページで表示する商品数・入出荷履歴数を10に設定する.
 	private static final int SHOW_SIZE = 10;
+	
+	@Autowired
+	SecurityBeanConfig sb;
 
 	/**
 	 * 商品一覧画面（ホーム画面）へ遷移する.
