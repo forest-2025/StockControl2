@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
 		return new PageInfo<>(customerList);
 	}
 
-	// 削除済み以外の出荷先検索結果一覧を取得(出荷先ID・出荷先名・出荷先名ふりがなで検索する)し指定した項目と順序でソートする.
+	// 削除済み以外の出荷先検索結果一覧を取得(出荷先ID・出荷先名・出荷先名ふりがなで検索)し,指定した項目と順序でソートする.
 	@Override
 	public PageInfo<MCustomer> getSearchResults(
 			int page, int size, String search, String sortItem, String sort) {
@@ -52,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	}
 
-	// 出荷先IDから削除済み以外の出荷先情報を取得する.
+	// 出荷先IDから出荷先情報を取得する(削除済みは除く).
 	@Override
 	public MCustomer getByCustomerId(Integer customerId) {
 

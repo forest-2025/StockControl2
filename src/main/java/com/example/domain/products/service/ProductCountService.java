@@ -37,26 +37,52 @@ public interface ProductCountService {
 	 * (履歴で誰が処理したかわかるようにするため).
 	 * 
 	 * @param userDetails ログイン中のユーザーの情報.
-	 * @return ログイン中のユーザーのユーザーID.*/
+	 * @return ログイン中のユーザーのユーザーID.
+	 */
 	public Integer getUserId(UserDetails userDetails);
 
-	/** 入荷した商品の在庫数を増やし、履歴を登録する. */
+	/**
+	 *  入荷した商品の在庫数を増やし,履歴を登録する.
+	 *  
+	 *  @param transactionHistory 登録する入荷履歴.
+	 */
 	public void processArrival(TTransactionHistory transactionHistory);
 	
-	// 出荷処理.
-	/** 削除済み以外の出荷先一覧を出荷先IDの昇順で取得する */ // 出荷フォームに出荷先名を渡すため.
+	/** 
+	 * 削除済み以外の出荷先一覧を出荷先IDの昇順で取得する.
+	 *
+	 * @return 出荷先一覧.
+	 */ 
 	public List<MCustomer> getCustomerList(); 
 	
-	/** 出荷先が登録されているか(また,削除済みでないかを)出荷先IDで検索する. */
+	/** 
+	 * 出荷先が登録されているか(また,削除済みでないかを)出荷先IDで検索する.
+	 * 
+	 * @param customerId 検索する出荷先ID.
+	 * @return 出荷先情報.
+	 */
 	public MCustomer getCustomer(Integer customerId);
 	
-	/** 商品IDから商品の在庫情報を取得し、在庫数のみ返す. */ // 出荷数が在庫数を越えていないか確認するため.
+	/** 
+	 * 商品IDから商品の在庫情報を取得し,在庫数のみ返す.
+	 * (出荷数が在庫数を越えていないか確認するため.) *
+	 * 
+	 * @param productId 取得する在庫情報の商品ID.
+	 * @return 商品の在庫数.
+	 */
 	public Integer getOneStockQuantity(Integer productId);
 	
-	/** 出荷した商品の在庫数を増やし、履歴を登録する. */
+	/** 
+	 * 出荷した商品の在庫数を増やし,履歴を登録する.
+	 * 
+	 * @param transactionHistory 登録する出荷履歴.
+	 */
 	public void processShip(TTransactionHistory transactionHistory);
 	
-	// 修正処理.
-	/** 在庫の修正で増減した在庫数を調整し、履歴を登録する. */
+	/** 
+	 * 在庫の修正で増減した在庫数を調整し,履歴を登録する.
+	 * 
+	 * @param transactionHistory 登録する修正履歴.
+	 */
 	public void processEdit(TTransactionHistory transactionHistory);
 }

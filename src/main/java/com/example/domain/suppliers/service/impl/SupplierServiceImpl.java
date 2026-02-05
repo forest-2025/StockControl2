@@ -12,6 +12,10 @@ import com.example.repository.SupplierMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+/**
+ * SupplierService の実装クラス.
+ * 
+ */
 @Service
 @Transactional
 public class SupplierServiceImpl implements SupplierService {
@@ -19,7 +23,7 @@ public class SupplierServiceImpl implements SupplierService {
 	@Autowired
 	private SupplierMapper supplierMapper;
 
-	/** 削除済み以外の入荷先一覧を入荷先IDの昇順で取得する. */
+	// 削除済み以外の入荷先一覧を入荷先IDの昇順で取得する.
 	@Override
 	public PageInfo<MSupplier> getAllInAscById(int page, int size) {
 
@@ -29,7 +33,7 @@ public class SupplierServiceImpl implements SupplierService {
 		return new PageInfo<>(supplierList);
 	}
 
-	/** 削除済み以外の入荷先検索結果一覧を取得する(入荷先ID・入荷先名・入荷先名ふりがなで検索する). */
+	// 削除済み以外の入荷先検索結果一覧を取得(入荷先ID・入荷先名・入荷先名ふりがなで検索)し,指定した項目と順序でソートする. 
 	@Override
 	public PageInfo<MSupplier> getSearchResults(
 			int page, int size, String search, String sortItem, String sort) {
@@ -40,7 +44,7 @@ public class SupplierServiceImpl implements SupplierService {
 		return new PageInfo<>(supplierList);
 	}
 
-	/** 入荷先を登録する. */
+	// 入荷先を登録する.
 	@Override
 	public void registerOne(MSupplier supplier) {
 
@@ -48,7 +52,7 @@ public class SupplierServiceImpl implements SupplierService {
 
 	}
 
-	/** 入荷先IDから入荷先情報を取得する(削除済みは除く). */
+	// 入荷先IDから入荷先情報を取得する(削除済みは除く).
 	@Override
 	public MSupplier getBySupplierId(Integer supplierId) {
 
@@ -57,7 +61,7 @@ public class SupplierServiceImpl implements SupplierService {
 		return supplier;
 	}
 
-	/** 入荷先IDで指定した入荷先の情報を更新する. */
+	// 入荷先の情報を更新する.
 	@Override
 	public void updateOne(MSupplier supplier) {
 
@@ -65,7 +69,7 @@ public class SupplierServiceImpl implements SupplierService {
 
 	}
 
-	/** 入荷先IDで指定した削除フラグを更新する. */
+	// 削除フラグを更新する.
 	@Override
 	public void updateIsDeleted(MSupplier supplier) {
 

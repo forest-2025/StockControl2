@@ -39,7 +39,7 @@ public interface CustomerService {
 	public void registerOne(MCustomer customer);
 
 	/** 
-	 * 出荷先IDから出荷先情報を取得する.
+	 * 出荷先IDから出荷先情報を取得する(削除済みは除く).
 	 * 
 	 * @param customerId 出荷先情報を取得する出荷先のID.
 	 * @return 取得した出荷先情報.
@@ -54,7 +54,6 @@ public interface CustomerService {
 
 	/** 
 	 * 削除フラグを更新する.
-	 * 
 	 * 出荷先情報の削除は物理削除ではなく論理削除のため削除フラグを1に設定する.
 	 * 
 	 * @param customer 更新する出荷先情報.*/

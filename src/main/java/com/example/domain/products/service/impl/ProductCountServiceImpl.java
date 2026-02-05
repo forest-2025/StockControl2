@@ -21,6 +21,10 @@ import com.example.repository.StockMapper;
 import com.example.repository.TransactionHistoryMapper;
 import com.example.repository.UserMapper;
 
+/**
+ * ProductCountService の実装クラス.
+ * 
+ */
 @Service
 @Transactional
 public class ProductCountServiceImpl implements ProductCountService {
@@ -43,15 +47,14 @@ public class ProductCountServiceImpl implements ProductCountService {
 	@Autowired
 	private ProductMapper productMapper;
 
-	// 共通処理.
-	/** 商品IDから商品情報を取得する(削除済みは除く). */
+	// 商品IDから商品情報を取得する(削除済みは除く). 
 	@Override
 	public MProduct getOneProduct(Integer productId) {
 		MProduct product = productMapper.findByProductId(productId);
 		return product;
 	}
 	
-	/** 商品IDから商品情報と入荷先情報を取得する(削除済みは除く). */ // 入荷画面に遷移する際や、入力後のバリデーション時に使用.
+	// 商品IDから商品情報と入荷先情報を取得する(削除済みは除く).
 	@Override
 	public ProductWithSupplier getOneProductWithSupplier(Integer productId) {
 		
@@ -60,8 +63,7 @@ public class ProductCountServiceImpl implements ProductCountService {
 		
 	}
 
-	// 入荷処理.
-	/** ログイン中のユーザーのメールアドレスからユーザーIDを取得する. */	// 入荷履歴を更新するため、.
+	// ログイン中のユーザーのメールアドレスからユーザーIDを取得する.
 	@Override
 	public Integer getUserId(UserDetails userDetails) {
 
@@ -77,7 +79,7 @@ public class ProductCountServiceImpl implements ProductCountService {
 		return userId;
 	}
 
-	/** 入荷した商品の在庫数を増やし、履歴を登録する. */
+	// 入荷した商品の在庫数を増やし,履歴を登録する.
 	@Override
 	public void processArrival(TTransactionHistory transactionHistory) {
 
@@ -88,13 +90,12 @@ public class ProductCountServiceImpl implements ProductCountService {
 		// 商品IDとamountOfChange(入荷数)から商品IDの商品の在庫をamountOfChangeの数量分増加させる.
 		stockMapper.updateStockQuantity(productId, amountOfChange);
 
-		// 入荷履歴に登録する.
+		// 履歴を登録する.
 		transactionHistoryMapper.insertOne(transactionHistory);
 
 	}
 
-	// 出荷処理.
-	/** 削除済み以外の出荷先一覧を出荷先IDの昇順で取得する. */ // 出荷フォームに出荷先名を渡すため.
+	// 削除済み以外の出荷先一覧を出荷先IDの昇順で取得する.
 	@Override
 	public List<MCustomer> getCustomerList() {
 		
@@ -103,7 +104,7 @@ public class ProductCountServiceImpl implements ProductCountService {
 		return customerList;
 	}
 
-	/** 出荷先が登録されているか(また,削除済みでないかを)出荷先IDで検索する. */ // 出荷確定後のバリデーションで使用.
+	// 出荷先が登録されているか(また,削除済みでないかを)出荷先IDで検索する.
 	@Override
 	public MCustomer getCustomer(Integer customerId) {
 
@@ -112,7 +113,7 @@ public class ProductCountServiceImpl implements ProductCountService {
 		return customer;
 	}
 	
-	/** 商品IDから商品の在庫情報を取得し、在庫数のみ返す. */ // 出荷数が在庫数を越えていないか確認するため.
+	// 商品IDから商品の在庫情報を取得し,在庫数のみ返す.
 	@Override
 	public Integer getOneStockQuantity(Integer productId) {
 		TStock stock = stockMapper.findByProductId(productId);
@@ -120,7 +121,7 @@ public class ProductCountServiceImpl implements ProductCountService {
 		return stockQuantity;
 	}
 
-	/** 出荷した商品の在庫数を減らし、履歴を登録する. */
+	// 出荷した商品の在庫数を減らし,履歴を登録する.
 	@Override
 	public void processShip(TTransactionHistory transactionHistory) {
 
@@ -141,8 +142,7 @@ public class ProductCountServiceImpl implements ProductCountService {
 
 	}
 
-	// 修正処理.
-	/** 修正した商品の在庫数を調整し、履歴を登録する. */
+	// 在庫の修正で増減した在庫数を調整し,履歴を登録する.
 	@Override
 	public void processEdit (TTransactionHistory transactionHistory) {
 
