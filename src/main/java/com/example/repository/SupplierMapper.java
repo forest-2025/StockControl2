@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.domain.suppliers.model.MSupplier;
+import com.example.dto.common.MSupplier;
 
 @Mapper
 public interface SupplierMapper {

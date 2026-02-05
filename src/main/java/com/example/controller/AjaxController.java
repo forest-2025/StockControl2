@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.domain.products.model.ProductList;
 import com.example.domain.products.service.ProductInfoService;
+import com.example.dto.products.ProductList;
 
 import lombok.extern.slf4j.Slf4j;
 

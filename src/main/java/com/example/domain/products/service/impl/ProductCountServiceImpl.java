@@ -7,11 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.domain.customers.model.MCustomer;
-import com.example.domain.products.model.MProduct;
-import com.example.domain.products.model.ProductWithSupplier;
 import com.example.domain.products.service.ProductCountService;
-import com.example.domain.users.model.MUser;
+import com.example.dto.common.MUser;
+import com.example.dto.customers.MCustomer;
+import com.example.dto.products.MProduct;
+import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TStock;
 import com.example.dto.products.TTransactionHistory;
 import com.example.repository.CustomerMapper;

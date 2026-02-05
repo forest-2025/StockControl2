@@ -4,23 +4,40 @@ import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.domain.customers.model.MCustomer;
-import com.example.domain.products.model.MProduct;
-import com.example.domain.products.model.ProductWithSupplier;
+import com.example.dto.customers.MCustomer;
+import com.example.dto.products.MProduct;
+import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TTransactionHistory;
 
+/**
+ * 商品の数量の増減に関する業務処理を提供するサービス.
+ * 
+ */
 public interface ProductCountService {
 
-	// 共通処理.
-	
-	/**　商品IDから商品情報を取得する(削除済みは除く).　*/
+	/** 
+	 * 商品IDから商品情報を取得する(削除済みは除く). 
+	 * 
+	 * @param productId 商品情報を取得する商品ID.
+	 * @return 取得した商品情報.
+	 */
 	public MProduct getOneProduct(Integer productId);
 
-	/** 商品のIDから商品情報と入荷先情報を取得する(削除済みは除く). */ // 入荷画面に遷移する際や、入力後のバリデーション時に使用.
+	/** 
+	 * 商品のIDから商品情報と入荷先情報を取得する(削除済みは除く).
+	 * 入荷画面に遷移する際や、入力後のバリデーション時に使用.
+	 * 
+	 * @param productId 商品情報と入荷先情報を取得する商品ID.
+	 * @return 取得した商品情報と入荷先情報.
+	 */
 	public ProductWithSupplier getOneProductWithSupplier(Integer productId);
 
-	// 入荷処理.
-	/** ログイン中のユーザーのメールアドレスからユーザーIDを取得する. */ // 入荷履歴を更新するため.
+	/** 
+	 * ログイン中のユーザーのメールアドレスからユーザーIDを取得する.
+	 * (履歴で誰が処理したかわかるようにするため).
+	 * 
+	 * @param userDetails ログイン中のユーザーの情報.
+	 * @return ログイン中のユーザーのユーザーID.*/
 	public Integer getUserId(UserDetails userDetails);
 
 	/** 入荷した商品の在庫数を増やし、履歴を登録する. */

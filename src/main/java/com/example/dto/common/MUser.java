@@ -1,4 +1,4 @@
-package com.example.domain.users.model;
+package com.example.dto.common;
 
 import java.time.LocalDateTime;
 

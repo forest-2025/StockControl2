@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.component.FullNameUser;
-import com.example.domain.users.model.MUser;
 import com.example.domain.users.service.UserService;
+import com.example.dto.common.MUser;
 
 /**
  * ログイン時に入力されたユーザー名をもとにデータベースからユーザー情報を取得し,
@@ -32,8 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	 * 
 	 * @param emailAddress ログイン画面で入力されたメールアドレス.
 	 * @return Spring Security が認証処理に使用する UserDetails オブジェクト.
-	 * @throws UsernameNotFoundException
-	 *         指定されたユーザー名のユーザーが存在しない場合.
+	 * @throws UsernameNotFoundException 指定されたユーザー名のユーザーが存在しない場合.
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {

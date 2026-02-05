@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.domain.products.model.MProduct;
-import com.example.domain.products.model.ProductList;
-import com.example.domain.products.model.ProductWithSupplier;
 import com.example.domain.products.service.ProductInfoService;
-import com.example.domain.suppliers.model.MSupplier;
+import com.example.dto.common.MSupplier;
 import com.example.dto.products.HistoryDetails;
+import com.example.dto.products.MProduct;
+import com.example.dto.products.ProductList;
+import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TStock;
 import com.example.dto.products.UploadResult;
 import com.example.repository.ProductListMapper;
@@ -36,6 +36,10 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 
+/**
+ * ProductInfoService の実装クラス.
+ * 
+ */
 @Service
 @Transactional
 @Slf4j
@@ -72,8 +76,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	private final Tika tika = new Tika();
 
-	// 商品一覧・商品検索.
-	/** 削除済み以外の商品一覧を商品番号の昇順で取得する. */
+	// 削除済み以外の商品一覧を商品番号の昇順でページングして取得する. 
 	@Override
 	public PageInfo<ProductList> getProductList(int page, int size) {
 
@@ -83,19 +86,16 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		return new PageInfo<>(productList);
 	}
 
-	/** 削除済み以外の商品検索結果一覧を商品番号の昇順で取得する. */
+	// 削除済み以外の商品一覧から検索語句と一致する商品を,商品番号の昇順でページングして取得する.
 	@Override
-	public PageInfo<ProductList> getSearchProductList(int page, int size,String search) {
-		
+	public PageInfo<ProductList> getSearchProductList(int page, int size, String search) {
+
 		PageHelper.startPage(page, size);
 		List<ProductList> productItems = productListMapper.findSearchResults(search);
 		return new PageInfo<>(productItems);
 	}
 
-	// 商品情報の登録・修正・削除.
-
-	// 共通処理.
-	/** 商品IDから商品情報と入荷先情報を取得する(削除済みは除く). */ // 商品情報修正画面に遷移する際や、入力後のバリデーション時に使用.
+	// 商品のIDから商品情報と入荷先情報を取得する(削除済みは除く).
 	@Override
 	public ProductWithSupplier getOneProductWithSupplier(Integer productId) {
 
@@ -104,7 +104,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	}
 
-	/** 削除済み以外の入荷先一覧を入荷先IDの昇順で取得する. */
+	// 削除済み以外の入荷先一覧を入荷先IDの昇順で取得する.
 	@Override
 	public List<MSupplier> getAllSupplier() {
 
@@ -112,7 +112,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		return supplierList;
 	}
 
-	/** 入荷先が登録されてるか確認する(削除済みは除く). */
+	// 入荷先IDから入荷先がDBに登録されてるか確認する(削除済みは除く).
 	@Override
 	public boolean isRegister(Integer supplierId) {
 
@@ -128,7 +128,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		}
 	}
 
-	/** 商品番号の重複がないか確認する. */
+	// DBに登録済みの商品番号と重複しないか確認する.
 	@Override
 	public boolean isNotDuplicateProductNumber(String productNumber) {
 
@@ -143,20 +143,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		}
 	}
 
-	//	/** 商品番号から商品IDを取得する（商品登録後に在庫数を0に設定するため） */
-	//	@Override 下のregisterProduct()にいれたので、このメソッド単体で必要なければ削除して、必要ならregisterProduct()のこのメソッド部分をこのメソッドに変更する.
-	//	public Integer getProductId(String productNumber) {
-	//
-	//		// 商品番号から商品情報を取得する.
-	//		MProduct product = productMapper.findByProductNumber(productNumber);
-	//
-	//		// 商品情報のうち商品IDを取得する.
-	//		Integer productId = product.getProductId();
-	//
-	//		return productId;
-	//	}
-
-	/** 商品情報を登録する. */
+	// 商品情報を登録する.
 	@Override
 	public void registerProduct(MProduct product) {
 
@@ -175,21 +162,21 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		stockMapper.insertOne(stock);
 	}
 
-	/** 商品情報(商品番号・商品名・入荷先)を更新する. */
+	// 商品情報(商品番号・商品名・入荷先)を更新する.
 	@Override
 	public void updateProduct(MProduct product) {
 		productMapper.updateOne(product);
 
 	}
 
-	/** 商品IDから商品情報を取得する(削除済みは除く). */
+	// 商品IDから商品情報を取得する(削除済みは除く).
 	@Override
 	public MProduct getOneProduct(Integer productId) {
 		MProduct product = productMapper.findByProductId(productId);
 		return product;
 	}
 
-	/** 商品情報(削除フラグ)を更新する. */
+	// 削除フラグ)を更新する.
 	@Override
 	public void updateIsDeleted(MProduct product) {
 
@@ -217,8 +204,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	}
 
-	// 商品の詳細.
-	/** 削除済み以外の商品IDから商品情報を商品番号の昇順で取得する. */
+	// 商品IDから商品情報を商品番号の昇順で取得する(削除済みは除く).
 	@Override
 	public ProductList getOneItemInTheList(Integer productId) {
 
@@ -227,7 +213,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		return productList;
 	}
 
-	/** 商品IDからその商品の履歴を降順で取得する. */
+	/** 商品IDからその商品の履歴を降順でページングして取得する.  */
 	@Override
 	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, int size, Integer productId) {
 
@@ -237,13 +223,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		return new PageInfo<>(historyList);
 	}
 
-	/**
-	 * 画像バリデーション＆保存
-	 * 複数のエラーをまとめて返す
-	 *
-	 * @param file MultipartFile
-	 * @return エラーメッセージリスト（エラーなしなら空リスト）
-	 */
+	// 商品画像をバリデーションチェックし,ローカルファイルストレージ(プロジェクト直下)に保存する. 
 	public UploadResult validateAndUpload(MultipartFile file, UploadResult result) {
 		// バリデーションエラーがあった時のメッセージを格納するListを宣言する(tryの外でも使用するためここで宣言).
 		List<String> errors = new ArrayList<>();
@@ -262,7 +242,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 			// ファイルの元の名前(ユーザーが選択したときのファイル名)を取得する.
 			String originalFileName = file.getOriginalFilename();
-			
+
 			/* ファイル名がnullまたは空白("")や空文字(" ")でないかを拡張子も含めて確認する.
 			 * (画像ファイルを選択しなかった場合,空文字になるためnullにならなかったがブラウザによってはnullになる).
 			 * (ファイル名を拡張子含めて空白または空文字にすることは基本的に(拡張子の.がつくため)難しい(Unix系なら理論上可能らしい).
@@ -274,7 +254,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			if (originalFileName == null || originalFileName.isBlank()) {
 				errors.add("ファイル名が不正です");
 			} else {
-				// 下にあるgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している(this.は省略).
+				// 下にあるprivateメソッドgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している(this.は省略).
 				String extension = getExtension(originalFileName).toLowerCase();
 
 				// 拡張子がJPEG(.jpg, .jpeg)か確認する.
@@ -413,16 +393,16 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 					.size(MAX_WIDTH, MAX_HEIGHT)
 					.outputFormat("jpg")
 					.toFile(targetFile.toFile());
-			
+
 			result.setErrors(errors);
 			result.setFileName(fileName);
-			
+
 			return result;
 
 		} catch (IOException e) {
 			log.error("画像処理エラー", e);
 			throw new RuntimeException(e);
-			
+
 		} finally {
 			// 一時ファイル削除する.
 			if (tempFile != null) {
@@ -438,7 +418,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		}
 	}
 
-	/** 商品の画像情報を更新する. */
+	// 商品の画像情報を更新する.
 	@Override
 	public void updateProductImage(MProduct product, MProduct productImageEdit) {
 
@@ -459,8 +439,12 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	/** ファイル名の拡張子を取得する("."は除く). */
+
+	// ==========================================
+	//    privateメソッド.
+	// ==========================================
+
+	// ファイル名の拡張子を取得する("."は除く). 
 	private String getExtension(String filename) {
 		// 0始まりで.のインデックスを取得する("."がないときは-1になる).
 		int dotIndex = filename.lastIndexOf('.');

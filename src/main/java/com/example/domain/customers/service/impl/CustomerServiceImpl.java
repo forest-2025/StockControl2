@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.domain.customers.model.MCustomer;
 import com.example.domain.customers.service.CustomerService;
+import com.example.dto.customers.MCustomer;
 import com.example.repository.CustomerMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+/**
+ * CustomerService の実装クラス.
+ * 
+ */
 @Service
 @Transactional
 public class CustomerServiceImpl implements CustomerService {
@@ -19,7 +23,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private CustomerMapper customerMapper;
 
-	/** 削除済み以外の出荷先一覧を出荷先IDの昇順で取得する. */
+	// 削除済み以外の出荷先一覧を出荷先IDの昇順で取得する.
 	@Override
 	public PageInfo<MCustomer> getAllInAscById(int page, int size) {
 
@@ -29,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
 		return new PageInfo<>(customerList);
 	}
 
-	/** 削除済み以外の出荷先検索結果一覧を取得する(出荷先ID・出荷先名・出荷先名ふりがなで検索する). */
+	// 削除済み以外の出荷先検索結果一覧を取得(出荷先ID・出荷先名・出荷先名ふりがなで検索する)し指定した項目と順序でソートする.
 	@Override
 	public PageInfo<MCustomer> getSearchResults(
 			int page, int size, String search, String sortItem, String sort) {
@@ -40,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
 		return new PageInfo<>(customerList);
 	}
 
-	/** 出荷先を登録する. */
+	// 出荷先を登録する.
 	@Override
 	public void registerOne(MCustomer customer) {
 
@@ -48,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	}
 
-	/** 出荷先IDから削除済み以外の出荷先情報を取得する. */
+	// 出荷先IDから削除済み以外の出荷先情報を取得する.
 	@Override
 	public MCustomer getByCustomerId(Integer customerId) {
 
@@ -57,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
 		return customer;
 	}
 
-	/** 出荷先IDで指定した出荷先の情報を更新する. */
+	// 出荷先の情報を更新する.
 	@Override
 	public void updateOne(MCustomer customer) {
 
@@ -65,7 +69,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	}
 
-	/** 出荷先IDで指定した削除フラグを更新する. */
+	// 削除フラグを更新する.
 	@Override
 	public void updateIsDeleted(MCustomer customer) {
 

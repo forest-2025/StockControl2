@@ -2,7 +2,7 @@ package com.example.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.domain.products.model.ProductWithSupplier;
+import com.example.dto.products.ProductWithSupplier;
 
 @Mapper
 public interface ProductWithSupplierMapper {

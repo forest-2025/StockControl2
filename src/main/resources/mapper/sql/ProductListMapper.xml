@@ -35,7 +35,7 @@
 			product.number asc
 	</select>
 	
-	<!-- 削除済み以外の商品検索結果一覧を商品番号の昇順で取得する(商品番号・商品名・入荷先名で検索、商品IDで昇順)  -->
+	<!-- 削除済み以外の商品検索結果一覧を商品番号の昇順で取得する(商品番号・商品名・入荷先名で検索)  -->
 	<select id="findSearchResults"
 		resultType="ProductList">
 		select

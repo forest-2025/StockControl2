@@ -1,6 +1,5 @@
 package com.example.dto.products;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -8,7 +7,7 @@ import lombok.Data;
 @Data
 public class UploadResult {
 	
-	private List<String> errors = new ArrayList<>();
+	private List<String> errors;
     private String fileName; 
     
     public UploadResult() {

@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.component.CustomHeader;
-import com.example.domain.users.model.MUser;
 import com.example.domain.users.service.UserService;
+import com.example.dto.common.MUser;
 import com.example.form.users.EditForm;
 import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;

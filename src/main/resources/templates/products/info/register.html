@@ -82,7 +82,8 @@
 			<!-- 画像 -->
 			<div>
 				<label class="mb-1" for="productFile" th:text="#{selectImage}"></label>
-				<input type="file" class="form-control mb-3 responsive-text" th:field="*{productFile}" th:aria-label="#{selectImage}">
+				<input type="file" class="form-control mb-3 responsive-text" th:field="*{productFile}"
+					th:aria-label="#{selectImage}" accept="image/jpeg">
 
 				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
 				<div class="alert alert-warning alert-dismissible fade show" role="alert"

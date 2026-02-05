@@ -18,13 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.component.CustomHeader;
-import com.example.config.security.SecurityBeanConfig;
-import com.example.domain.products.model.MProduct;
-import com.example.domain.products.model.ProductList;
-import com.example.domain.products.model.ProductWithSupplier;
 import com.example.domain.products.service.ProductInfoService;
-import com.example.domain.suppliers.model.MSupplier;
+import com.example.dto.common.MSupplier;
 import com.example.dto.products.HistoryDetails;
+import com.example.dto.products.MProduct;
+import com.example.dto.products.ProductList;
+import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.UploadResult;
 import com.example.form.products.info.ImageEditForm;
 import com.example.form.products.info.ProductEditForm;
@@ -53,9 +52,6 @@ public class ProductInfoController {
 
 	// 1ページで表示する商品数・入出荷履歴数を10に設定する.
 	private static final int SHOW_SIZE = 10;
-	
-	@Autowired
-	SecurityBeanConfig sb;
 
 	/**
 	 * 商品一覧画面（ホーム画面）へ遷移する.
@@ -157,15 +153,17 @@ public class ProductInfoController {
 
 		UploadResult result = new UploadResult();
 
+		System.out.println(result);
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う(画像選択していなければnullではないがfile.isEmpty()がTrueになる).
 		if (file != null && !file.isEmpty()) {
 			result = productInfoService.validateAndUpload(file, result);
 		}
 
-		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
+		/* バリデーションエラーがあれば商品登録フォーム画面へ戻る.
+		 * 画像がなければresultのfileName ・ errorsは両方ともnullでhasErrors()はfalseになる. */
 		if (bindingResult.hasErrors() || result.hasErrors()) {
 			model.addAttribute("errors", result.getErrors());
-			/* 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
+			// 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している).
 			this.goToRegister(model);
 
 			return "/products/info/register";

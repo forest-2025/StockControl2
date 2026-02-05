@@ -1,6 +1,6 @@
-package com.example.domain.products.model;
+package com.example.dto.products;
 
-import com.example.domain.suppliers.model.MSupplier;
+import com.example.dto.common.MSupplier;
 
 import lombok.Data;
 

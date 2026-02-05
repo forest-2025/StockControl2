@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.domain.users.model.MUser;
+import com.example.dto.common.MUser;
 
 @Mapper
 public interface UserMapper {

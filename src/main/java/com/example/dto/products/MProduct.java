@@ -1,9 +1,15 @@
-package com.example.domain.products.model;
+package com.example.dto.products;
 
 import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * m_product テーブルに対応するエンティティクラス.
+ *
+ * データベースの m_product テーブルの1レコード分の情報を保持する.
+ * 
+ */
 @Data
 public class MProduct {
 	
