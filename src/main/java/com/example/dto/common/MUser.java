@@ -17,6 +17,6 @@ public class MUser {
 	private Integer userIsDeleted;						// 削除フラグ.
 	private LocalDateTime userRegisterDateTime; 		// 登録日.
 	private LocalDateTime userUpdateDateTime;			// 更新日.
-	private String fullName;							// familyNameとfirstNameを連結した担当者名.
+	private String fullName;							// familyNameとfirstNameを連結した姓名.
 
 }

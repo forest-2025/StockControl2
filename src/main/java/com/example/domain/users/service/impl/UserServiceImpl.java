@@ -13,6 +13,10 @@ import com.example.repository.UserMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+/**
+ * UserService の実装クラス.
+ * 
+ */
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -23,7 +27,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	/** メールアドレスからユーザー情報を取得する(削除済みは除く). */
+	// メールアドレスからユーザー情報を取得する(削除済みは除く).
 	@Override
 	public MUser getByEmailAddress(String emailAddress) {
 
@@ -32,7 +36,7 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 	
-	/** 削除済み以外のユーザー情報を従業員番号の昇順で全件取得する. */
+	// 削除済み以外のユーザー情報を従業員番号の昇順でページングして取得する.
 	public PageInfo<MUser> getUsers(int page, int size) {
 		
 		/* ページング(大量のデータを小分けにして表示・取得する仕組み)には外部ライブラリのPageHelprを使用する.
@@ -57,7 +61,7 @@ public class UserServiceImpl implements UserService {
         return new PageInfo<>(result);
     }
 	
-	/** 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する). */
+	// 削除済み以外のユーザー一覧から検索語句が従業員番号・姓・名・管理者権限と一致するユーザーを, 従業員番号の昇順でページングして取得する.
 	public PageInfo<MUser> getSearchUsers(int page, int size,String search) {
         
         PageHelper.startPage(page, size);
@@ -67,25 +71,7 @@ public class UserServiceImpl implements UserService {
         return new PageInfo<>(result);
     }
 
-	/** 削除済み以外のユーザー情報を従業員番号の昇順で全件取得する. */
-//	@Override
-//	public List<MUser> getAll() {
-//
-//		List<MUser> userList = userMapper.findAll();
-//
-//		return userList;
-//	}
-
-	/** 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する). */
-//	@Override
-//	public List<MUser> getSearchUserList(String search) {
-//
-//		List<MUser> userList = userMapper.findSearchResults(search);
-//
-//		return userList;
-//	}
-
-	/** 従業員番号が重複しているか確認する. */
+	// DBに登録済みの従業員番号と重複していないか確認する.
 	@Override
 	public boolean isNotDuplicateEmployeeNumber(String employeeNumber) {
 
@@ -101,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	/** メールアドレスが重複しているか確認する. */
+	// DB に登録済みのメールアドレスと重複していないか確認する.
 	@Override
 	public boolean isNotDuplicateEmailAddress(String emailAddress) {
 
@@ -116,7 +102,7 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	/** ユーザーを登録する */
+	// ユーザーを登録する.
 	@Override
 	public void registerOne(MUser user) {
 
@@ -128,20 +114,20 @@ public class UserServiceImpl implements UserService {
 		userMapper.insertOne(user);
 	}
 
-	/** ユーザーIDからユーザー情報を取得する(削除済みは除く). */
+	// ユーザーIDからユーザー情報を取得する(削除済みは除く). 
 	@Override
 	public MUser getByUserId(Integer userId) {
 		MUser user = userMapper.findByUserId(userId);
 		return user;
 	}
 
-	/** ユーザーIDで指定したユーザーの情報を更新する(パスワード以外). */
+	// ユーザーの情報を更新する(パスワード以外).
 	@Override
 	public void updateExceptPassword(MUser user) {
 		userMapper.updateOne(user);
 	}
 
-	/** ユーザーIDで指定したユーザーのパスワードを更新する. */
+	// ユーザーのパスワードを更新する. 
 	@Override
 	public void updatePassword(MUser user) {
 		
@@ -152,7 +138,7 @@ public class UserServiceImpl implements UserService {
 		userMapper.updatePassword(user);
 	}
 	
-	/** ユーザーIDで指定したユーザーの削除フラグを更新する. */
+	// 削除フラグを更新する.
 	@Override
 	public void updateIsDeleted(MUser user) {
 		

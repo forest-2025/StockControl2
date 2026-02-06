@@ -77,3 +77,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 }
+/* SecurityBeanConfig クラスでも書いているが,認証に成功したときに作成されるのは authenticated=true に設定され,
+ * UserDetails(このクラスの loadUserByUsername()メソッドで作成された DB から取得した情報をもつ UserDetails オブジェクト)
+ * 等を保持する Authentication オブジェクト.
+ * @AuthenticationPrincipal UserDetails userDetails
+ * @AuthenticationPrincipal FullNameUser fullNameUser
+ * で渡されるオブジェクトは同じオブジェクトだが,型が違う.
+ * 
+ * UserDetails は実際は FullNameUser オブジェクトが入っているが,型が UserDetails のため UserDetails のメソッドしか扱えず,
+ * FullNameUser のフィールドにアクセスするには instanceof を使用して型チェックをしないといけない.
+ * (別のが入っていたら ClassCastException になる).
+ * 
+ * FullNameUser はそのまま自身のフィールドやメソッドを使用できる.
+ * しかし, Authentication オブジェクトのなかの principal が FullNameUser でなければ ClassCastException になる.*/

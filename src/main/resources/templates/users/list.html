@@ -149,10 +149,8 @@
 									laquoはHTMLエンティティ名で左二重山括弧(ラフト «)のことで画面上に表示されるのは«
 									(Left-pointing double angle quotation mark
 									のleftのl・angleのa・quotationのquo). */-->
-								<a class="page-link"
-									th:href="@{/users/list(page=${userList.prePage == 0} ? '1' : ${userList.prePage},
-									search=${search})}"
-									aria-label="Previous">
+								<a class="page-link" th:href="@{/users/list(page=${userList.prePage == 0} ? '1' : ${userList.prePage},
+									search=${search})}" aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 								</a>
 							</li>
@@ -178,8 +176,8 @@
 								pageNumは現在のページ番号を保持しているので現在のページ番号の数字をアクティブにする(フォントの色と背景色が変わる). */-->
 							<li th:each="i : ${userList.navigatepageNums}" class="page-item"
 								th:classappend="${i} == ${userList.pageNum} ? 'active'">
-								<a class="page-link" th:href="@{/users/list(page=${i},search=${search})}" 
-								th:text="${i}"></a>
+								<a class="page-link" th:href="@{/users/list(page=${i},search=${search})}"
+									th:text="${i}"></a>
 							</li>
 
 							<!-- 次のページ -->
@@ -198,10 +196,8 @@
 							(right-pointing double angle quotation mark
 							のrightのr・angleのa・quotationのquo). */-->
 							<li class="page-item" th:classappend="${!userList.hasNextPage} ? 'disabled'">
-								<a class="page-link"
-									th:href="@{/users/list(page=${userList.nextPage == 0} ? '1' : ${userList.nextPage},
-									search=${search})}"
-									aria-label="Next">
+								<a class="page-link" th:href="@{/users/list(page=${userList.nextPage == 0} ? '1' : ${userList.nextPage},
+									search=${search})}" aria-label="Next">
 									<span aria-hidden="true">&raquo;</span>
 								</a>
 							</li>

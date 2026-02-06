@@ -65,10 +65,10 @@ public interface ProductInfoService {
 	public boolean isRegister(Integer supplierId);
 
 	/** 
-	 * DB に登録済みの商品番号と重複しないか確認する. 
+	 * DB に登録済みの商品番号と重複していないか確認する. 
 	 * 入力後のバリデーション時に使用する.
 	 * 
-	 * @param productNumber 重複しないか確認する商品番号.
+	 * @param productNumber 重複していないか確認する商品番号.
 	 * @return 	重複しなければ true.
 	 * 			重複すれば false.
 	 */

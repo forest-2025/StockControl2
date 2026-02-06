@@ -48,7 +48,7 @@
 			employee_number asc
 	</select>
 	
-	<!-- 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索,ユーザーIDで昇順)  -->
+	<!-- 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索,従業員番号で昇順)  -->
 	<select id="findSearchResults"
 		resultType="MUser">
 		select
@@ -69,7 +69,7 @@
 			and(
 			family_name like concat('%' , #{search} , '%') 
 			or
-			first_name like concat('%' , #{search} , '%') 
+			first_name like concat('%' , #{search} , '%')
 			or
 			employee_number like concat('%' , #{search} , '%')
 			or

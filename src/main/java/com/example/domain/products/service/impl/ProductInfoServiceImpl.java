@@ -128,7 +128,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		}
 	}
 
-	// DBに登録済みの商品番号と重複しないか確認する.
+	// DBに登録済みの商品番号と重複していないか確認する.
 	@Override
 	public boolean isNotDuplicateProductNumber(String productNumber) {
 
