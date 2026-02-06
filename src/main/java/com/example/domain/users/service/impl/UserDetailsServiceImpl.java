@@ -77,16 +77,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 }
-/* SecurityBeanConfig クラスでも書いているが,認証に成功したときに作成されるのは authenticated=true に設定され,
+/* SecurityBeanConfig クラスでも記載しているが,認証に成功したときに作成されるのは authenticated=true に設定され,
  * UserDetails(このクラスの loadUserByUsername()メソッドで作成された DB から取得した情報をもつ UserDetails オブジェクト)
  * 等を保持する Authentication オブジェクト.
  * @AuthenticationPrincipal UserDetails userDetails
  * @AuthenticationPrincipal FullNameUser fullNameUser
- * で渡されるオブジェクトは同じオブジェクトだが,型が違う.
+ * で渡されるオブジェクトは同じオブジェクトだが,受け取る型が違う(インタフェースか実装クラスか).
  * 
  * UserDetails は実際は FullNameUser オブジェクトが入っているが,型が UserDetails のため UserDetails のメソッドしか扱えず,
  * FullNameUser のフィールドにアクセスするには instanceof を使用して型チェックをしないといけない.
  * (別のが入っていたら ClassCastException になる).
  * 
  * FullNameUser はそのまま自身のフィールドやメソッドを使用できる.
- * しかし, Authentication オブジェクトのなかの principal が FullNameUser でなければ ClassCastException になる.*/
+ * しかし, Authentication オブジェクトのなかの principal が FullNameUser でなければ ClassCastException になる.
+ * 
+ * Authentication の principal はフィールドではなくプロパティ(インタフェースなのでフィールドはないが getPrincipal()メソッドがある).
+ * これは principal という属性が“取得できること”を実装クラスに強制している.
+ * 実装クラスの principal という属性とは getter によって外部から取得できる論理的な値のことで,その実体はフィールドでも,
+ * 計算結果でも,別のオブジェクトでもいい.
+ * */
