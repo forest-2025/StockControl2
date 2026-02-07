@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * t_transaction_history テーブルに,出荷先名と処理の担当者加えたクラス.
+ * 商品の入出荷・在庫の修正履歴を表示するため,出荷先名と処理の担当者が追加されている.
+ * 
+ */
 @Data
 public class HistoryDetails {
 	

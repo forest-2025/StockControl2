@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * m_user テーブルに対応するクラス.
+ * データベースの m_user テーブルの1レコード分の情報とユーザーの姓と名を結合させた fullName 保持する.
+ * 
+ */
 @Data
 public class MUser {
 	

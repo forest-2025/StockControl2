@@ -24,6 +24,10 @@ import com.example.dto.products.ProductList;
 import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TStock;
 import com.example.dto.products.UploadResult;
+import com.example.exception.types.ImageDeleteException;
+import com.example.exception.types.ImageRegisterException;
+import com.example.exception.types.ImageUpdateException;
+import com.example.exception.types.TempFileDeleteException;
 import com.example.repository.ProductListMapper;
 import com.example.repository.ProductMapper;
 import com.example.repository.ProductWithSupplierMapper;
@@ -198,8 +202,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			productMapper.updateIsDeleted(product);
 
 		} catch (IOException e) {
-			log.error("画像削除エラー", e);
-			throw new RuntimeException(e);
+			throw new ImageDeleteException("画像の削除処理に失敗しました", e);
 		}
 
 	}
@@ -400,19 +403,17 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			return result;
 
 		} catch (IOException e) {
-			log.error("画像処理エラー", e);
-			throw new RuntimeException(e);
+			throw new ImageRegisterException("画像の登録処理に失敗しました", e);
 
 		} finally {
 			// 一時ファイル削除する.
 			if (tempFile != null) {
 				try {
-					// deleteIfExists()で一時ファイルを削除する.(もしファイルがあれば削除し,なければ何もしないメソッド).
+					// deleteIfExists()で一時ファイルを削除する(もしファイルがあれば削除し,なければ何もしないメソッド).
 					Files.deleteIfExists(tempFile);
 					log.info("一時ファイル削除成功: {}", tempFile);
 				} catch (IOException e) {
-					log.warn("一時ファイル削除失敗: {}", tempFile, e);
-					throw new RuntimeException(e);
+					throw new TempFileDeleteException("一時ファイルの削除に失敗しました", e);
 				}
 			}
 		}
@@ -435,8 +436,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			productMapper.updateProductImage(productImageEdit);
 
 		} catch (IOException e) {
-			log.error("画像処理エラー", e);
-			throw new RuntimeException(e);
+			throw new ImageUpdateException("画像の更新処理に失敗しました", e);
 		}
 	}
 

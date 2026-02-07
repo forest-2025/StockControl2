@@ -91,12 +91,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
  * FullNameUser はそのまま自身のフィールドやメソッドを使用できる.
  * しかし, Authentication オブジェクトのなかの principal が FullNameUser でなければ ClassCastException になる.
  * 
- * Authentication の principal はフィールドではなくプロパティ(インタフェースなのでフィールドはないが getPrincipal()メソッドがある).
+ * Authentication の principal はフィールドではなくプロパティ(インタフェースなのでフィールド自体がないが getPrincipal()メソッドがある).
  * これは principal という属性が“取得できること”を実装クラスに強制している.
  * 実装クラスの principal という属性とは getter によって外部から取得できる論理的な値のことで,その実体はフィールドでも,
  * 計算結果でも,別のオブジェクトでもいい.
  * 
- * また,@AuthenticationPrincipal で取得されるのは,リクエスト中の ThreadLocal にセットされた
+ * また @AuthenticationPrincipal で取得されるのはリクエスト中の ThreadLocal にセットされた,
  * SecurityContext（SecurityContextHolder） 内の Authentication オブジェクト.
  * (HTTPセッションに保存する SecurityContext は次のリクエストで復元するための保管庫で,
  * リクエスト中にコントローラークラスなどで直接参照されることはない).

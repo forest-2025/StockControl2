@@ -5,8 +5,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
- * m_customer テーブルに対応するエンティティクラス.
- *
+ * m_customer テーブルに対応するクラス.
  * データベースの m_customer テーブルの1レコード分の情報を保持する.
  * 
  */

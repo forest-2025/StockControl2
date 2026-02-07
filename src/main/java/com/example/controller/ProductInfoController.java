@@ -311,8 +311,8 @@ public class ProductInfoController {
 		// バリデーションエラーがあれば商品情報修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
-			/* 商品IDを渡すために商品情報と入荷先情報をmodelに格納する処理(ProductWithSupplierなのは158行目・189行目・190行目をみる),
-			 * 入荷先名全件取得しmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
+			/* 商品IDを渡すために商品情報と入荷先情報をmodelに格納する処理・入荷先名全件取得しmodelに格納する処理,
+			 * ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
 			this.goToEdit(model, productWithSupplier);
 
 			return "/products/info/edit";

@@ -2,6 +2,11 @@ package com.example.dto.products;
 
 import lombok.Data;
 
+/**
+ * 商品情報一覧を表示するために複数のテーブルを結合したクラス.
+ * m_product, m_supplier, t_stock をまとめている.
+ * 
+ */
 @Data
 public class ProductList {
 	

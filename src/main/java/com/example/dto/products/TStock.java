@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * t_stock テーブルに対応するクラス.
+ * データベースの t_stock テーブルの1レコード分の情報を保持する.
+ * 
+ */
 @Data
 public class TStock {
 	

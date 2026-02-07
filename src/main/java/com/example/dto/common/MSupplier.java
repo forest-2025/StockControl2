@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * m_supplier テーブルに対応するクラス.
+ * データベースの m_supplier テーブルの1レコード分の情報を保持する.
+ * 
+ */
 @Data
 public class MSupplier {
 	
