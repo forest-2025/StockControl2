@@ -2,8 +2,6 @@
 <html lang="ja" layout:decorate="~{layout/main-layout}">
 
 <head>
-	<!-- 個別CSS読込 -->
-	<link rel="stylesheet" th:href="@{/css/products/info/display-details.css}">
 	<script th:src="@{/js/image.js}" defer></script>
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
@@ -36,7 +34,7 @@
 						<td th:text="${oneItem.stockQuantity}"></td>
 						<!-- 在庫修正ボタン -->
 						<td sec:authorize="hasAuthority('ROLE_ADMIN')">
-							<a class="btn info btn-lg" th:href="@{'/products/' + ${oneItem.productId} + '/count/edit'}"
+							<a class="btn btn-info btn-lg" th:href="@{'/products/' + ${oneItem.productId} + '/count/edit'}"
 								role="button" th:text="#{editStockQuantity}"></a>
 						</td>
 					</tr>

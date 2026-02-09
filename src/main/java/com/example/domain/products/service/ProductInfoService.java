@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.dto.common.MSupplier;
+import com.example.domain.products.model.MProduct;
+import com.example.domain.suppliers.model.MSupplier;
 import com.example.dto.products.HistoryDetails;
-import com.example.dto.products.MProduct;
 import com.example.dto.products.ProductList;
 import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.UploadResult;
@@ -100,6 +100,7 @@ public interface ProductInfoService {
 	/** 
 	 * 削除フラグを更新する.
 	 * 商品情報の削除は物理削除ではなく論理削除のため削除フラグを1に設定する.
+	 * 商品画像は物理削除するため,nullに設定する.
 	 * 
 	 * @param product 更新する商品情報.
 	 */

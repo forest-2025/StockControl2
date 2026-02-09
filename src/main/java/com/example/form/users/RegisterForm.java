@@ -9,6 +9,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+/**
+ *  ユーザー登録フォーム画面の入力値を受け取るフォームクラス.
+ *  
+ */
 @Data
 public class RegisterForm {
 
@@ -29,12 +33,6 @@ public class RegisterForm {
 	@Size(max = 254)
 	private String emailAddress; // メールアドレス.
 
-	/* パスワードをBCryptPasswordEncoderでハッシュ化するとき72バイト(半角英数字は1文字１バイト,
-	 * 全角ひらがな・カタカナ(全角・半角ともに)・漢字は3バイト(難しい漢字は4バイト))を超すと切り捨てられていた.
-	 * 例)aが72個のパスワードとaが100個のパスワードとaが72個+bの73文字のパスワードは,72バイトめまで同じなのですべておなじパスワードとみなされる.
-	 * そのため長いパスワードを許容するならセキュリティ的にBCryptPasswordEncoderは使用しないほうがいい(Argon2とかのほうがいい).
-	 * いままでは72バイトを越えると超過分は勝手に切り捨てられていたがspringsecurity6から,java.lang.IllegalArgumentException,
-	 * (Javaのメソッドに不正な値や期待されていない値（引数）が渡されたときにスローされる実行時例外)がでてエラーになるので使用する際は注意する.*/
 	@NotBlank
 	@Size(min = 5, max = 72, message = "パスワードは5文字以上72文字以下で入力してください")
 	@Pattern(regexp = "^[!-~]+$", 
@@ -46,3 +44,10 @@ public class RegisterForm {
 	private Integer isAdmin; // 管理者権限.
 
 }
+
+/* パスワードをBCryptPasswordEncoderでハッシュ化するとき72バイト(半角英数字は1文字１バイト,
+ * 全角ひらがな・カタカナ(全角・半角ともに)・漢字は3バイト(難しい漢字は4バイト))を超すと切り捨てられていた.
+ * 例)aが72個のパスワードとaが100個のパスワードとaが72個+bの73文字のパスワードは,72バイトめまで同じなのですべておなじパスワードとみなされる.
+ * そのため長いパスワードを許容するならセキュリティ的にBCryptPasswordEncoderは使用しないほうがいい(Argon2とかのほうがいい).
+ * いままでは72バイトを越えると超過分は勝手に切り捨てられていたがspringsecurity6から,java.lang.IllegalArgumentException,
+ * (Javaのメソッドに不正な値や期待されていない値（引数）が渡されたときにスローされる実行時例外)がでてエラーになるので使用する際は注意する.*/

@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.domain.products.model.MProduct;
 import com.example.domain.products.service.ProductInfoService;
-import com.example.dto.common.MSupplier;
+import com.example.domain.suppliers.model.MSupplier;
 import com.example.dto.products.HistoryDetails;
-import com.example.dto.products.MProduct;
 import com.example.dto.products.ProductList;
 import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TStock;
@@ -180,7 +180,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		return product;
 	}
 
-	// 削除フラグ)を更新する.
+	// 削除フラグを更新する.
 	@Override
 	public void updateIsDeleted(MProduct product) {
 
@@ -196,6 +196,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				}
 
 			}
+			
+			// 画像を削除したため,DBのファイル名も削除するため,nullに設定する.
 			product.setProductImage(null);
 
 			// 削除フラグを更新する.
@@ -216,7 +218,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		return productList;
 	}
 
-	/** 商品IDからその商品の履歴を降順でページングして取得する.  */
+	// 商品IDからその商品の履歴を降順でページングして取得する.  
 	@Override
 	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, int size, Integer productId) {
 

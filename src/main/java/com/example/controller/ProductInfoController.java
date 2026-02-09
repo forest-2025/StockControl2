@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.component.CustomHeader;
+import com.example.domain.products.model.MProduct;
 import com.example.domain.products.service.ProductInfoService;
-import com.example.dto.common.MSupplier;
+import com.example.domain.suppliers.model.MSupplier;
 import com.example.dto.products.HistoryDetails;
-import com.example.dto.products.MProduct;
 import com.example.dto.products.ProductList;
 import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.UploadResult;

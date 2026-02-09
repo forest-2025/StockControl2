@@ -1,6 +1,6 @@
 package com.example.domain.suppliers.service;
 
-import com.example.dto.common.MSupplier;
+import com.example.domain.suppliers.model.MSupplier;
 import com.github.pagehelper.PageInfo;
 
 /**

@@ -1,6 +1,6 @@
 package com.example.domain.users.service;
 
-import com.example.dto.common.MUser;
+import com.example.domain.users.model.MUser;
 import com.github.pagehelper.PageInfo;
 
 /**

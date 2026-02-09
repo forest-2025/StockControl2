@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.component.CustomHeader;
 import com.example.component.FullNameUser;
+import com.example.domain.customers.model.MCustomer;
+import com.example.domain.products.model.MProduct;
 import com.example.domain.products.service.ProductCountService;
-import com.example.dto.customers.MCustomer;
-import com.example.dto.products.MProduct;
 import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TTransactionHistory;
 import com.example.form.products.count.ArriveForm;

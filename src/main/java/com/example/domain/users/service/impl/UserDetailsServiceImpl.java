@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.component.FullNameUser;
+import com.example.domain.users.model.MUser;
 import com.example.domain.users.service.UserService;
-import com.example.dto.common.MUser;
 
 /**
  * ログイン時に入力されたユーザー名をもとにデータベースからユーザー情報を取得し,

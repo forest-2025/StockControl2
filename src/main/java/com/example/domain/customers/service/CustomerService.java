@@ -1,6 +1,6 @@
 package com.example.domain.customers.service;
 
-import com.example.dto.customers.MCustomer;
+import com.example.domain.customers.model.MCustomer;
 import com.github.pagehelper.PageInfo;
 
 /**

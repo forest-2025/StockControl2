@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.dto.customers.MCustomer;
-import com.example.dto.products.MProduct;
+import com.example.domain.customers.model.MCustomer;
+import com.example.domain.products.model.MProduct;
 import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TTransactionHistory;
 

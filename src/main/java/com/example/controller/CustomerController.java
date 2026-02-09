@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.component.CustomHeader;
+import com.example.domain.customers.model.MCustomer;
 import com.example.domain.customers.service.CustomerService;
-import com.example.dto.customers.MCustomer;
 import com.example.form.customers.EditForm;
 import com.example.form.customers.RegisterForm;
 import com.github.pagehelper.PageInfo;

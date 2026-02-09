@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.domain.suppliers.model.MSupplier;
 import com.example.domain.suppliers.service.SupplierService;
-import com.example.dto.common.MSupplier;
 import com.example.repository.SupplierMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

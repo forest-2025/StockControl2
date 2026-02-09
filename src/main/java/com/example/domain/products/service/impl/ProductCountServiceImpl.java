@@ -7,10 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.domain.customers.model.MCustomer;
+import com.example.domain.products.model.MProduct;
 import com.example.domain.products.service.ProductCountService;
-import com.example.dto.common.MUser;
-import com.example.dto.customers.MCustomer;
-import com.example.dto.products.MProduct;
+import com.example.domain.users.model.MUser;
 import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TStock;
 import com.example.dto.products.TTransactionHistory;
@@ -146,7 +146,7 @@ public class ProductCountServiceImpl implements ProductCountService {
 	@Override
 	public void processEdit (TTransactionHistory transactionHistory) {
 
-		// 商品IDとamountOfChange(在庫の修正数)を取得する(フォーム入力されたformクラスの値はエンティティクラスTTransactionHistoryに変換してある).
+		// 商品IDとamountOfChange(在庫の修正数)を取得する(フォーム入力されたformクラスの値はTTransactionHistoryに変換してある).
 		Integer productId = transactionHistory.getProductId();
 		Integer amountOfChange = transactionHistory.getAmountOfChange();
 

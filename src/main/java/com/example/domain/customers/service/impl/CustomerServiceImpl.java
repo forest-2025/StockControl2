@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.domain.customers.model.MCustomer;
 import com.example.domain.customers.service.CustomerService;
-import com.example.dto.customers.MCustomer;
 import com.example.repository.CustomerMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

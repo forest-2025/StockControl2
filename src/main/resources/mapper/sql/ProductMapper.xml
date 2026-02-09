@@ -66,8 +66,7 @@
 		set
 			number = #{productNumber},
 			name = #{productName},
-			supplier_id = #{supplierId},
-			image = #{productImage}
+			supplier_id = #{supplierId}
 		where
 			id = #{productId}	
 	</update>

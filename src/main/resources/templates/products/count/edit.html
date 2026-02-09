@@ -2,8 +2,6 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
-	<!-- 個別CSS読込 -->
-	<link rel="stylesheet" th:href="@{/css/products/count/edit.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -80,11 +78,11 @@
 
 			<div class="mt-5">
 				<!-- 確定ボタン -->
-				<button class="btn info btn-lg me-2 mb-5" type="submit" id="confirmed" name="confirmed"
+				<button class="btn btn-info btn-lg me-2 mb-5" type="submit" id="confirmed" name="confirmed"
 					th:text="#{confirmed}"></button>
 
 				<!-- キャンセルボタン -->
-				<a class="btn outline-info btn-lg mb-5"
+				<a class="btn btn-outline-info btn-lg mb-5"
 					th:href="@{/products/{productId}/info/display-details(productId=${product.productId})}"
 					role="button" id="cancel" name="cancel" th:text="#{cancel}"></a>
 			</div>

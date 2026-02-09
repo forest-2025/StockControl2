@@ -59,7 +59,8 @@ $(function() {
 	それをjQueryでラップすることで,jQueryの便利なメソッドが使えるようになる.
 	ユーザーがURLにアクセスする. → サーバがHTMLをレスポンスする. → ブラウザがHTMLを読み込み,jsを発見する(<script src="jquery.js"> みたいなの). 
 	→  ブラウザがjquery.jsを自動リクエストする. → jquery.jsレスポンスを受け取ったらブラウザが読み込んで解析・実行を行いjQueryが使用できるように準備する.
-	→ 準備が整いjQueryが使用できる.
+	→ 準備が整いjQueryが使用できる. → 画像表示ボタンをクリックされたら,URLのところのパスにGETリクエストする → コントローラで画像を探し,HTTPステータスと画像があれば,
+	その情報をbodyに入れて返す → その結果をうけて,jsの処理を実行する.
 	
 	jsの関数はすべて関数オブジェクト(関数でありながらオブジェクトでもあるもの.jsでは関数もオブジェクトの一種として扱われるため,値として変数に代入できたり,
 	プロパティを持たせることができたり,メソッドを持たせることができたりする).
@@ -128,5 +129,22 @@ $(function() {
 	.removeClass("d-none");でclass属性のd-noneを削除している(もしclass属性に"d-none"が含まれていなければ何も起きない).
 	alert()はjsの組み込み関数で画面にポップアップのダイアログを表示するために使う.
 	
-	*/
+	画像表示ボタンをクリックされたら,URLのところのパスにGETリクエストするがこのときjsは待たずに次の処理を継続する.
+	例えば,
+		$("#showImageBtn").on("click", function() {
+			console.log("A");
+			
+			$.ajax({
+   				url: "/api/image/sample.jpg",
+    			method: "GET" 
+			})
+			.done(function(data){ console.log("B"); })
+			.fail(function(xhr){ console.log("C"); });
+
+			console.log("D");
+		});
+
+	だとすると,まずconsole.log("A");が行われ,次に"/api/image/sample.jpg"にGETリクエストする.
+	ここでその答えを待たずにconsole.log("D");が実行され,レスポンスが返れば該当する処理が行われるということ.
+*/
 

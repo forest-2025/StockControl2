@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.component.CustomHeader;
+import com.example.domain.suppliers.model.MSupplier;
 import com.example.domain.suppliers.service.SupplierService;
-import com.example.dto.common.MSupplier;
 import com.example.form.suppliers.EditForm;
 import com.example.form.suppliers.RegisterForm;
 import com.github.pagehelper.PageInfo;

@@ -5,6 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+/**
+ * 入荷フォーム画面の入力値を受け取るフォームクラス.
+ * 
+ */
 @Data
 public class ArriveForm {
 	
@@ -13,6 +17,6 @@ public class ArriveForm {
 	private Integer amountOfChange;		// 商品の増減数.
 	
 	@Size(min = 0, max = 100)
-	private String remarks;					// 備考.
+	private String remarks;				// 備考.
 
 }

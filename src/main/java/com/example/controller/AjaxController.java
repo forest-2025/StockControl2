@@ -51,9 +51,9 @@ public class AjaxController {
 		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
 		String fileName = oneItem.getProductImage();
 
-		/* 取得した商品情報が存在するか,DBのimageに画像ファイル名が存在するか(nullじゃないか)を確認し存在しなければ404エラーを設定する.
-		 * (画像ファイルはnullでもいいがそもそもnullのときは画像表示のボタンが表示されないが念のため). */
-		if (oneItem == null || fileName == null) {
+		/* 取得した商品情報が存在するか,DBのimageに画像ファイル名が存在するか(nullじゃないか),空じゃないかを確認し存在しなければ404エラーを設定する.
+		 * (画像ファイルはnullでもいいがそもそもnullのときは画像表示のボタンが表示されないし,空のときもないと思うが念のため). */
+		if (oneItem == null || fileName == null || fileName.isEmpty()) {
 
 			/* ResponseEntityはBuilderパターン(複雑なオブジェクトを段階的に組み立てるための設計方法)でつくられていて,
 			 * .status(404)はレスポンスのHTTPステータスコードを「404」に設定するメソッドで,URLは正しいがその場所に見つかるべきファイルやコンテンツがないことを示す.
@@ -73,7 +73,8 @@ public class AjaxController {
 			 * ((uploadDirや)fileNameがnullだとNullPointerExceptionになるので上で確認している). */
 			Path path = Path.of(uploadDir, fileName);
 
-			/* pathの場所が存在しないか確認する(存在するならやることはないため). */
+			/* pathの場所が存在しないか確認する(存在するならやることはないため).
+			 * (DBのimageとおなじファイル名がuploadになければtrueになる). */
 			if (!Files.exists(path)) {
 				// pathの場所がないときは代替画像を表示する.
 				path = Path.of(uploadDir, altImage);
@@ -106,8 +107,10 @@ public class AjaxController {
 					.body(resource);
 
 		} catch (Exception e) {
+			
+			// DBのimageが空(nullじゃなくて空)のときなどもここに来る.
 			log.info("画像取得エラー", e);
-
+			System.out.println(222);
 			try {
 				Path path = Path.of(uploadDir, altImage);
 				mediaType = MediaType.parseMediaType(strMimeType);
