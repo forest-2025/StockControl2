@@ -153,7 +153,6 @@ public class ProductInfoController {
 
 		UploadResult result = new UploadResult();
 
-		System.out.println(result);
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う(画像選択していなければnullではないがfile.isEmpty()がTrueになる).
 		if (file != null && !file.isEmpty()) {
 			result = productInfoService.validateAndUpload(file, result);
