@@ -93,8 +93,18 @@
 						</tr>
 					</tbody>
 				</table>
-
-				<div class="mt-5">
+			
+				<!-- ページネーション -->
+				<!--/* d-flexを付けてdivをflexコンテナにすることで,justify-content-sm-centerが有効になり,
+					画面幅576px以上で子要素を中央揃えにできる.
+					overflow-x-autoは横方向に内容がはみ出したらスクロールバーを表示するcssプロパティ(font-sizeとかpaddingとかのこと).
+					横にはみ出るページネーションをスクロールで全表示することができる.
+					ページネーションの最大表示数はデフォルトの8のままにしているため,justify-content-centerがあると子要素の幅が親より大きければ右端に収めるよう中央揃えされる.
+					これにより左端がはみ出すことになるがoverflow-x-autoのスクロールの判断基準が右端がはみ出しているかどうかのためこの状態ではスクロールできない.
+					そのため,justify-content-centerをjustify-content-sm-centerにすることで,画面幅が小さいときはそのまま(左揃え)で
+					右端がはみ出るようにすることでスクロールできるようにしておき,画面サイズがページネーションをほぼ完全に表示できるサイズの576px以上(sm)になれば中央揃えになるようにする.
+					(少し左が切れるが,前のページには戻れるためsmにしておく(完全に表示されるのがが617pxぐらい)). */-->
+				<div class="d-flex overflow-x-auto justify-content-sm-center mt-5">
 					<!--/* navタグはウェブサイトの主要なナビゲーション（案内）リンクを囲むHTML5の要素でページネーションでも利用する.
 						ARIA属性(aria-)は標準のHTML要素（<button>や<a>など）がもつ本来の意味や役割
 						（何をするボタンか,リンクかなど）が,JavaScriptで複雑なユーザーインターフェース（タブで切り替える画面や
@@ -104,9 +114,8 @@
 						要なものでPage navigationでページネーション用であることを伝える. */-->
 					<nav aria-label="Page navigation">
 						<!--/* paginationで体裁を整える(ボタン風にしたり,青文字にしたり,display:flex 子要素(li)を横並び).
-							pagination-lgでサイズを大きくしている.
-							 justify-content-centerで横並びの子要素(li)を中央揃えにする. */-->
-						<ul class="pagination pagination-lg justify-content-center">
+							pagination-lgでサイズを大きくしている. */-->
+						<ul class="pagination pagination-lg">
 
 							<!-- 前のページ -->
 							<!--/* page-itemで個々のページのグループ化をする.また角を丸くしたりなど整える.
@@ -159,8 +168,8 @@
 								UserServiceImplのreturn new PageInfo<>(result);を
 								return new PageInfo<>(result,5);など第二引数に最大表示数を数字で記載しておくとその値に変更できる.
 								この配列は内部でcalcNavigatepageNums()で計算されている(コンストラクタで呼ばれて計算する).
-								ページ数が最大表示数より少なければすべて表示され,大きければ現在のページ番号 - 最大表示数　/ 2をしたものをstartNumに,
-								現在のページ番号 - 最大表示数　/ 2したものをendNumにいれていく.
+								ページ数が最大表示数より少なければすべて表示され,大きければ現在のページ番号 - 最大表示数 / 2をしたものをstartNumに,
+								現在のページ番号 - 最大表示数 / 2したものをendNumにいれていく.
 								①startNumより1のほうが大きければ1から最大表示数がnavigatepageNums[]に入っていく([0～ページ数-1]に1からページ数が入る).
 								②navigatepageNums[]が1より大きくendNumがページ数より大きければ endNum  = ページ数となり,
 								最大表示数 - 1 から順にnavigatepageNums[]のインデックス（[]の中の数字）にいれていき,その要素としてendNumをデクレメントで代入する.

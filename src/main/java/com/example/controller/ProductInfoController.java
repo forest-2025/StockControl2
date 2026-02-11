@@ -47,6 +47,7 @@ public class ProductInfoController {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	// プロパティファイルや環境変数の値を直接Javaのフィールドに注入する(application.properties で定義されたプロパティを参照).
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 
