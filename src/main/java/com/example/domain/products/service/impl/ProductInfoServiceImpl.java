@@ -70,7 +70,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	private String uploadDir;
 
 	// staticなのでクラスで一つの値を持つ.
-	private static final long MAX_SIZE = 20 * 1024 * 1024; // 20MB
+	private static final long MAX_SIZE = 0;//20 * 1024 * 1024; // 20MB
 
 	private static final String[] ALLOWED_EXTENSIONS = { "jpg", "jpeg" };
 

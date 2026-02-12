@@ -36,9 +36,11 @@
 
 			<!-- 画像 -->
 			<div>
-				<label class="form-label mb-1" for="formFile" th:text="#{selectImage}"></label>
+				<label class="form-label mb-1" for="formFile" th:text="#{image}"></label>
+				<!--/* responsive-textがあることで画面サイズが小さくても"ファイルが選択されていません"などの文字が読めるようにしている
+					 accept="image/jpeg"で選択画面でJPEGの拡張子のファイルだけを初期表示することができる */-->
 				<input type="file" class="form-control mb-3 responsive-text" th:field="*{productFile}"
-					th:aria-label="#{selectImage}" accept="image/jpeg">
+					th:aria-label="#{image}" accept="image/jpeg">
 
 
 				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->

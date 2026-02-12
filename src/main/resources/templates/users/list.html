@@ -153,7 +153,7 @@
 									&laquo;は文字実体参照(HTMLでそのまま書くと問題が起きる文字や,直接入力しにくい文字を
 									安全に表すための特別な書き方のこと).
 									&○○;が基本形.HTMLエンティティ名の方法と数値文字参照(Unicodeコードポイント)の方法があり,
-									laquoはHTMLエンティティ名で左二重山括弧(ラフト «)のことで画面上に表示されるのは«
+									laquoはHTMLエンティティ名で左二重山括弧を表し,画面上に表示されるのは«
 									(Left-pointing double angle quotation mark
 									のleftのl・angleのa・quotationのquo). */-->
 								<a class="page-link" th:href="@{/users/list(page=${userList.prePage == 0} ? '1' : ${userList.prePage},
@@ -199,7 +199,7 @@
             				 現在ページが総ページより大きくなったらnextPageは更新されず初期値0のままのためnextPage = 0になる.
             				 aria-label="Next"はスクリーンリーダーで次のページという意味を表す
 							(画面表示に影響はない).
-							&raquo;は右二重山括弧(ラウト »)のこと.
+							&raquo;は右二重山括弧(»)のこと.
 							(right-pointing double angle quotation mark
 							のrightのr・angleのa・quotationのquo). */-->
 							<li class="page-item" th:classappend="${!userList.hasNextPage} ? 'disabled'">
