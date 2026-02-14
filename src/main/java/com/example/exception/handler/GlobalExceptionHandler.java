@@ -9,7 +9,7 @@ import com.example.exception.types.TempFileDeleteException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 画像処理での例外を処理するハンドラークラス..
+ * 画像処理での例外を処理するハンドラークラス.
  * 例外が発生したらログに出力するだけで,ページ遷移は Spring MVC のデフォルトのエラー処理に任せている.
  * 
  */
@@ -24,8 +24,9 @@ public class GlobalExceptionHandler {
 	 * @param ex 発生した例外オブジェクト.
 	 */
 	@ExceptionHandler(ImageProcessingException.class)
-	public void handleImageProcessingException(ImageProcessingException ex) {
+	public String handleImageProcessingException(ImageProcessingException ex) {
 		log.error("画像処理例外発生: {}", ex.getClass().getSimpleName(), ex);
+		return "/error";
 	}
 	
 	/**
@@ -34,8 +35,9 @@ public class GlobalExceptionHandler {
      * @param ex 発生した例外オブジェクト.
      */
     @ExceptionHandler(TempFileDeleteException.class)
-    public void handleTempFileDeleteException(TempFileDeleteException ex) {
+    public String handleTempFileDeleteException(TempFileDeleteException ex) {
         log.warn("一時ファイル削除失敗: {}", ex.getMessage(), ex);
+        return "/error";
     }
 
 }
