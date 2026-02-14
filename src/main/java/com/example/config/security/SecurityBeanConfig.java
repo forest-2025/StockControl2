@@ -59,7 +59,7 @@ public class SecurityBeanConfig {
 
 }
 
-/* リクエスト				POSTリクエスト　username(ユーザーID・メールアドレスなど) password(パスワード).
+/* リクエスト				POSTリクエスト username(ユーザーID・メールアドレスなど) password(パスワード).
   ↓
 SecurityFilterChain		コントローラクラスにリクエストが渡される前に,そのリクエストをコントローラに渡してよいかを判断するための順序や処理方法を定義したもの.
   ↓
