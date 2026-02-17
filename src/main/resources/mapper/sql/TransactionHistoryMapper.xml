@@ -26,6 +26,7 @@
 	</insert>
 	
 	<!-- 商品IDから履歴を降順で取得する  -->
+	<!-- H2データベースではuserは予約語なので使用できないのでasでテーブルの名前を変更していない  -->
 	<select id="findByProductId"
 		resultType="HistoryDetails">
 		select
@@ -46,9 +47,9 @@
 		on 
 			history.customer_id = customer.id
 		left join
-			m_user as user
+			m_user
 		on 
-			history.user_id = user.id
+			history.user_id = m_user.id
 		where
 			history.product_id = #{productId}
 		order by

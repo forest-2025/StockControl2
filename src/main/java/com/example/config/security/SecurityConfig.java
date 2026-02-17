@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -31,27 +32,35 @@ public class SecurityConfig {
 		// リクエストの制御(直リンクの禁止).
 		http.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()// 静的リソースのファイルパスにログインなしでアクセスOK.
+				.requestMatchers(PathRequest.toH2Console()).permitAll() // H2DBコンソールを使用できるよう設定している.
 				.anyRequest().authenticated()) // それ以外は直リンク禁止する.
 
 				// ログインに関する設定.
 				.formLogin(login -> login
-						.loginPage("/login") 				// 自作ログインページのためURLパスを指定する(GETリクエスト).
-						.loginProcessingUrl("/login") 		// ログインページでログインボタンを押した時の遷移先の URLパス.(POSTリクエストでこちらに遷移したら認証処理が行われる).
-						.failureUrl("/login?error") 		// ログイン失敗時の遷移先URLパスを指定する(リダイレクトなのでGETリクエスト).
-						.usernameParameter("emailAddress") 	// ログインページのメールアドレス.
-						.passwordParameter("password") 		// ログインページのパスワード.
+						.loginPage("/login") // 自作ログインページのためURLパスを指定する(GETリクエスト).
+						.loginProcessingUrl("/login") // ログインページでログインボタンを押した時の遷移先の URLパス.(POSTリクエストでこちらに遷移したら認証処理が行われる).
+						.failureUrl("/login?error") // ログイン失敗時の遷移先URLパスを指定する(リダイレクトなのでGETリクエスト).
+						.usernameParameter("emailAddress") // ログインページのメールアドレス.
+						.passwordParameter("password") // ログインページのパスワード.
 						.defaultSuccessUrl("/products/info/list", true) // ログイン成功後の遷移先URLパスを指定する(リダイレクトなのでGETリクエスト).
-						.permitAll()						// 未ログインのユーザーでもログインページにアクセスできるようにする.﻿
+						.permitAll() // 未ログインのユーザーでもログインページにアクセスできるようにする.﻿
 
 				// ログアウト処理.
 				).logout(logout -> logout
-						.logoutUrl("/logout") 			// ログアウトのURLパスを指定する(POSTリクエストで送られてくるものを受け付ける).
-						.logoutSuccessUrl("/logout") 	// ログアウト成功時の遷移先URLパス(リダイレクトするのでGETリクエストでURLパスに遷移する).
-						.invalidateHttpSession(true)	// サーバー側のHTTPセッションを破棄(デフォルトで有効だが明示的に記載している).
-						.clearAuthentication(true)		// 現在の ThreadLocal の SecurityContext に入っている Authentication をクリア(デフォルトで有効だが明示的に記載している).
-					    .deleteCookies("JSESSIONID")	// ブラウザ側のクッキーを削除する.
-						.permitAll()					// 独自のログアウト成功エンドポイントを指定したので、未ログインユーザーでもアクセスできるようにする.
+						.logoutUrl("/logout") // ログアウトのURLパスを指定する(POSTリクエストで送られてくるものを受け付ける).
+						.logoutSuccessUrl("/logout") // ログアウト成功時の遷移先URLパス(リダイレクトするのでGETリクエストでURLパスに遷移する).
+						.invalidateHttpSession(true) // サーバー側のHTTPセッションを破棄(デフォルトで有効だが明示的に記載している).
+						.clearAuthentication(true) // 現在の ThreadLocal の SecurityContext に入っている Authentication をクリア(デフォルトで有効だが明示的に記載している).
+						.deleteCookies("JSESSIONID") // ブラウザ側のクッキーを削除する.
+						.permitAll() // 独自のログアウト成功エンドポイントを指定したので、未ログインユーザーでもアクセスできるようにする.
 
+				// X-Flame-Optionsを無効にする設定（H2DBコンソールを使用できるよう設定している）.
+				).headers(headers -> headers
+						.frameOptions(FrameOptionsConfig::disable)
+
+				// CSRF 対策を無効に設定(H2DBコンソールを使用できるよう設定している).
+				).csrf(csrf -> csrf
+						.ignoringRequestMatchers(PathRequest.toH2Console())
 				);
 
 		return http.build();

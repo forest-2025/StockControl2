@@ -8,12 +8,16 @@
  * <script th:src="@{/js/cache.js}" defer></script>
  * 
  */
+
 "use strict";
-window.addEventListener("pageshow", function (event) {
-  const nav = performance.getEntriesByType("navigation")[0];
+$(function() {
+	window.addEventListener("pageshow", function(event) {
+		const nav = performance.getEntriesByType("navigation")[0];
   if (event.persisted || nav.type === "back_forward") {
     window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
   }
+});
+
 });
 
 /*  ログアウト後もブラウザバックすると前の画面に戻れるのはブラウザのBack-ForwardCache,

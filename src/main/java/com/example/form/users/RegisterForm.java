@@ -17,7 +17,7 @@ import lombok.Data;
 public class RegisterForm {
 
 	@NotBlank
-	@Pattern(regexp = "^[A-Z][0-9]{5}$", message = "1文字目は半角英大文字、2文字目から半角数字で5桁入力してください(例: E12345など)")
+	@Pattern(regexp = "^[A-Z][0-9]{5}$", message = "1文字目は半角英大文字、2文字目から半角数字で5桁入力してください")
 	private String employeeNumber; // 従業員番号.
 
 	@NotBlank

@@ -35,7 +35,7 @@ $(function() {
 				$("#resultImage").attr("src", oldUrl).removeClass("d-none");
 				$("#closeImageBtn").removeClass("d-none");
 			})
-			.fail(function(jqXHR,textStatus,errorThrown) {
+			.fail(function() {
 				alert("画像の取得に失敗しました");
 			});
 	});

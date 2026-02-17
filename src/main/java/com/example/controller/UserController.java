@@ -374,6 +374,9 @@ public class UserController {
 			return "/error";
 		}
 
+		if(!form.getPassword().equals(form.getReEnterPassword())) {
+			bindingResult.rejectValue("password", "NotSamePassword");
+		}
 		// バリデーションエラーがあればパスワード修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 

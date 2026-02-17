@@ -17,5 +17,6 @@ public class PasswordEditForm {
 	@Pattern(regexp = "^[!-~]+$", 
 	message = "半角英数字と半角記号のなかから入力してください")
 	private String password; // パスワード.
-
+	
+	private String reEnterPassword;	// パスワード再入力.
 }
