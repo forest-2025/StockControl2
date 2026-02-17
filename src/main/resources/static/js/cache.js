@@ -30,7 +30,7 @@ $(function() {
 	BFCacheが無効にならないブラウザが存在することを考慮して使用している. 
 */
 
-/* 　windowはブラウザの「窓」そのもの を表すオブジェクト.
+/*	windowはブラウザの「窓」そのもの を表すオブジェクト.
 	addEventListenerは指定した要素でクリックやキー入力などの「イベント」が発生した際にあらかじめ設定しておいた関数を実行させ,
 	Webページに動き（インタラクティブ(人やシステムが互いに作用し合う状態.ユーザーの操作に対しシステムが表示を変えるなど.)な機能）を追加するためのメソッド.
 	対象.addEventListener("イベント名", 処理の関数,useCapture);
@@ -38,8 +38,8 @@ $(function() {
 		(例)
 	
 	  		お	|<div id="parent" style="padding: 20px; background: lightblue;">
-    			|　　子|<button id="child">クリック</button>
-	　		や	|</div>
+    			|	子|<button id="child">クリック</button>
+			や	|</div>
 	
 			const parent = document.getElementById("parent");	
 			const child = document.getElementById("child");		
