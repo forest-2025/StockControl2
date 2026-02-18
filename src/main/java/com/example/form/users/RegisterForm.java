@@ -2,6 +2,9 @@ package com.example.form.users;
 
 import org.hibernate.validator.constraints.Range;
 
+import com.example.validation.ValidGroup1;
+import com.example.validation.ValidGroup2;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,31 +19,32 @@ import lombok.Data;
 @Data
 public class RegisterForm {
 
-	@NotBlank
-	@Pattern(regexp = "^[A-Z][0-9]{5}$", message = "1文字目は半角英大文字、2文字目から半角数字で5桁入力してください")
+	@NotBlank(groups = ValidGroup1.class)
+	@Pattern(regexp = "^[A-Z][0-9]{5}$", message = "1文字目は半角英大文字、2文字目から半角数字で5桁入力してください",
+	groups = ValidGroup2.class)
 	private String employeeNumber; // 従業員番号.
 
-	@NotBlank
-	@Size(min = 1, max = 100)
+	@NotBlank(groups = ValidGroup1.class)
+	@Size(min = 1, max = 100,groups = ValidGroup2.class)
 	private String familyName; // ユーザー姓.
 
-	@NotBlank
-	@Size(min = 1, max = 100)
+	@NotBlank(groups = ValidGroup1.class)
+	@Size(min = 1, max = 100,groups = ValidGroup2.class)
 	private String firstName; // ユーザー名.
 
-	@NotBlank
-	@Email
-	@Size(max = 254)
+	@NotBlank(groups = ValidGroup1.class)
+	@Email(groups = ValidGroup2.class)
+	@Size(max = 254,groups = ValidGroup2.class)
 	private String emailAddress; // メールアドレス.
 
-	@NotBlank
-	@Size(min = 5, max = 72, message = "パスワードは5文字以上72文字以下で入力してください")
-	@Pattern(regexp = "^[!-~]+$", 
-	message = "半角英数字と半角記号のなかから入力してください")
+	@NotBlank(groups = ValidGroup1.class)
+	@Size(min = 5, max = 72, message = "パスワードは5文字以上72文字以下で入力してください",groups = ValidGroup2.class)
+	@Pattern(regexp = "^[!-~]+$", message = "半角英数字と半角記号のなかから入力してください",
+	groups = ValidGroup2.class)
 	private String password; // パスワード.
 
-	@NotNull(message="管理者権限は必ず選択してください")
-	@Range(min = 0, max = 1)
+	@NotNull(message="管理者権限は必ず選択してください", groups = ValidGroup1.class)
+	@Range(min = 0, max = 1, groups = ValidGroup2.class)
 	private Integer isAdmin; // 管理者権限.
 
 }

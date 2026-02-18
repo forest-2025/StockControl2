@@ -1,5 +1,8 @@
 package com.example.form.suppliers;
 
+import com.example.validation.ValidGroup1;
+import com.example.validation.ValidGroup2;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -12,13 +15,13 @@ import lombok.Data;
 @Data
 public class EditForm {
 
-	@NotBlank
-	@Size(min = 1, max = 100)
+	@NotBlank(groups = ValidGroup1.class)
+	@Size(min = 1, max = 100, groups = ValidGroup2.class)
 	private String supplierName; // 入荷先名.
 
-	@NotBlank
-	@Size(min = 1, max = 100)
-	@Pattern(regexp = "^[\\p{InHiragana}ー]+$", message = "ひらがなで入力してください")
+	@NotBlank(groups = ValidGroup1.class)
+	@Size(min = 1, max = 100, groups = ValidGroup2.class)
+	@Pattern(regexp = "^[\\p{InHiragana}ー]+$", message = "ひらがなで入力してください", groups = ValidGroup2.class)
 	private String supplierFurigana; // 入荷先名ふりがな.
-	
+
 }

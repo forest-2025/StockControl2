@@ -15,7 +15,7 @@
 				customer_id,
 				user_id,
 				remarks
-			) value (
+			) values (
 				#{productId},
 				#{amountOfChange},
 				#{supplierId},

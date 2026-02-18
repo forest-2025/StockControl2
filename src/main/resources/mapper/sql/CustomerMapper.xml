@@ -72,7 +72,7 @@
 			m_customer (
 			name,
 			furigana
-		) value (
+		) values (
 			#{customerName},
 			#{customerFurigana}
 		)

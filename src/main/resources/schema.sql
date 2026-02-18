@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS m_user
    register_date_time datetime NOT NULL default CURRENT_TIMESTAMP,
    update_date_time datetime NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+ALTER TABLE m_user ALTER COLUMN ID RESTART WITH 3;
 CREATE TABLE IF NOT EXISTS m_supplier
 (
    id int NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
@@ -20,6 +21,7 @@ CREATE TABLE IF NOT EXISTS m_supplier
    register_date_time datetime NOT NULL default CURRENT_TIMESTAMP,
    update_date_time datetime NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+ALTER TABLE m_supplier ALTER COLUMN ID RESTART WITH 2;
 CREATE TABLE IF NOT EXISTS m_customer
 (
    id int NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
@@ -29,6 +31,7 @@ CREATE TABLE IF NOT EXISTS m_customer
    register_date_time datetime NOT NULL default CURRENT_TIMESTAMP,
    update_date_time datetime NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+ALTER TABLE m_customer ALTER COLUMN ID RESTART WITH 2;
 CREATE TABLE IF NOT EXISTS m_product
 (
    id int NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
@@ -41,6 +44,7 @@ CREATE TABLE IF NOT EXISTS m_product
    update_date_time datetime NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    FOREIGN KEY (supplier_id) REFERENCES m_supplier (id)
 );
+ALTER TABLE m_product ALTER COLUMN ID RESTART WITH 2;
 CREATE INDEX ix_m_product_name ON m_product (name);
 CREATE INDEX ix_m_product_number ON m_product (number);
 CREATE TABLE IF NOT EXISTS t_stock
@@ -52,6 +56,7 @@ CREATE TABLE IF NOT EXISTS t_stock
    update_date_time datetime NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    FOREIGN KEY (product_id) REFERENCES m_product (id)
 );
+ALTER TABLE t_stock ALTER COLUMN ID RESTART WITH 2;
 CREATE TABLE IF NOT EXISTS t_transaction_history
 (
    id int NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
@@ -67,3 +72,4 @@ CREATE TABLE IF NOT EXISTS t_transaction_history
    FOREIGN KEY (customer_id) REFERENCES m_customer (id),
    FOREIGN KEY (user_id) REFERENCES m_user (id)
 );
+ALTER TABLE t_transaction_history ALTER COLUMN ID RESTART WITH 1;

@@ -11,7 +11,7 @@
 			t_stock(
 				product_id,
 				stock_quantity
-			) value (
+			) values (
 				#{productId},
 				#{stockQuantity}
 			)

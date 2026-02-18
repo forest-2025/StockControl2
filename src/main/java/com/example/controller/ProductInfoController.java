@@ -28,6 +28,7 @@ import com.example.dto.products.UploadResult;
 import com.example.form.products.info.ImageEditForm;
 import com.example.form.products.info.ProductEditForm;
 import com.example.form.products.info.RegisterForm;
+import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -66,7 +67,7 @@ public class ProductInfoController {
 	public String getList(Model model,
 			@RequestParam(required = false) String search,
 			@RequestParam(defaultValue = "1") int page) {
-
+		
 		/*@RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
 		 * パラメータ名searchが無ければ削除されていない全商品の一覧を取得し,あればsearchの値が含まれる商品を検索する. */
@@ -116,7 +117,7 @@ public class ProductInfoController {
 	 */
 	@PostMapping("/info/register")
 	public String postRegister(Model model,
-			@ModelAttribute @Validated RegisterForm form,
+			@ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
 
 		// 商品番号がnullや空白でないか確認する.
@@ -264,7 +265,7 @@ public class ProductInfoController {
 	 */
 	@PostMapping("/{productId}/info/edit")
 	public String postEdit(Model model, @PathVariable Integer productId,
-			@ModelAttribute @Validated ProductEditForm form,
+			@ModelAttribute @Validated(GroupOrder.class) ProductEditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
 
@@ -376,7 +377,7 @@ public class ProductInfoController {
 	 */
 	@PostMapping("/{productId}/info/imageEdit")
 	public String postImageEdit(Model model, @PathVariable Integer productId,
-			@ModelAttribute @Validated ImageEditForm form, BindingResult bindingResult) {
+			@ModelAttribute @Validated(GroupOrder.class) ImageEditForm form, BindingResult bindingResult) {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct product = productInfoService.getOneProduct(productId);

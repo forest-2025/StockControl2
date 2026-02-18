@@ -8,33 +8,37 @@ import org.springframework.security.core.userdetails.User;
 /**
  * SpringSecurity の User クラスを拡張して,独自のユーザー情報を持たせたクラス.
  * User クラスは基本的に username ・ password ・権限（roles / authorities）しか保持しないため,
- * このクラスで familyName と firstName を追加して保持することで,
- * ログイン中のユーザーの名前をログインしているあいだ画面に表示し続けることができる.
+ * このクラスで familyName と firstName と userId を追加して保持することで,
+ * ログイン中のユーザーの名前をログインしているあいだ画面に表示し続けることができ,
+ * パスワードの修正画面に遷移しパスワードの変更を行うことができる.
  *
  */
-public class FullNameUser extends User{
+public class CustomUserDetails extends User{
 	
 	private final String familyName;
 	private final String firstName;
+	private final Integer userId;
 
 	/**
 	 * SpringSecurity の User クラスの情報にフルネームを保持する,
-	 * FullNameUser のインスタンスを生成する.
+	 * CustomUserDetails のインスタンスを生成するコンストラクタ.
 	 *
 	 * @param username 認証に使用するユーザのメールアドレス.
 	 * @param password 認証に使用するパスワード.
 	 * @param authorities ユーザーが持つ権限のコレクション.
 	 * @param familyName ユーザーの姓.
 	 * @param firstName ユーザーの名.
+	 * @param userId ユーザーのID.
 	 */
-	public FullNameUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
-			String familyName, String firstName) {
+	public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities,
+			String familyName, String firstName,Integer userId) {
 		// 親クラス(User)のコンストラクタを呼び出す.
 		super(username, password, authorities);	
 		
 		// 独自フィールドの初期化する.
 		this.familyName = familyName;
 		this.firstName = firstName;
+		this.userId = userId;
 	}
 
 	/**
@@ -55,5 +59,13 @@ public class FullNameUser extends User{
 		return firstName;
 	}
 	
+	/**
+	 * 認証済みユーザーのIDを取得する.
+	 *
+	 * @return ユーザーのID.
+	 */
+	public Integer getUserId() {
+		return userId;
+	}
 
 }

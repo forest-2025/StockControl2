@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.component.FullNameUser;
+import com.example.component.CustomUserDetails;
 import com.example.domain.users.model.MUser;
 import com.example.domain.users.service.UserService;
 
@@ -66,12 +66,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 
 		/* ユーザーがログインしている間はユーザーの姓と名に"さん"をつけた名前をヘッダーに表示しておく.
-		 * それには情報が消えないようにセッションに登録する必要があるため、UserクラスをカスタマイズしたFullNameUserクラスを使い登録する. */
-		FullNameUser fullNameUser = new FullNameUser(loginUser.getEmailAddress(), loginUser.getPassword(),
-				authorities, loginUser.getFamilyName(), loginUser.getFirstName());
+		 * それには情報が消えないようにセッションに登録する必要があるため,UserクラスをカスタマイズしたCustomUserDetailsクラスを使い登録する.
+		 * また,ヘッダーにパスワード修正画面へのリンクをつけるためユーザーIDも登録している. */
+		CustomUserDetails customUserDetails = new CustomUserDetails(loginUser.getEmailAddress(), loginUser.getPassword(),
+				authorities, loginUser.getFamilyName(), loginUser.getFirstName(),loginUser.getUserId());
 
 		// UserDetailsを生成する.
-		UserDetails userDetails = (UserDetails) fullNameUser;
+		UserDetails userDetails = (UserDetails) customUserDetails;
 
 		return userDetails;
 	}

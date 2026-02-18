@@ -81,10 +81,6 @@
 								<a class="btn btn-primary btn-lg me-3 mb-2"
 									th:href="@{'/users/' + ${item.userId}+ '/edit'}" role="button"
 									th:text="#{edit}"></a>
-								<!-- パスワード修正ボタン -->
-								<a class="btn btn-info btn-lg me-3 mb-2"
-									th:href="@{'/users/' + ${item.userId}+ '/passwordEdit'}" role="button"
-									th:text="#{editPassword}"></a>
 								<!-- 削除ボタン -->
 								<a class="btn btn-danger btn-lg me-3 mb-2"
 									th:href="@{'/users/' + ${item.userId}+ '/delete'}" role="button"

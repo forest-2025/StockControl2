@@ -18,6 +18,7 @@ import com.example.domain.suppliers.model.MSupplier;
 import com.example.domain.suppliers.service.SupplierService;
 import com.example.form.suppliers.EditForm;
 import com.example.form.suppliers.RegisterForm;
+import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -131,7 +132,7 @@ public class SupplierController {
 	 * 			正常に完了した場合,入荷先一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/register")
-	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
+	public String postRegister(Model model, @ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
 
 		// バリデーションエラーがあれば入荷先登録フォーム画面へ戻る.
@@ -198,7 +199,7 @@ public class SupplierController {
 	 */
 	@PostMapping("/{supplierId}/edit")
 	public String postEdit(Model model, @PathVariable Integer supplierId,
-			@ModelAttribute @Validated EditForm form,
+			@ModelAttribute @Validated(GroupOrder.class) EditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
 

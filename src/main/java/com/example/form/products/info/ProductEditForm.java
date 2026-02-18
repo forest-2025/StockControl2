@@ -1,5 +1,8 @@
 package com.example.form.products.info;
 
+import com.example.validation.ValidGroup1;
+import com.example.validation.ValidGroup2;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,16 +15,15 @@ import lombok.Data;
 @Data
 public class ProductEditForm {
 
-	@NotBlank
-	@Size(min = 0,max = 50)
+	@NotBlank(groups = ValidGroup1.class)
+	@Size(min = 1, max = 50, groups = ValidGroup2.class)
 	private String productNumber; // 商品番号.
 
-	@NotBlank
-	@Size(min = 0,max = 100)
+	@NotBlank(groups = ValidGroup1.class)
+	@Size(min = 1, max = 100, groups = ValidGroup2.class)
 	private String productName; // 商品名.
 
-	@NotNull(message="入荷先名は必ず入力してください")
+	@NotNull(message = "入荷先名は必ず入力してください", groups = ValidGroup1.class)
 	private Integer supplierId; // 入荷先ID.
-	
 
 }

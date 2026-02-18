@@ -73,7 +73,7 @@
 			m_supplier (
 			name,
 			furigana
-		) value (
+		) values (
 			#{supplierName},
 			#{supplierFurigana}
 		)

@@ -18,6 +18,7 @@ import com.example.domain.customers.model.MCustomer;
 import com.example.domain.customers.service.CustomerService;
 import com.example.form.customers.EditForm;
 import com.example.form.customers.RegisterForm;
+import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -132,7 +133,7 @@ public class CustomerController {
 	 * 			正常に完了した場合,出荷先一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/register")
-	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
+	public String postRegister(Model model, @ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
 
 		// バリデーションエラーがあれば出荷先登録フォームへ戻る.
@@ -199,7 +200,7 @@ public class CustomerController {
 	 */
 	@PostMapping("/{customerId}/edit")
 	public String postEdit(Model model, @PathVariable Integer customerId,
-			@ModelAttribute @Validated EditForm form,
+			@ModelAttribute @Validated(GroupOrder.class) EditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
 

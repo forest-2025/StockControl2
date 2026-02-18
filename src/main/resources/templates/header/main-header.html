@@ -62,29 +62,29 @@
 						flex-grow-1で親要素の余白を均等に分配している(きれいに分配しているのではなく子要素の内容の多さで初期幅がそれぞれ決まり、そのあまりを均等配分している)
 						fs-5(フォントサイズを大きくしている))
 						 */-->
-						 <!-- メニュー -->
+						<!-- メニュー -->
 						<ul class="navbar-nav justify-content-center flex-grow-1 fs-5">
 							<!-- 商品一覧 -->
 							<!--/* nav-item(ナビゲーションバーの項目につけることで適切な配置にしてくれる) */-->
 							<li class="nav-item">
 								<!--/* nav-link(<a>タグに適用することで、ナビゲーションバーやタブなどのメニュー項目を視覚的にデザインする.) */-->
 								<a class="nav-link" th:href="@{/products/info/list}" th:text="#{productList}"
-								th:classappend="${customHeader.headerItem} == #{productList} ? 'active' : '' "></a>
+									th:classappend="${customHeader.headerItem} == #{productList} ? 'active' : '' "></a>
 							</li>
 							<!-- ユーザー一覧 -->
 							<li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
 								<a class="nav-link" th:href="@{/users/list}" th:text="#{userList}"
-								th:classappend="${customHeader.headerItem} == #{userList} ? 'active' : '' "></a>
+									th:classappend="${customHeader.headerItem} == #{userList} ? 'active' : '' "></a>
 							</li>
 							<!-- 入荷先一覧 -->
 							<li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
 								<a class="nav-link" th:href="@{/suppliers/list}" th:text="#{supplierList}"
-								th:classappend="${customHeader.headerItem} == #{supplierList} ? 'active' : '' "></a>
+									th:classappend="${customHeader.headerItem} == #{supplierList} ? 'active' : '' "></a>
 							</li>
 							<!-- 出荷先一覧 -->
 							<li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
 								<a class="nav-link" th:href="@{/customers/list}" th:text="#{customerList}"
-								th:classappend="${customHeader.headerItem} == #{customerList} ? 'active' : '' "></a>
+									th:classappend="${customHeader.headerItem} == #{customerList} ? 'active' : '' "></a>
 							</li>
 						</ul>
 						<!-- ログアウト -->
@@ -109,6 +109,11 @@
 										dropdown-divider(ドロップダウンメニュー内の項目を区切るための薄い水平線（分割線）を表示するクラス.このクラスをドロップダウンメニューの項目（<li>要素など）に追加することで視覚的にメニューをグループ化できる) */-->
 										<hr class="dropdown-divider">
 									</li>
+									<!--/* パスワード修正ボタン */-->
+									<!-- パスワード修正ボタン -->
+									<a class="dropdown-item fs-5"
+										th:href="@{'/users/' + ${#authentication.principal.userId}+ '/passwordEdit'}" role="button"
+										th:text="#{editPassword}"></a>
 									<!--/* ログアウトボタン */-->
 									<form method="post" th:action="@{/logout}">
 										<button class="dropdown-item fs-5" type="submit" th:text="#{logout}"></button>

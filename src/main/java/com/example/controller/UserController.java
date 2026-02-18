@@ -23,6 +23,7 @@ import com.example.domain.users.service.UserService;
 import com.example.form.users.EditForm;
 import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;
+import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
 
 import jakarta.servlet.http.Cookie;
@@ -112,7 +113,7 @@ public class UserController {
 	 * 			正常に完了した場合,ユーザー一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/register")
-	public String postRegister(Model model, @ModelAttribute @Validated RegisterForm form,
+	public String postRegister(Model model, @ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
 
 		// 従業員番号がnullや空白でないかを確認する.
@@ -218,7 +219,7 @@ public class UserController {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			Authentication authentication,
-			@ModelAttribute @Validated EditForm form,
+			@ModelAttribute @Validated(GroupOrder.class) EditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
 
@@ -362,7 +363,7 @@ public class UserController {
 	 */
 	@PostMapping("/{userId}/passwordEdit")
 	public String postPasswordEdit(Model model, @PathVariable Integer userId,
-			@ModelAttribute @Validated PasswordEditForm form,
+			@ModelAttribute @Validated(GroupOrder.class) PasswordEditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
 
@@ -395,7 +396,7 @@ public class UserController {
 		// ユーザーのパスワードを更新する.
 		userService.updatePassword(muser);
 
-		return "redirect:/users/list";
+		return "redirect:/products/info/list";
 
 	}
 

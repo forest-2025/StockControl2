@@ -110,7 +110,7 @@
 			first_name,
 			employee_number,
 			is_admin
-		) value (
+		) values (
 			#{emailAddress},
 			#{password},
 			#{familyName},
