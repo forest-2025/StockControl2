@@ -1,0 +1,58 @@
+@charset "UTF-8";
+
+/*	cursor: pointer;はマウスカーソルが要素上にある時の形状を「人差し指を立てた手の形（ポインター）」に変更し,
+	その要素が「クリック可能」であることをユーザーに視覚的に伝える役割を持つ. */
+.showCharacter {
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+/*	display: flex;はCSSでHTML要素（子要素）を柔軟に横並びや縦並びに配置できるレイアウト機能「Flexbox（フレックスボックス）」を有効にするプロパティ.
+	opacity: 0;はCSSでHTML要素の不透明度を0%（完全な透明）にするプロパティ.
+	pointer-eventsはその要素がマウスやタッチなどの操作を受け付けるかどうか指定している(noneは操作できない).
+	transitionはCSSのプロパティが変化するときの「変化の速さや動き方」を指定するプロパティ.
+	CSSで要素の透明度（opacity）が変化する際,0.5秒かけて始まりと終わりを滑らかに（ease）変化させるアニメーション命令.
+	height: 100vh;は要素の高さをビューポート（ブラウザの表示領域）の高さの100%に指定する命令.
+	position: fixed;は要素をブラウザの表示領域（ビューポート）の特定位置に固定する配置方法のこと. */
+.popup {
+	display: flex;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.5s ease;
+	height: 100vh;
+	width: 100%;
+	background: black;
+	position: fixed;
+	top: 0;
+	left: 0;
+	justify-content: center;
+	align-items: center;
+	padding-top: 120px;
+}
+
+/* @media(メディアクエリ)で画面サイズの違いに対応する.(min-width: 767px)で画面サイズが767px以上になったら読み込まれるようになる. */
+@media (min-width: 767px) {
+	.content {
+		background: white;
+		padding: 30px;
+		width: 50%;
+	}
+}
+
+/* @media(メディアクエリ)で画面サイズの違いに対応する.(max-width: 768px)で画面サイズが768px以下になったら読み込まれるようになる. */
+@media (max-width: 768px) {
+	.content {
+		background: white;
+		padding: 20px;
+		width: 70%;
+	}
+}
+
+/*	opacity: 1;は要素の不透明度を最大（100%）に設定している.
+	pointer-events: auto;は要素がマウスやタッチの操作を受け付ける状態のこと.  */
+.show {
+	opacity: 1;
+	pointer-events: auto;
+
+}

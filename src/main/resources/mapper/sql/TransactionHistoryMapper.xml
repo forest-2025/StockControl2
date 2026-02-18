@@ -39,7 +39,7 @@
 			history.remarks,
 			history.register_date_time as historyRegisterDateTime,
 			customer.name as customerName,
-			concat(user.family_name,user.first_name) as fullName
+			concat(m_user.family_name,m_user.first_name) as fullName
 		from
 			t_transaction_history as history
 		left join

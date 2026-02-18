@@ -2,6 +2,10 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/users/register.css}">
+	<!-- 個別JS読込 -->
+	<script th:src="@{/js/popup.js}" defer></script>
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -92,31 +96,31 @@
 			<!-- パスワード -->
 			<div>
 				<label class="mb-1" for="password" th:text="#{password}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{password}">
+				<input class="form-control mb-3 fs-5" type="password" th:field="*{password}" th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('password')}">
+				<div class="invalid-feedback text-danger mb-4 fs-5" th:if="${#fields.hasErrors('password')}"
+					th:errors="*{password}"></div>
+				<!-- 使用できる文字の表示 -->
+				<span class="showCharacter" id="popup-trigger" th:text="#{showAvailableCharacters}"></span>
 
-					<!-- エラーメッセージ -->
-					<span th:errors="*{password}"></span>
-					<p></p>
-					<p　th:text="#{availableCharacters}"></p>
-					<p th:text="#{symbols}"></p>
-					<p th:text="#{numbers}"></p>
-					<!--/* アルファベットの羅列は長い文字列として認識されるため小さい画面だと折り返されないためtext-breakをつけてコンテナの幅を超えてレイアウトが崩れるのを防ぐ */-->
-					<p class="text-break" th:text="#{uppercaseAlphabet}"></p>
-					<p class="text-break" th:text="#{lowercaseAlphabet}"></p>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
+				<!-- ポップアップ内の表示 -->
+				<div class="popup" id="popup">
+					<div class="content">
+						<!--/* アルファベットの羅列は長い文字列として認識されるため小さい画面だと折り返されないためtext-breakをつけてコンテナの幅を超えてレイアウトが崩れるのを防ぐ. */-->
+						<p class="text-break" th:text="#{availableCharacters}"></p>
+						<p class="text-break" th:text="#{symbols}"></p>
+						<p class="text-break" th:text="#{numbers}"></p>
+						<p class="text-break" th:text="#{uppercaseAlphabet}"></p>
+						<p class="text-break" th:text="#{lowercaseAlphabet}"></p>
+						<!--/* type="button"にしないとここを開くたびにパスワード修正の確定ボタンを押した挙動になるので注意する. */-->
+						<button class="btn btn-primary btn-lg" id="close" type="button" th:text="#{close}"></button>
+					</div>
 				</div>
 			</div>
 
 			<!-- 管理者権限 -->
 			<div>
-				<label class="mb-1" for="isAdmin" th:text="#{isAdmin}"></label>
+				<label class="mt-4 mb-1" for="isAdmin" th:text="#{isAdmin}"></label>
 				<select class="form-select mb-3 fs-5" th:field="*{isAdmin}">
 					<option value="" th:text="#{select}"></option>
 					<div>
