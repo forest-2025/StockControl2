@@ -110,7 +110,6 @@ public class AjaxController {
 			
 			// DBのimageが空(nullじゃなくて空)のときなどもここに来る.
 			log.info("画像取得エラー", e);
-			System.out.println(222);
 			try {
 				Path path = Path.of(uploadDir, altImage);
 				mediaType = MediaType.parseMediaType(strMimeType);
