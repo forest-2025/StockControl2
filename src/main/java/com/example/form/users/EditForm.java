@@ -20,26 +20,24 @@ import lombok.Data;
 public class EditForm {
 
 	@NotBlank(groups = ValidGroup1.class)
-	@Pattern(regexp = "^[A-Z][0-9]{5}$",
-	message = "1文字目は半角英大文字、2文字目から半角数字で5桁入力してください(例: E12345)",
-	groups = ValidGroup2.class)
+	@Pattern(regexp = "^[A-Z][0-9]{5}$", groups = ValidGroup2.class)
 	private String employeeNumber; // 従業員番号.
 
 	@NotBlank(groups = ValidGroup1.class)
-	@Size(min = 1, max = 100,groups = ValidGroup2.class)
+	@Size(min = 1, max = 100, groups = ValidGroup2.class)
 	private String familyName; // ユーザー姓.
 
 	@NotBlank(groups = ValidGroup1.class)
-	@Size(min = 1, max = 100,groups = ValidGroup2.class)
+	@Size(min = 1, max = 100, groups = ValidGroup2.class)
 	private String firstName; // ユーザー名.
 
 	@NotBlank(groups = ValidGroup1.class)
 	@Email(groups = ValidGroup2.class)
-	@Size(max = 254,groups = ValidGroup2.class)
+	@Size(max = 254, groups = ValidGroup2.class)
 	private String emailAddress; // メールアドレス.
 
-	@NotNull(message="管理者権限は必ず選択してください",groups = ValidGroup1.class)
-	@Range(min = 0, max = 1,groups = ValidGroup2.class)
+	@NotNull(groups = ValidGroup1.class)
+	@Range(min = 0, max = 1, groups = ValidGroup2.class)
 	private Integer isAdmin; // 管理者権限.
 
 }

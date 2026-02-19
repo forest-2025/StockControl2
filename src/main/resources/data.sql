@@ -15,7 +15,7 @@ VALUES
 (
    '1',
    'yama@company.co.jp',
-   '$2a$10$H4lf843znzKH6WeHqOHtrOznEmAvVt6TbnZWd2vzWriC9jTCOJ2/i',
+   '$2a$10$YgFiI/AIXXj3wm40TquMreQL7PYGqccgV5YTST6bJvM5tXqABfpze',
    'やま',
    'のぼる',
    'E00001',
@@ -27,7 +27,7 @@ VALUES
 (
 '2',
    'umi@company.co.jp',
-   '$2a$10$gpFfsfjRHC.Ilm6Q0cDsG.XmCJil43pt/c4hLPxhwEJxE5EmDwCnS',
+   '$2a$10$aSuzDDvaISzuIiwQ7G5Hi.YuRVXtInEkI4q2GlY4dr95Qr2MrRW8y',
    'うみ',
    'わたる',
    'E00002',
@@ -89,7 +89,7 @@ VALUES
    'キャップ',
    'H25001',
    '1',
-   null,
+   '77c92a77-c8e9-45c0-a6c8-91b58663fe7f.jpg',
    '0',
    '2025-10-11 00:00:00',
    '2026-02-13 00:00:00'

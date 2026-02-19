@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class ShipForm {
 
-	@NotNull(message = "出荷先名は必ず入力してください", groups = ValidGroup1.class)
+	@NotNull(groups = ValidGroup1.class)
 	private Integer customerId; // 出荷先ID.
 
 	@NotNull(groups = ValidGroup1.class)

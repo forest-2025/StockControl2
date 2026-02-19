@@ -23,7 +23,7 @@ public class ProductEditForm {
 	@Size(min = 1, max = 100, groups = ValidGroup2.class)
 	private String productName; // 商品名.
 
-	@NotNull(message = "入荷先名は必ず入力してください", groups = ValidGroup1.class)
+	@NotNull(groups = ValidGroup1.class)
 	private Integer supplierId; // 入荷先ID.
 
 }

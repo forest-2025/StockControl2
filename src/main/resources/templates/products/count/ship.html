@@ -35,42 +35,26 @@
 			<!-- 出荷先名 -->
 			<div>
 				<label class="mb-1" for="customerId" th:text="#{customerName}"></label>
-				<select class="form-select mb-3 fs-5" th:field="*{customerId}">
+				<select class="form-select mb-3 fs-5" th:field="*{customerId}"
+					th:errorclass="is-invalid">
 					<option value="" th:text="#{select}"></option>
 					<div th:each="item:${customerList}">
 						<option th:value="${item.customerId}" th:label="${item.customerName}"></option>
 					</div>
 				</select>
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('customerId')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{customerId}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerId}"></div>
 			</div>
 
 			<!-- 出荷数 -->
 			<div>
 				<label class="mb-1" for="amountOfChange" th:text="#{decreaseNumber}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{amountOfChange}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{amountOfChange}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('amountOfChange')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{amountOfChange}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{amountOfChange}"></div>
 			</div>
 
 			<!-- 担当者 -->
@@ -83,19 +67,11 @@
 			<!-- 備考 -->
 			<div>
 				<label class="mb-1" for="remarks" th:text="#{remarks}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{remarks}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{remarks}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('remarks')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{remarks}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{remarks}"></div>
 			</div>
 
 			<div class="mt-5">

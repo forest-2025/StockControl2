@@ -19,37 +19,21 @@
 			<!-- 出荷先名 -->
 			<div>
 				<label class="mb-1" for="customerName" th:text="#{customerName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{customerName}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{customerName}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('customerName')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{customerName}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerName}"></div>
 			</div>
 			
 			<!-- 出荷先名ふりがな -->
 			<div>
 				<label class="mb-1" for="customerFurigana" th:text="#{customerFurigana}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{customerFurigana}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{customerFurigana}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('customerFurigana')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{customerFurigana}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerFurigana}"></div>
 			</div>
 			
 			<div class="mt-5">

@@ -21,7 +21,7 @@ public class EditForm {
 
 	@NotBlank(groups = ValidGroup1.class)
 	@Size(min = 1, max = 100, groups = ValidGroup2.class)
-	@Pattern(regexp = "^[\\p{InHiragana}ー]+$", message = "ひらがなで入力してください", groups = ValidGroup2.class)
+	@Pattern(regexp = "^[\\p{InHiragana}ー]+$", groups = ValidGroup2.class)
 	private String supplierFurigana; // 入荷先名ふりがな.
 
 }

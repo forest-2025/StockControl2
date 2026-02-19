@@ -40,19 +40,12 @@
 				<!--/* responsive-textがあることで画面サイズが小さくても"ファイルが選択されていません"などの文字が読めるようにしている
 					 accept="image/jpeg"で選択画面でJPEGの拡張子のファイルだけを初期表示することができる */-->
 				<input type="file" class="form-control mb-3 responsive-text" th:field="*{productFile}"
-					th:aria-label="#{image}" accept="image/jpeg">
+					th:aria-label="#{image}" accept="image/jpeg"
+					th:classappend="${errors != null and !errors.isEmpty()} ? ' is-invalid' : ''">
 
-
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${errors}"
-					th:each="error : ${errors}">
-
-					<!-- エラーメッセージ -->
-					<span th:text="${error}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback fs-6" th:if="${errors != null}" th:each="error : ${errors}"
+					th:text="${error}">
 				</div>
 			</div>
 

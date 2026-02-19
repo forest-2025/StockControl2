@@ -16,13 +16,12 @@ import lombok.Data;
 public class RegisterForm {
 
 	@NotBlank(groups = ValidGroup1.class)
-	@Size(min = 1, max = 100,groups = ValidGroup2.class)
+	@Size(min = 1, max = 100, groups = ValidGroup2.class)
 	private String customerName; // 出荷先名.
 
 	@NotBlank(groups = ValidGroup1.class)
-	@Size(min = 1, max = 100,groups = ValidGroup2.class)
-	@Pattern(regexp = "^[\\p{InHiragana}ー]+$", message = "ひらがなで入力してください",
-			groups = ValidGroup2.class)
+	@Size(min = 1, max = 100, groups = ValidGroup2.class)
+	@Pattern(regexp = "^[\\p{InHiragana}ー]+$", groups = ValidGroup2.class)
 	private String customerFurigana; // 出荷先名ふりがな.
 
 }

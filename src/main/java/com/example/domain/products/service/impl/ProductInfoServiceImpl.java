@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -12,6 +13,7 @@ import javax.imageio.ImageIO;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,6 +67,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	@Autowired
 	private ProductWithSupplierMapper productWithSupplierMapper;
+	
+	@Autowired
+    private MessageSource messageSource;
 
 	@Value("${file.upload-dir}")
 	private String uploadDir;
@@ -242,7 +247,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 		try {
 			if (file.getSize() > MAX_SIZE) {
-				errors.add("画像ファイルは20MB以下にしてください");
+				String errorMessage = messageSource.getMessage("OverSize", null , Locale.JAPAN);
+				errors.add(errorMessage);
 			}
 
 			// ファイルの元の名前(ユーザーが選択したときのファイル名)を取得する.
@@ -257,7 +263,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * isBlank()は内部でCharacter.isWhitespace()を使用するが,Character.isWhitespace()で
 			 * U+00A0は対応してないから).あとの拡張子チェックでみつけられるためU+00A0などのチェックまではしていない. */
 			if (originalFileName == null || originalFileName.isBlank()) {
-				errors.add("ファイル名が不正です");
+				String errorMessage = messageSource.getMessage("InvalidFileName", null , Locale.JAPAN);
+				errors.add(errorMessage);
 			} else {
 				// 下にあるprivateメソッドgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している(this.は省略).
 				String extension = getExtension(originalFileName).toLowerCase();
@@ -270,8 +277,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 						break;
 					}
 				}
-				if (!allowed)
-					errors.add("画像ファイルはJPEG(.jpgまたは.jpeg)のみ登録できます");
+				
+				if (!allowed) {
+					String errorMessage = messageSource.getMessage("FileFormatsDiffer", null , Locale.JAPAN);
+					errors.add(errorMessage);
+				}
 			}
 
 			// この時点でバリデーションエラーがあるときは一旦フォーム画面でエラーを表示する(このあと画像を一時保存するため).
@@ -321,7 +331,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			String mimeType = tika.detect(tempFile);
 			// equalsIgnoreCase("image/jpeg")で大文字小文字の区別なく文字列の比較ができる.
 			if (!mimeType.equalsIgnoreCase("image/jpeg")) {
-				errors.add("画像ファイルはJPEG(.jpgまたは.jpeg)のみ登録できます");
+				String errorMessage = messageSource.getMessage("FileFormatsDiffer", null , Locale.JAPAN);
+				errors.add(errorMessage);
 			}
 
 			/* ImageIOで読み込めるか確認する.
@@ -340,7 +351,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * で最大メモリ(上限)・現在確保しているメモリ(起動時に表示すると初期確保ヒープに近い)・現在使用中のメモリがみれる.
 			 * JVMは必要に応じてメモリを拡張するので常に最大を使っているわけではない. */
 			if (ImageIO.read(tempFile.toFile()) == null) {
-				errors.add("画像ファイルとして読み込めません");
+				String errorMessage = messageSource.getMessage("NotReadImageFile", null , Locale.JAPAN);
+				errors.add(errorMessage);
 			}
 
 			// errorsがあればバリデーションエラーとしてフォーム画面に戻す.

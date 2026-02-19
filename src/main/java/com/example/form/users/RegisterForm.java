@@ -20,30 +20,28 @@ import lombok.Data;
 public class RegisterForm {
 
 	@NotBlank(groups = ValidGroup1.class)
-	@Pattern(regexp = "^[A-Z][0-9]{5}$", message = "1文字目は半角英大文字、2文字目から半角数字で5桁入力してください",
-	groups = ValidGroup2.class)
+	@Pattern(regexp = "^[A-Z][0-9]{5}$", groups = ValidGroup2.class)
 	private String employeeNumber; // 従業員番号.
 
 	@NotBlank(groups = ValidGroup1.class)
-	@Size(min = 1, max = 100,groups = ValidGroup2.class)
+	@Size(min = 1, max = 100, groups = ValidGroup2.class)
 	private String familyName; // ユーザー姓.
 
 	@NotBlank(groups = ValidGroup1.class)
-	@Size(min = 1, max = 100,groups = ValidGroup2.class)
+	@Size(min = 1, max = 100, groups = ValidGroup2.class)
 	private String firstName; // ユーザー名.
 
 	@NotBlank(groups = ValidGroup1.class)
 	@Email(groups = ValidGroup2.class)
-	@Size(max = 254,groups = ValidGroup2.class)
+	@Size(max = 254, groups = ValidGroup2.class)
 	private String emailAddress; // メールアドレス.
 
 	@NotBlank(groups = ValidGroup1.class)
-	@Size(min = 5, max = 72, message = "パスワードは5文字以上72文字以下で入力してください",groups = ValidGroup2.class)
-	@Pattern(regexp = "^[!-~]+$", message = "半角英数字と半角記号のなかから入力してください",
-	groups = ValidGroup2.class)
+	@Size(min = 5, max = 72, groups = ValidGroup2.class)
+	@Pattern(regexp = "^[!-~]+$", groups = ValidGroup2.class)
 	private String password; // パスワード.
 
-	@NotNull(message="管理者権限は必ず選択してください", groups = ValidGroup1.class)
+	@NotNull(groups = ValidGroup1.class)
 	@Range(min = 0, max = 1, groups = ValidGroup2.class)
 	private Integer isAdmin; // 管理者権限.
 

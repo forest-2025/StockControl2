@@ -17,7 +17,7 @@ public class PasswordEditForm {
 
 	@NotBlank(groups = ValidGroup1.class)
 	@Size(min = 5, max = 72, groups = ValidGroup2.class)
-	@Pattern(regexp = "^[!-~]+$", message = "半角英数字と半角記号のなかから入力してください", groups = ValidGroup2.class)
+	@Pattern(regexp = "^[!-~]+$", groups = ValidGroup2.class)
 	private String password; // パスワード.
 
 	private String reEnterPassword; // パスワード再入力.

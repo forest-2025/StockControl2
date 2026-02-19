@@ -20,60 +20,36 @@
 			<!-- 商品番号 -->
 			<div>
 				<label class="mb-1" for="productNumber" th:text="#{productNumber}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{productNumber}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{productNumber}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('productNumber')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{productNumber}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{productNumber}"></div>
 			</div>
 			
 			<!-- 商品名 -->
 			<div>
 				<label class="mb-1" for="productName" th:text="#{productName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{productName}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{productName}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('productName')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{productName}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{productName}"></div>
 			</div>
 
 			<!-- 入荷先名 -->
 			<div>
 				<label class="mb-1" for="supplierId" th:text="#{supplierName}"></label>
-				<select class="form-select mb-3 fs-5" th:field="*{supplierId}">
+				<select class="form-select mb-3 fs-5" th:field="*{supplierId}"
+					th:errorclass="is-invalid">
 					<option value="" th:text="#{select}"></option>
 					<div th:each="item:${supplierList}">
 						<option th:value="${item.supplierId}" th:label="${item.supplierName}"></option>
 					</div>
 				</select>
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('supplierId')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{supplierId}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{supplierId}"></div>
 			</div>
 
 			<div class="mt-5">

@@ -19,79 +19,48 @@
 			<!-- 従業員番号 -->
 			<div>
 				<label class="mb-1" for="employeeNumber" th:text="#{employeeNumberInputExample}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{employeeNumber}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{employeeNumber}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('employeeNumber')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{employeeNumber}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{employeeNumber}"></div>
 			</div>
 
 			<!-- 姓 -->
 			<div>
 				<label class="mb-1" for="familyName" th:text="#{familyName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{familyName}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{familyName}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('familyName')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{familyName}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{familyName}"></div>
 			</div>
-			
+
 			<!-- 名 -->
 			<div>
 				<label class="mb-1" for="firstName" th:text="#{firstName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{firstName}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{firstName}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('firstName')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{firstName}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{firstName}"></div>
 			</div>
-			
+
 			<!-- メールアドレス -->
 			<div>
 				<label class="mb-1" for="emailAddress" th:text="#{emailAddress}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{emailAddress}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{emailAddress}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('emailAddress')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{emailAddress}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{emailAddress}"></div>
 			</div>
 
 			<!-- 管理者権限 -->
 			<div>
 				<label class="mb-1" for="isAdmin" th:text="#{isAdmin}"></label>
-				<select class="form-select mb-3 fs-5" th:field="*{isAdmin}">
+				<select class="form-select mb-3 fs-5" th:field="*{isAdmin}"
+					 th:errorclass="is-invalid">
 					<option value="" th:text="#{select}"></option>
 					<div>
 						<option th:value="#{generalNumber}" th:label="#{general}"></option>
@@ -99,17 +68,8 @@
 					</div>
 				</select>
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('isAdmin')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{isAdmin}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{isAdmin}"></div>
 			</div>
 
 			<div class="mt-5">
@@ -118,8 +78,8 @@
 					th:text="#{confirmed}"></button>
 
 				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel" name="cancel"
-					th:text="#{cancel}"></a>
+				<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel"
+					name="cancel" th:text="#{cancel}"></a>
 			</div>
 		</form>
 

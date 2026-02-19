@@ -36,19 +36,10 @@
 				<label class="mb-1 text-danger fw-bold" for="actualProductCount"
 					th:text="#{actualProductCount}"></label>
 				<input class="form-control mb-3 fs-5" type="text" th:field="*{actualProductCount}"
-					th:placeholder="#{actualProductCountInput}">
+					th:placeholder="#{actualProductCountInput}" th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('actualProductCount')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{actualProductCount}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{actualProductCount}"></div>
 			</div>
 
 			<!-- 担当者 -->
@@ -61,19 +52,11 @@
 			<!-- 備考 -->
 			<div>
 				<label class="mb-1" for="remarks" th:text="#{remarks}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{remarks}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{remarks}" 
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('remarks')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{remarks}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{remarks}"></div>
 			</div>
 
 			<div class="mt-5">

@@ -14,52 +14,39 @@
 			<span th:text="#{supplierEditMessage}"></span>
 		</div>
 
-		<form method="post" th:object="${editForm}" th:action="@{/suppliers/{supplierId}/edit(supplierId=${supplier.supplierId})}">
+		<form method="post" th:object="${editForm}"
+			th:action="@{/suppliers/{supplierId}/edit(supplierId=${supplier.supplierId})}">
 
 			<!-- 入荷先名 -->
 			<div>
 				<label class="mb-1" for="supplierName" th:text="#{supplierName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{supplierName}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{supplierName}" 
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('supplierName')}">
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{supplierName}"></div>
 
-					<!-- エラーメッセージ -->
-					<span th:errors="*{supplierName}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
-				</div>
 			</div>
-			
+
 			<!-- 入荷先名ふりがな -->
 			<div>
 				<label class="mb-1" for="supplierFurigana" th:text="#{supplierFurigana}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{supplierFurigana}">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{supplierFurigana}"
+					th:errorclass="is-invalid">
 
-				<!--/* エラーがあるか確認し、エラーがあった時の設定を記述 */-->
-				<div class="alert alert-warning alert-dismissible fade show" role="alert"
-					th:if="${#fields.hasErrors('supplierFurigana')}">
-
-					<!-- エラーメッセージ -->
-					<span th:errors="*{supplierFurigana}"></span>
-
-					<!-- エラーメッセージを消せるボタン -->
-					<button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-
+				<!-- エラーメッセージ -->
+				<div class="invalid-feedback mb-4 fs-6" th:errors="*{supplierFurigana}">
 				</div>
 			</div>
-			
+
 			<div class="mt-5">
 				<!-- 確定ボタン -->
 				<button class="btn btn-primary btn-lg me-2 mb-5" type="submit" id="supplierEdit" name="supplierEdit"
 					th:text="#{confirmed}"></button>
 
 				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/suppliers/list}" role="button" id="cancel" name="cancel"
-					th:text="#{cancel}"></a>
+				<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/suppliers/list}" role="button" id="cancel"
+					name="cancel" th:text="#{cancel}"></a>
 			</div>
 		</form>
 
