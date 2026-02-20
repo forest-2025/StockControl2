@@ -72,33 +72,13 @@
 			first_name like '%' || #{search} || '%'
 			or
 			employee_number like '%' || #{search} || '%'
-			or
-			#{search} != '管理者' is_admin = '1',null)
-			or
-			if(#{search} = '一般',is_admin = '0',null)  
-			)
-			
-		<where>
-    <if test="admin == '管理者'">
-        AND is_admin = '1'
-    </if>
-
-    <if test="status != null">
-        AND status = #{status}
-    </if>
-
-    <if test="keywords != null and keywords.size() > 0">
-        AND (
-            <foreach separator=" OR ">
-                family_name LIKE CONCAT('%', #{search}, '%')
-            </foreach>
-        )
-    </if>
-    <!-- キーワード検索 -->
-    <if test="search != null and search != ''">
-        AND name LIKE CONCAT('%', #{search}, '%')
-    </if>
-</where>	
+			<if test="search == '管理者'">
+            	or is_admin = '1'
+            </if>
+        	<if test="search == '一般'">
+            	or is_admin = '0'
+       		</if>
+  			 )
 		order by
 			employee_number asc
 	</select>

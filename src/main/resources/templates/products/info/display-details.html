@@ -131,8 +131,8 @@
 			</table>
 
 			<!-- ページネーション -->
-			<div class="d-flex overflow-x-auto justify-content-sm-center mt-5 mb-5">
-				<nav aria-label="Page navigation">
+			<div class="d-flex overflow-x-auto justify-content-sm-center mt-5 mb-5" th:if="${historyList.pages > 1}">
+				<nav class="m-2" aria-label="Page navigation">
 					<ul class="pagination pagination-lg">
 
 						<!-- 前のページ -->
@@ -145,7 +145,7 @@
 						</li>
 
 						<!-- ページ番号 -->
-						<li th:each="i : ${historyList.navigatepageNums}" class="page-item"
+						<li class="page-item" th:each="i : ${historyList.navigatepageNums}" 
 							th:classappend="${i} == ${historyList.pageNum} ? 'active'">
 							<a class="page-link" th:href="@{'/products/' + ${oneItem.productId} + '/info/display-details'(page=${i})}"
 								th:text="${i}"></a>

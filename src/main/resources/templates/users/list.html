@@ -10,24 +10,23 @@
 <body>
 	<div layout:fragment="content">
 		<!--/* ユーザー登録ボタンと検索フォームをdivタグのrowでひとまとめにしている
-			(rowを使うときはそのすぐ下の子要素にcolを加えないと意味がない).このまとまりの上下に余白を別で足している(margin). */-->
-		<div class="row mt-5 mb-5">
+			(rowを使うときはそのすぐ下の子要素にcolを加えないと意味がない).text-centerで中央寄せにしている.
+			このまとまりの上下に余白を別で足している(margin). */-->
+		<div class="row text-center mt-5 mb-5">
 			<!-- ユーザー登録ボタン -->
-			<!--/* パソコン用(992px以上)ならユーザー登録ボタンと検索フォーム・ボタンが横並びになるようにしている.
-			text-centerで中央寄せにしている.
-			pb-4は小さい画面でユーザー登録ボタンと検索フォーム・ボタンが二段になっているときに余白をつけるためのもの. */-->
-			<div class="col-lg-6 text-center pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
+			<!--/* パソコン用(992px以上)ならユーザー登録ボタンと検索フォームが横並びになるようにしている.
+			pb-4は小さい画面でユーザー登録ボタンと検索フォームが二段になっているときに余白をつけるためのもの. */-->
+			<div class="col-lg-6 pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
 				<a class="btn btn-dark btn-lg" th:href="@{/users/register}" role="button" th:text="#{userRegister}"></a>
 			</div>
 
-			<!-- 検索フォームと検索ボタン -->
-			<!--/* 検索フォームと検索ボタンを横並びにすると検索ボタンの位置が離れるので2段にしている. */-->
+			<!-- 検索フォーム -->
 			<div class="col-lg-6">
-				<form class="" method="get" th:action="@{/users/list}">
-					<!-- 検索フォーム -->
-					<div class="text-center pb-3">
-						<!--/* inputタグのw-auto d-inline-blockはform-controlのwidth:100%,
-							display:blockを上書きしていおり,これにより検索フォームとボタンの高さを合わせている. */-->
+				<form method="get" th:action="@{/users/list}">
+					<div>
+						<!--/* inputタグのw-auto,d-inline-blockはform-controlのwidth:100%,
+							display:blockを上書きしている.これにより検索フォームがの横幅がいっぱいに広がらずに適切な大きさにされる.
+							またd-inline-blockによりtext-centerが適用される. */-->
 						<label for="search"></label>
 						<input class="form-control form-control-lg w-auto d-inline-block" type="search" id="search"
 							name="search" th:value="${search}" th:placeholder="#{searchForm}">
@@ -37,13 +36,6 @@
 						<span th:text="#{searchText2}"></span>
 						<strong class="text-danger" th:text="#{general}"></strong>
 						<span th:text="#{searchText3}"></span>
-					</div>
-
-					<!-- 検索ボタン -->
-					<div class="text-center">
-						<label for="search-btn"></label>
-						<button class="btn btn-outline-dark btn-lg" type="submit" id="search-btn"
-							th:text="#{searchBtn}"></button>
 					</div>
 				</form>
 			</div>
@@ -89,7 +81,7 @@
 						</tr>
 					</tbody>
 				</table>
-			
+
 				<!-- ページネーション -->
 				<!--/* d-flexを付けてdivをflexコンテナにすることで,justify-content-sm-centerが有効になり,
 					画面幅576px以上で子要素を中央揃えにできる.
@@ -108,7 +100,7 @@
 						を補ったり,HTMLだけでは伝えられない情報をスクリーンリーダーなどの支援技術に伝えるための仕組みのこと.
 						aria-label属性はページネーションが「何のためのナビゲーションか」をスクリーンリーダー(読み上げソフト)に伝えるために必
 						要なものでPage navigationでページネーション用であることを伝える. */-->
-					<nav aria-label="Page navigation">
+					<nav class="m-2" aria-label="Page navigation">
 						<!--/* paginationで体裁を整える(ボタン風にしたり,青文字にしたり,display:flex 子要素(li)を横並び).
 							pagination-lgでサイズを大きくしている. */-->
 						<ul class="pagination pagination-lg">
@@ -177,7 +169,7 @@
 								これは現在のページ番号が最大表示数の中心または一つ後ろになることを意味する.
 								例)ページ数20・現在ページ6・最大表示数8なら「2・3・4・5・6・7・8・9」となり,最大表示数5なら「4・5・6・7・8」となる.
 								pageNumは現在のページ番号を保持しているので現在のページ番号の数字をアクティブにする(フォントの色と背景色が変わる). */-->
-							<li th:each="i : ${userList.navigatepageNums}" class="page-item"
+							<li class="page-item" th:each="i : ${userList.navigatepageNums}"
 								th:classappend="${i} == ${userList.pageNum} ? 'active'">
 								<a class="page-link" th:href="@{/users/list(page=${i},search=${search})}"
 									th:text="${i}"></a>
@@ -209,11 +201,6 @@
 					</nav>
 				</div>
 			</div>
-		</div>
-
-		<!-- 戻るボタン -->
-		<div class="text-center mt-5 mb-5">
-			<a class="btn btn-dark btn-lg" th:href="@{/products/info/list}" role="button" th:text="#{back}"></a>
 		</div>
 	</div>
 </body>

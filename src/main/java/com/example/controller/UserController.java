@@ -1,9 +1,5 @@
 package com.example.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,6 +26,10 @@ import com.example.form.users.RegisterForm;
 import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 /** 
  * ユーザーの情報に関するコントローラクラス.
  * 
@@ -48,7 +48,7 @@ public class UserController {
 	private ModelMapper modelMapper;
 
 	// 1ページで表示するユーザーの人数を10人に設定する.
-	private final int SHOW_SIZE = 1;
+	private final int SHOW_SIZE = 10;
 
 	/**
 	 * ユーザー一覧画面に遷移する.

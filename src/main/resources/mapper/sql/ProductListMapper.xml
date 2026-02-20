@@ -62,11 +62,11 @@
 		where
 			product.is_deleted != 1
 			and(
-			product.name like concat('%' , #{search} , '%') 
+			product.name like '%' || #{search} || '%' 
 			or
-			product.number like concat('%' , #{search} , '%') 
+			product.number like '%' || #{search} || '%' 
 			or
-			supplier.name like concat('%' , #{search} , '%') 
+			supplier.name like '%' || #{search} || '%' 
 			)
 		order by
 			product.number asc

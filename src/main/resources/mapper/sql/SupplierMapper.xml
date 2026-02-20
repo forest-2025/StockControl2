@@ -58,11 +58,11 @@
 		where
 			is_deleted != 1
 			and (
-			id like concat('%' , #{search} , '%')
+			id like '%'|| #{search} || '%'
 			or
-			name like concat('%' , #{search} , '%')
+			name like '%' || #{search} || '%'
 			or
-			furigana like concat('%' , #{search} , '%') 
+			furigana like '%' || #{search} || '%' 
 			)
         order by ${sortItem} ${sort}
 	</select>
