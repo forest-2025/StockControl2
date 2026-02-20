@@ -9,37 +9,32 @@
 
 	<div layout:fragment="content">
 
-		<!-- メッセージ -->
-		<div class="alert alert-danger mt-5" role="alert">
-			<span th:text="#{customerDeleteMessage}"></span>
+		<div class="mt-5">
+			<form method="post" th:action="@{/customers/{customerId}/delete(customerId=${customer.customerId})}">
+
+				<!-- 出荷先名 -->
+				<div>
+					<div class="mb-1" for="customerName" th:text="#{customerName}"></div>
+					<div class="ms-3 mb-3 fs-5" type="text" th:text="${customer.customerName}"></div>
+				</div>
+
+				<!-- 出荷先名ふりがな -->
+				<div>
+					<div class="mb-1" for="customerFurigana" th:text="#{customerFurigana}"></div>
+					<div class="ms-3 mb-3 fs-5" type="text" th:text="${customer.customerFurigana}"></div>
+				</div>
+
+				<div class="mt-5">
+					<!-- 削除ボタン -->
+					<button class="btn btn-danger btn-lg me-2 mb-5" type="submit" id="customerDelete"
+						name="customerDelete" th:text="#{delete}"></button>
+
+					<!-- キャンセルボタン -->
+					<a class="btn btn-outline-danger btn-lg mb-5" th:href="@{/customers/list}" role="button" id="cancel"
+						name="cancel" th:text="#{cancel}"></a>
+				</div>
+			</form>
 		</div>
-
-		<form method="post" th:action="@{/customers/{customerId}/delete(customerId=${customer.customerId})}">
-
-			<!-- 出荷先名 -->
-			<div>
-				<div class="mb-1" for="customerName" th:text="#{customerName}"></div>
-				<div class="ms-3 mb-3 fs-5" type="text" th:text="${customer.customerName}"></div>
-			</div>
-			
-			<!-- 出荷先名ふりがな -->
-			<div>
-				<div class="mb-1" for="customerFurigana" th:text="#{customerFurigana}"></div>
-				<div class="ms-3 mb-3 fs-5" type="text" th:text="${customer.customerFurigana}"></div>
-			</div>
-
-
-			<div class="mt-5">
-				<!-- 削除ボタン -->
-				<button class="btn btn-danger btn-lg me-2 mb-5" type="submit" id="customerDelete" name="customerDelete"
-					th:text="#{delete}"></button>
-
-				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-danger btn-lg mb-5" th:href="@{/customers/list}" role="button" id="cancel"
-					name="cancel" th:text="#{cancel}"></a>
-			</div>
-		</form>
-
 	</div>
 </body>
 

@@ -1,11 +1,14 @@
 package com.example.form.users;
 
-import com.example.validation.ValidGroup1;
-import com.example.validation.ValidGroup2;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
+import com.example.validation.PasswordMatch;
+import com.example.validation.ValidGroup1;
+import com.example.validation.ValidGroup2;
+import com.example.validation.ValidGroup3;
+
 import lombok.Data;
 
 /**
@@ -13,6 +16,7 @@ import lombok.Data;
  *  
  */
 @Data
+@PasswordMatch(groups = ValidGroup3.class)
 public class PasswordEditForm {
 
 	@NotBlank(groups = ValidGroup1.class)

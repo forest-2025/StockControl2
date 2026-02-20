@@ -1,5 +1,9 @@
 package com.example.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,10 +29,6 @@ import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;
 import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /** 
  * ユーザーの情報に関するコントローラクラス.
@@ -375,9 +375,6 @@ public class UserController {
 			return "/error";
 		}
 
-		if(!form.getPassword().equals(form.getReEnterPassword())) {
-			bindingResult.rejectValue("password", "NotSamePassword");
-		}
 		// バリデーションエラーがあればパスワード修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 

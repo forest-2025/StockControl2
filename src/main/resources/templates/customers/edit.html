@@ -8,45 +8,46 @@
 <body>
 
 	<div layout:fragment="content">
+		<div class="mt-5">
+			<!-- メッセージ -->
+			<h3 class="text-center mb-5">
+				<span th:text="#{customerEditMessage}"></span>
+			</h3>
 
-		<!-- メッセージ -->
-		<div class="alert alert-primary mt-5" role="alert">
-			<span th:text="#{customerEditMessage}"></span>
+			<form method="post" th:object="${editForm}"
+				th:action="@{/customers/{customerId}/edit(customerId=${customer.customerId})}">
+
+				<!-- 出荷先名 -->
+				<div>
+					<label class="mb-1" for="customerName" th:text="#{customerName}"></label>
+					<input class="form-control mb-3 fs-5" type="text" th:field="*{customerName}"
+						th:errorclass="is-invalid">
+
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerName}"></div>
+				</div>
+
+				<!-- 出荷先名ふりがな -->
+				<div>
+					<label class="mb-1" for="customerFurigana" th:text="#{customerFurigana}"></label>
+					<input class="form-control mb-3 fs-5" type="text" th:field="*{customerFurigana}"
+						th:errorclass="is-invalid">
+
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerFurigana}"></div>
+				</div>
+
+				<div class="mt-5">
+					<!-- 確定ボタン -->
+					<button class="btn btn-primary btn-lg me-2 mb-5" type="submit" id="customerEdit" name="customerEdit"
+						th:text="#{confirmed}"></button>
+
+					<!-- キャンセルボタン -->
+					<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/customers/list}" role="button"
+						id="cancel" name="cancel" th:text="#{cancel}"></a>
+				</div>
+			</form>
 		</div>
-
-		<form method="post" th:object="${editForm}" th:action="@{/customers/{customerId}/edit(customerId=${customer.customerId})}">
-
-			<!-- 出荷先名 -->
-			<div>
-				<label class="mb-1" for="customerName" th:text="#{customerName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{customerName}"
-					th:errorclass="is-invalid">
-
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerName}"></div>
-			</div>
-			
-			<!-- 出荷先名ふりがな -->
-			<div>
-				<label class="mb-1" for="customerFurigana" th:text="#{customerFurigana}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{customerFurigana}"
-					th:errorclass="is-invalid">
-
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerFurigana}"></div>
-			</div>
-			
-			<div class="mt-5">
-				<!-- 確定ボタン -->
-				<button class="btn btn-primary btn-lg me-2 mb-5" type="submit" id="customerEdit" name="customerEdit"
-					th:text="#{confirmed}"></button>
-
-				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/customers/list}" role="button" id="cancel" name="cancel"
-					th:text="#{cancel}"></a>
-			</div>
-		</form>
-
 	</div>
 </body>
 
