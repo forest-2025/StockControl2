@@ -2,8 +2,10 @@ package com.example.form.users;
 
 import org.hibernate.validator.constraints.Range;
 
+import com.example.validation.PasswordMatch;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
+import com.example.validation.ValidGroup3;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +19,7 @@ import lombok.Data;
  *  
  */
 @Data
+@PasswordMatch(password = "password",secondPassword = "reEnterPassword",groups = ValidGroup3.class)
 public class RegisterForm {
 
 	@NotBlank(groups = ValidGroup1.class)
@@ -40,6 +43,8 @@ public class RegisterForm {
 	@Size(min = 5, max = 72, groups = ValidGroup2.class)
 	@Pattern(regexp = "^[!-~]+$", groups = ValidGroup2.class)
 	private String password; // パスワード.
+	
+	private String reEnterPassword; // パスワード再入力.
 
 	@NotNull(groups = ValidGroup1.class)
 	@Range(min = 0, max = 1, groups = ValidGroup2.class)

@@ -78,7 +78,7 @@ AuthenticationManager	複数の AuthenticationProvider を管理している(実
 AuthenticationProvider	ここでBean登録されているのはここの部分のこと.これはアプリケーション起動時に Bean 登録される内容のこと.
 						これは誰を認証対象にするか,パスワードの照合ルール,エラーメッセージ取得方法など,認証方法を保持するオブジェクトを作成している.
 						@Configuration クラスで内でBeanを定義するメソッドの引数に,他の Bean を自動的に渡して（注入して）利用する仕組みがある.
-						(これを @Bean メソッドの引数による依存性注入という).
+						(これを @Bean メソッドの引数による依存性注入といい@Autowired を付与しなくても勝手に注入してくれる).
 						そのため,
 						AuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder,
 						UserDetailsService userDetailsService, MessageSource messageSource)

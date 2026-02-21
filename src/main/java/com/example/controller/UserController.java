@@ -1,9 +1,5 @@
 package com.example.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,6 +25,10 @@ import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;
 import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /** 
  * ユーザーの情報に関するコントローラクラス.
@@ -115,7 +115,7 @@ public class UserController {
 	@PostMapping("/register")
 	public String postRegister(Model model, @ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
-
+		
 		// 従業員番号がnullや空白でないかを確認する.
 		String employeeNumber = form.getEmployeeNumber();
 		if (employeeNumber == null || employeeNumber.equals("")) {

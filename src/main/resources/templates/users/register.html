@@ -24,7 +24,7 @@
 			<div>
 				<label class="mb-1" for="employeeNumber" th:text="#{employeeNumberInputExample}"></label>
 				<input class="form-control mb-3 fs-5" type="text" th:field="*{employeeNumber}"
-					th:placeholder="#{employeeNumberSample}"th:errorclass="is-invalid">
+					th:placeholder="#{employeeNumberSample}" th:errorclass="is-invalid">
 
 				<!-- エラーメッセージ -->
 				<div class="invalid-feedback mb-4 fs-6" th:errors="*{employeeNumber}"></div>
@@ -33,8 +33,7 @@
 			<!-- 姓 -->
 			<div>
 				<label class="mb-1" for="familyName" th:text="#{familyName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{familyName}"
-					th:errorclass="is-invalid">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{familyName}" th:errorclass="is-invalid">
 
 				<!-- エラーメッセージ -->
 				<div class="invalid-feedback mb-4 fs-6" th:errors="*{familyName}"></div>
@@ -43,8 +42,7 @@
 			<!-- 名 -->
 			<div>
 				<label class="mb-1" for="firstName" th:text="#{firstName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{firstName}"
-					th:errorclass="is-invalid">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{firstName}" th:errorclass="is-invalid">
 
 				<!-- エラーメッセージ -->
 				<div class="invalid-feedback mb-4 fs-6" th:errors="*{firstName}"></div>
@@ -53,18 +51,16 @@
 			<!-- メールアドレス -->
 			<div>
 				<label class="mb-1" for="emailAddress" th:text="#{emailAddress}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{emailAddress}"
-					th:errorclass="is-invalid">
+				<input class="form-control mb-3 fs-5" type="text" th:field="*{emailAddress}" th:errorclass="is-invalid">
 
 				<!-- エラーメッセージ -->
 				<div class="invalid-feedback mb-4 fs-6" th:errors="*{emailAddress}"></div>
 			</div>
 
 			<!-- パスワード -->
-			<div>
+			<div class="mb-4">
 				<label class="mb-1" for="password" th:text="#{password}"></label>
-				<input class="form-control mb-3 fs-5" type="password" th:field="*{password}" 
-					th:errorclass="is-invalid">
+				<input class="form-control mb-3 fs-5" type="password" th:field="*{password}" th:errorclass="is-invalid">
 
 				<!-- エラーメッセージ -->
 				<div class="invalid-feedback mb-4 fs-6" th:errors="*{password}"></div>
@@ -84,6 +80,12 @@
 						<button class="btn btn-primary btn-lg" id="close" type="button" th:text="#{close}"></button>
 					</div>
 				</div>
+			</div>
+
+			<div>
+				<!-- パスワード再入力 -->
+				<label class="mb-1" for="reEnterPassword" th:text="#{reEnterPassword}"></label>
+				<input class="form-control mb-3 fs-5" type="password" th:field="*{reEnterPassword}">
 			</div>
 
 			<!-- 管理者権限 -->
