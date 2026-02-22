@@ -1,11 +1,18 @@
 package com.example.validation;
 
-import org.springframework.beans.BeanWrapperImpl;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
+import org.springframework.beans.BeanWrapperImpl;
+
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * PasswordMatch アノテーションの検証処理を行う.
+ * 
+ * null の場合は @NotBlank に任す.
+ * 一致しない場合は password フィールドにエラーを紐付ける.
+ */
 @Slf4j
 public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch, Object> {
 
@@ -15,18 +22,39 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
 
 	private String reEnterPassword;
 
+	/**
+	 * PasswordMatch アノテーションの初期化処理を行う.
+	 * 入力されたパスワードと確認用パスワード,デフォルトのエラーメッセージをアノテーションから取得して保持する.
+	 *
+	 * @param annotation PasswordMatch アノテーションの属性値を持ったオブジェクト.
+	 */
 	@Override
 	public void initialize(PasswordMatch annotation) {
 		this.message = annotation.message();
 		this.password = annotation.password();
-		this.reEnterPassword = annotation.secondPassword();
+		this.reEnterPassword = annotation.reEnterPassword();
 	}
 
+	/**
+	 * パスワードと確認用パスワードが一致するか確認する.
+	 *
+	 * @param value 検証対象のオブジェクト.
+	 * @param context バリデーションコンテキスト.
+	 * @return フィールドが一致する場合は true,一致しない場合は false.
+	 */
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 		try {
-			BeanWrapperImpl rap = new BeanWrapperImpl(value);
-			if (rap.getPropertyValue(password).equals(rap.getPropertyValue(reEnterPassword))) {
+			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value);
+			Object firstPassword = beanWrapperImpl.getPropertyValue(password);
+			Object secondPassword = beanWrapperImpl.getPropertyValue(reEnterPassword);
+
+			if (firstPassword == null || secondPassword == null) {
+
+				return false;
+			}
+
+			if (firstPassword.equals(secondPassword)) {
 
 				return true;
 
@@ -41,7 +69,7 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
 			}
 
 		} catch (Exception e) {
-			
+
 			log.error("@PasswordMatch バリデーション中に例外が発生しました", e);
 			return false;
 		}
