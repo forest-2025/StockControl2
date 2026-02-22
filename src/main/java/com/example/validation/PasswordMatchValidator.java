@@ -61,7 +61,7 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
 			} else {
 				// エラーを特定のフィールドに紐づけて伝える
 				context.disableDefaultConstraintViolation(); // デフォルトのクラスエラーを無効化.
-				context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージを設定する.
+				context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージをメッセージに再設定する.
 						.addPropertyNode("password") // passwordフィールドにエラーをつける.
 						.addConstraintViolation(); // バリデーションエラーを確定する.
 

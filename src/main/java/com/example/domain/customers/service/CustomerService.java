@@ -16,6 +16,15 @@ public interface CustomerService {
 	 * @param size 1ページあたりの取得件数.
 	 * @return 出荷先一覧のページ情報.
 	 */
+	public PageInfo<MCustomer> getSortItemInSortOrder(PageInfo<MCustomer> customerList,String search, String sortItem, String sort, int page);
+
+	/** 
+	 * 削除済み以外の出荷先一覧を出荷先IDの昇順でページングして取得する.
+	 *
+	 * @param page 何ページ目かを表すページ番号（1始まり）.
+	 * @param size 1ページあたりの取得件数.
+	 * @return 出荷先一覧のページ情報.
+	 */
 	public PageInfo<MCustomer> getAllInAscById(int page, int size);
 
 	/** 
@@ -29,7 +38,7 @@ public interface CustomerService {
 	 * @param sort 並べ替え順序（昇順または降順）.
 	 * @return 出荷先一覧のページ情報.
 	 */
-	public PageInfo<MCustomer> getSearchResults(int page, int size, String search, String sortItem, String sort);
+	public PageInfo<MCustomer> getSearchResults(String search, String sortItem, String sort, int page, int size);
 
 	/** 
 	 * 出荷先を登録する. 
