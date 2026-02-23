@@ -145,8 +145,13 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
-
+		<!-- bootstrap-icons(昇順・降順のアイコン) -->
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>bootstrap-icons</artifactId>
+			<version>1.13.1</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

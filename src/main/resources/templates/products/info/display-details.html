@@ -2,6 +2,7 @@
 <html lang="ja" layout:decorate="~{layout/main-layout}">
 
 <head>
+	<!-- 個別JS読込 -->
 	<script th:src="@{/js/image.js}" defer></script>
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
@@ -15,7 +16,7 @@
 		<div class="col table-responsive mt-5">
 			<table class="table text-center">
 				<thead>
-					<tr class="fs-5">
+					<tr>
 						<th scope="col" th:text="#{productNumber}"></th>
 						<th scope="col" th:text="#{productName}"></th>
 						<th scope="col" th:text="#{supplierName}"></th>
@@ -27,7 +28,7 @@
 
 				<tbody>
 					<!--/* 在庫数が10未満のときに背景色が黄色になるように設定する */-->
-					<tr class="fs-4" th:classappend="${oneItem.stockQuantity} < 10 ? 'table-warning' : ''">
+					<tr th:classappend="${oneItem.stockQuantity} < 10 ? 'table-warning' : ''">
 						<td th:text="${oneItem.productNumber}"></td>
 						<td th:text="${oneItem.productName}"></td>
 						<td th:text="${oneItem.supplierName}"></td>
@@ -89,7 +90,7 @@
 			<table class="table table-striped text-center">
 
 				<thead>
-					<tr class="fs-5">
+					<tr>
 						<th scope="col" th:text="#{registerDateTime}"></th>
 						<th scope="col" th:text="#{process}"></th>
 						<th scope="col" th:text="#{quantity}"></th>
@@ -102,7 +103,7 @@
 				<tbody>
 					<!--/* 増加修正のレコードは背景色が赤、減少修正のレコードは青になるように設定する */-->
 
-					<tr class="fs-5" th:each="item:${historyList.list}" th:classappend="${item.amountOfChange > 0 and item.supplierId == null ? 'table-danger' : ''}
+					<tr th:each="item:${historyList.list}" th:classappend="${item.amountOfChange > 0 and item.supplierId == null ? 'table-danger' : ''}
 					 + ${item.amountOfChange < 0 and item.customerId == null ? 'table-primary' : ''}">
 
 						<!--/* 登録日を表示する */-->

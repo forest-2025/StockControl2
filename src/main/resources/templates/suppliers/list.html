@@ -2,6 +2,8 @@
 <html lang="ja" layout:decorate="~{layout/main-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" href="/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css">
 	<!--/* titleはfragmentで置換する */-->
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
@@ -12,8 +14,7 @@
 			<!-- 入荷先登録ボタン -->
 			<!--/* パソコン用(992px以上)なら入荷先登録ボタンと検索フォームが横並びになるようにしている.
 			pb-4は小さい画面で入荷先登録ボタンと検索フォームが二段になっているときに余白をつけるためのもの. */-->
-			<div class="col-lg-6 pb-4"
-				sec:authorize="hasAuthority('ROLE_ADMIN')">
+			<div class="col-lg-6 pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
 				<a class="btn btn-dark btn-lg" th:href="@{/suppliers/register}" role="button"
 					th:text="#{supplierRegister}"></a>
 			</div>
@@ -39,42 +40,51 @@
 		<div class="row">
 			<!--/* table-responsiveでラップしたテーブルは,テーブルの内容が多くて横幅が広くなったときにスクロールバーが表示される. */-->
 			<div class="col table-responsive">
-				<table class="table table-striped text-center fs-5">
+				<table class="table table-striped text-center">
 					<thead>
 						<tr>
 							<!-- 入荷先ID -->
 							<th scope="col">
-								<div class="mb-3" th:text="#{supplierId}"></div>
-								<!-- 昇順ボタン -->
-								<a class="btn btn-outline-danger btn-lg me-3 mb-2"
-									th:href="@{/suppliers/list(sortItem='id',sort='asc',search=${search})}"
-									role="button" th:text="#{asc}"></a>
-								<!-- 降順ボタン -->
-								<a class="btn btn-outline-primary btn-lg me-3 mb-2"
-									th:href="@{/suppliers/list(sortItem='id',sort='desc',search=${search})}"
-									role="button" th:text="#{desc}"></a>
+								<div class="d-flex justify-content-center align-items-center">
+									<div th:text="#{supplierId}"></div>
+									<!-- 昇順ボタン -->
+									<a class="ms-2 text-dark text-decoration-non link-secondary"
+										th:href="@{/suppliers/list(sortItem='id',sort='asc',search=${search})}">
+										<i class="bi bi-caret-up-fill"></i>
+									</a>
+
+									<!-- 降順ボタン -->
+									<a class="text-dark text-decoration-non link-secondary"
+										th:href="@{/suppliers/list(sortItem='id',sort='desc',search=${search})}">
+										<i class="bi bi-caret-down-fill"></i>
+									</a>
+								</div>
+
 							</th>
+
 							<!-- 入荷先名 -->
 							<th scope="col">
-								<div class="mb-3" th:text="#{supplierName}"></div>
-								<!-- 昇順ボタン -->
-								<a class="btn btn-outline-danger btn-lg me-3 mb-2"
-									th:href="@{/suppliers/list(sortItem='furigana',sort='asc',search=${search})}"
-									role="button" th:text="#{asc}"></a>
-								<!-- 降順ボタン -->
-								<a class="btn btn-outline-primary btn-lg me-3 mb-2"
-									th:href="@{/suppliers/list(sortItem='furigana',sort='desc',search=${search})}"
-									role="button" th:text="#{desc}"></a>
+								<div class="d-flex justify-content-center align-items-center">
+									<div th:text="#{supplierName}"></div>
+									<!-- 昇順ボタン -->
+									<a class="ms-2 text-dark text-decoration-non link-secondary"
+										th:href="@{/suppliers/list(sortItem='furigana',sort='asc',search=${search})}">
+										<i class="bi bi-caret-up-fill"></i>
+									</a>
+									<!-- 降順ボタン -->
+									<a class="text-dark text-decoration-non link-secondary"
+										th:href="@{/suppliers/list(sortItem='furigana',sort='desc',search=${search})}">
+										<i class="bi bi-caret-down-fill"></i>
+									</a>
+								</div>
 							</th>
 							<th scope="col"></th>
 						</tr>
-
 
 					</thead>
 
 					<tbody>
 						<!--/* 削除済みの入荷先以外を表示する. */-->
-
 						<tr th:each="item:${supplierList.list}">
 
 							<td th:text="${item.supplierId}"></td>

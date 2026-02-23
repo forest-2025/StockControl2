@@ -38,9 +38,6 @@ public class CustomerController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	// 1ページで表示する入荷先情報を10に設定する.
-	private static final int SHOW_SIZE = 10;
-
 	/**
 	 * 出荷先一覧画面に遷移する.
 	 * 
@@ -61,52 +58,15 @@ public class CustomerController {
 		/* 出荷先一覧を押して遷移してきたとき,search(検索語句)はrequired = falseのためnull,
 		 * sortItem(並び替え項目)とsort(並び替え順序)はdefaultValueの値がそれぞれ入っている. */
 
-		// if文内の分岐により変数に代入する情報を決定し,modelに格納するので変数の宣言とオブジェクトの初期化をif文の前に行う.
-		PageInfo<MCustomer> customerList = null;
-		
-		customerList=customerService.getSortItemInSortOrder(customerList, search, sortItem, sort, page);
-		
+		PageInfo<MCustomer> customerList = customerService.findAllSorted(search, sortItem, sort, page);
+
 		// 不正な並び替え項目・並び替え順序のとき,検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
-		if(!(sortItem.equals("id") || sortItem.equals("furigana")) || !(sort.equals("asc") || sort.equals("desc"))){
-			System.out.println("空白");
+		if (!(sortItem.equals("id") || sortItem.equals("furigana")) || !(sort.equals("asc") || sort.equals("desc"))) {
 			search = "";
 		}
-//		// 出荷先一覧画面に遷移したとき(削除済み以外の出荷先一覧を出荷先IDの昇順で取得する).
-//		if (search == null) {
-//			customerList = customerService.getAllInAscById(page, SHOW_SIZE);
-//
-//			/* 検索ボタン,各種昇順・降順ボタンを押したときのsearchには,検索フォームに何も入っていなければ空白が入るのでnullではないためこちらに分岐する.
-//			 * sortItem(並び替え項目)がidまたはfuriganaか確認する. */
-//		} else if (sortItem.equals("id") || sortItem.equals("furigana")) {
-//
-//			// sort(並び替え順序)がascかdescか確認する.
-//			if (sort.equals("asc") || sort.equals("desc")) {
-//				customerList = customerService.getSearchResults(search, sortItem, sort, page, SHOW_SIZE);
-//
-//				/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
-//				 * 削除済み以外の入荷先情報を出荷先IDで昇順に並べた入荷先一覧を取得する. */
-//			} else {
-//				customerList = customerService.getAllInAscById(page, SHOW_SIZE);
-//				// 検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
-//				search = "";
-//			}
-//
-//			/* sortItem(並べ替え項目)がidやfuriganaでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
-//			 * 削除済み以外の入荷先情報を入荷先IDで昇順に並べた出荷先一覧を取得する. */
-//		} else {
-//			customerList = customerService.getAllInAscById(page, SHOW_SIZE);
-//			// 検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
-//			search = "";
-//		}
-		System.out.println(customerList);
-		System.out.println(search);
-		System.out.println(sortItem);
-		System.out.println(sort);
 
 		model.addAttribute("customerList", customerList);
 		model.addAttribute("search", search);
-		//model.addAttribute("sortItem", sortItem);
-		//model.addAttribute("sort", sort);
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setBlue("出荷先一覧");

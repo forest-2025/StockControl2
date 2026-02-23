@@ -10,35 +10,37 @@ import com.github.pagehelper.PageInfo;
 public interface CustomerService {
 
 	/** 
-	 * 削除済み以外の出荷先一覧を出荷先IDの昇順でページングして取得する.
+	 * 指定された並べ替え項目（IDまたはふりがな）と並べ替え順序（昇順または降順）に基づいて分岐して,
+	 * 適切な削除済み以外の出荷先一覧を取得する.
 	 *
+	 * @param search 検索語句.
+	 * @param sortItem 並べ替え項目（IDまたはふりがな）.
+	 * @param sort 並べ替え順序（昇順または降順）.
 	 * @param page 何ページ目かを表すページ番号（1始まり）.
-	 * @param size 1ページあたりの取得件数.
 	 * @return 出荷先一覧のページ情報.
 	 */
-	public PageInfo<MCustomer> getSortItemInSortOrder(PageInfo<MCustomer> customerList,String search, String sortItem, String sort, int page);
+	public PageInfo<MCustomer> findAllSorted(String search, String sortItem, String sort, int page);
 
 	/** 
 	 * 削除済み以外の出荷先一覧を出荷先IDの昇順でページングして取得する.
 	 *
 	 * @param page 何ページ目かを表すページ番号（1始まり）.
-	 * @param size 1ページあたりの取得件数.
 	 * @return 出荷先一覧のページ情報.
 	 */
-	public PageInfo<MCustomer> getAllInAscById(int page, int size);
+	public PageInfo<MCustomer> getAllInAscById(int page);
 
 	/** 
 	 * 削除済み以外の出荷先一覧から検索語句が出荷先ID・出荷先名・出荷先名ふりがなと一致する出荷先を検索する.
 	 * その一覧を,指定された並べ替え項目（IDまたはふりがな）と並べ替え順序（昇順または降順）に基づいてソートする.
 	 * 
-	 * @param page 何ページ目かを表すページ番号（1始まり）.
-	 * @param size 1ページあたりの取得件数.
+	 * 
 	 * @param search 検索語句.
 	 * @param sortItem 並べ替え項目（IDまたはふりがな）.
 	 * @param sort 並べ替え順序（昇順または降順）.
+	 * @param page 何ページ目かを表すページ番号（1始まり）.
 	 * @return 出荷先一覧のページ情報.
 	 */
-	public PageInfo<MCustomer> getSearchResults(String search, String sortItem, String sort, int page, int size);
+	public PageInfo<MCustomer> getSearchResults(String search, String sortItem, String sort, int page);
 
 	/** 
 	 * 出荷先を登録する. 

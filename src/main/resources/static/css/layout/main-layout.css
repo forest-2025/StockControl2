@@ -10,4 +10,19 @@ body {
 .header-height{
 	margin-left: 40px;
 }
-  
+
+.main-font{
+	  font-size: 14px;
+  }
+
+@media (min-width: 576px) {
+  .main-font{
+	  font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  .main-font{
+	  font-size: 20px;
+  }
+}
