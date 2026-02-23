@@ -64,6 +64,14 @@ public interface ProductCountService {
 	public MCustomer getCustomer(Integer customerId);
 	
 	/** 
+	 * 出荷先が登録されているか(また,削除済みでないかを)出荷先IDで検索する.
+	 * 
+	 * @param customerId 検索する出荷先ID.
+	 * @return 出荷先情報.
+	 */
+	public boolean existsByCustomerId(Integer customerId);
+	
+	/** 
 	 * 商品IDから商品の在庫情報を取得し,在庫数のみ返す.
 	 * (出荷数が在庫数を越えていないか確認するため.) *
 	 * 

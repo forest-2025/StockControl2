@@ -8,13 +8,13 @@ import org.springframework.beans.BeanWrapperImpl;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * PasswordMatch アノテーションの検証処理を行う.
+ * PasswordMatches アノテーションの検証処理を行う.
  * 
  * null の場合は @NotBlank に任す.
  * 一致しない場合は password フィールドにエラーを紐付ける.
  */
 @Slf4j
-public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch, Object> {
+public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
 
 	private String message; // エラーメッセージ;
 
@@ -23,13 +23,13 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
 	private String reEnterPassword;
 
 	/**
-	 * PasswordMatch アノテーションの初期化処理を行う.
+	 * PasswordMatches アノテーションの初期化処理を行う.
 	 * 入力されたパスワードと確認用パスワード,デフォルトのエラーメッセージをアノテーションから取得して保持する.
 	 *
-	 * @param annotation PasswordMatch アノテーションの属性値を持ったオブジェクト.
+	 * @param annotation PasswordMatches アノテーションの属性値を持ったオブジェクト.
 	 */
 	@Override
-	public void initialize(PasswordMatch annotation) {
+	public void initialize(PasswordMatches annotation) {
 		this.message = annotation.message();
 		this.password = annotation.password();
 		this.reEnterPassword = annotation.reEnterPassword();
@@ -95,7 +95,7 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
  * 			isValid()メソッドがfalse								Hibernate ValidatorがConstraintValidatorContext（報告書）を回収する.
  * 															MethodArgumentNotValidException という例外が発生し,エラー情報は BindingResultオブジェクトに自動で格納される.
  * 
- * implements ConstraintValidator<PasswordMatch, Object>　は第一引数でこのクラスがバリデーションする型(どのアノテーションか)を指定し,第二引数でチェック対象となるデータの型を指定している.
+ * implements ConstraintValidator<PasswordMatches, Object>　は第一引数でこのクラスがバリデーションする型(どのアノテーションか)を指定し,第二引数でチェック対象となるデータの型を指定している.
  * この第二引数は,アノテーションがフィールドについていたらそのフィールドの型を,クラスについていたらそのクラスの型を指定する.しかし今回のパスワードと確認用パスワードが一致するか確認するバリデーションでは,ユーザー登録フォームとパスワード修正フォームで使用したい.
  * このように複数で使用したいバリデーションの時は台に引数にObjectを指定している.
  * 

@@ -17,14 +17,14 @@ import jakarta.validation.Payload;
  * reEnterPassword に比較先フィールド名(確認用パスワードのフィールド名)を指定する.
  * 
  * 例：
- * PasswordMatch(password="password", reEnterPassword="reEnterPassword")
+ * PasswordMatches(password="password", reEnterPassword="reEnterPassword")
  * 
  */
 @Target({ElementType.TYPE}) 
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = PasswordMatchValidator.class)
+@Constraint(validatedBy = PasswordMatchesValidator.class)
 @Documented
-public @interface PasswordMatch {
+public @interface PasswordMatches {
 	
 	    String message() default "パスワードと確認用パスワードが一致しませんでした";	// デフォルトエラーメッセージ.
 	    Class<?>[] groups() default {};									// groupsを指定できる仕組みの設定.
@@ -37,7 +37,7 @@ public @interface PasswordMatch {
 
 /* @interfaceはアノテーションを設定するための特別なインターフェースであることを示すキーワード(予約語).
  * アノテーションの設定をするメソッドしか持つことができない.
- * @Constraint(validatedBy = PasswordMatchValidator.classはHibernate Validator
+ * @Constraint(validatedBy = PasswordMatchesValidator.classはHibernate Validator
  * に対する「このアノテーションの検査には、このクラスをnewして使ってください」という指示書のようなもの.
  * Class<?>[] groups() default {};はgroupsを指定できる仕組みを用意してる(配列なのは複数のグループを同時に設定できるようにするため).
  * Class<? extends Payload>[] payload() default {};は検証エラー時の付加情報（メタデータ）を定義する.

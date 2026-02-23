@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Range;
 
-import com.example.validation.PasswordMatch;
+import com.example.validation.PasswordMatches;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
 import com.example.validation.ValidGroup3;
@@ -20,7 +20,7 @@ import lombok.Data;
  *  
  */
 @Data
-@PasswordMatch(password = "password",reEnterPassword = "reEnterPassword",groups = ValidGroup3.class)
+@PasswordMatches(password = "password",reEnterPassword = "reEnterPassword",groups = ValidGroup3.class)
 public class RegisterForm {
 
 	@NotBlank(groups = ValidGroup1.class)

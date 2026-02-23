@@ -113,6 +113,14 @@ public class ProductCountServiceImpl implements ProductCountService {
 		return customer;
 	}
 	
+	public boolean existsByCustomerId(Integer customerId) {
+		MCustomer customer = customerMapper.findByCustomerId(customerId);
+		if(customer == null) {
+			return false;
+		}
+			return true;
+	}
+	
 	// 商品IDから商品の在庫情報を取得し,在庫数のみ返す.
 	@Override
 	public Integer getOneStockQuantity(Integer productId) {
