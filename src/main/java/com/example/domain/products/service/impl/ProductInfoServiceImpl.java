@@ -67,9 +67,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	@Autowired
 	private ProductWithSupplierMapper productWithSupplierMapper;
-	
+
 	@Autowired
-    private MessageSource messageSource;
+	private MessageSource messageSource;
 
 	@Value("${file.upload-dir}")
 	private String uploadDir;
@@ -141,15 +141,15 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	@Override
 	public boolean isNotDuplicateProductNumber(String productNumber) {
 
-		// 商品番号から商品情報を取得する.
-		MProduct product = productMapper.findByProductNumber(productNumber);
-		// productがnull(重複無し)か確認する.
-		if (product == null) {
-			// 重複がないのでtrueを返す.
-			return true;
-		} else {
-			return false;
-		}
+			// 商品番号から商品情報を取得する.
+			MProduct product = productMapper.findByProductNumber(productNumber);
+			// productがnull(重複無し)か確認する.
+			if (product == null) {
+				// 重複がないのでtrueを返す.
+				return true;
+			} else {
+				return false;
+			}
 	}
 
 	// 商品情報を登録する.
@@ -201,7 +201,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				}
 
 			}
-			
+
 			// 画像を削除したため,DBのファイル名も削除するため,nullに設定する.
 			product.setProductImage(null);
 
@@ -247,7 +247,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 		try {
 			if (file.getSize() > MAX_SIZE) {
-				String errorMessage = messageSource.getMessage("OverSize", null , Locale.JAPAN);
+				String errorMessage = messageSource.getMessage("OverSize", null, Locale.JAPAN);
 				errors.add(errorMessage);
 			}
 
@@ -263,7 +263,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * isBlank()は内部でCharacter.isWhitespace()を使用するが,Character.isWhitespace()で
 			 * U+00A0は対応してないから).あとの拡張子チェックでみつけられるためU+00A0などのチェックまではしていない. */
 			if (originalFileName == null || originalFileName.isBlank()) {
-				String errorMessage = messageSource.getMessage("InvalidFileName", null , Locale.JAPAN);
+				String errorMessage = messageSource.getMessage("InvalidFileName", null, Locale.JAPAN);
 				errors.add(errorMessage);
 			} else {
 				// 下にあるprivateメソッドgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している(this.は省略).
@@ -277,9 +277,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 						break;
 					}
 				}
-				
+
 				if (!allowed) {
-					String errorMessage = messageSource.getMessage("FileFormatsDiffer", null , Locale.JAPAN);
+					String errorMessage = messageSource.getMessage("FileFormatsDiffer", null, Locale.JAPAN);
 					errors.add(errorMessage);
 				}
 			}
@@ -331,7 +331,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			String mimeType = tika.detect(tempFile);
 			// equalsIgnoreCase("image/jpeg")で大文字小文字の区別なく文字列の比較ができる.
 			if (!mimeType.equalsIgnoreCase("image/jpeg")) {
-				String errorMessage = messageSource.getMessage("FileFormatsDiffer", null , Locale.JAPAN);
+				String errorMessage = messageSource.getMessage("FileFormatsDiffer", null, Locale.JAPAN);
 				errors.add(errorMessage);
 			}
 
@@ -351,7 +351,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * で最大メモリ(上限)・現在確保しているメモリ(起動時に表示すると初期確保ヒープに近い)・現在使用中のメモリがみれる.
 			 * JVMは必要に応じてメモリを拡張するので常に最大を使っているわけではない. */
 			if (ImageIO.read(tempFile.toFile()) == null) {
-				String errorMessage = messageSource.getMessage("NotReadImageFile", null , Locale.JAPAN);
+				String errorMessage = messageSource.getMessage("NotReadImageFile", null, Locale.JAPAN);
 				errors.add(errorMessage);
 			}
 

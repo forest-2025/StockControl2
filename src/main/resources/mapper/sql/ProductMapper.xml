@@ -93,4 +93,16 @@
 			id = #{productId}	
 	</update>
 	
+	<select id="countDuplicates" resultType="int">
+   		 select 
+   		 	count(*)
+   		 from
+   		 	 m_product
+    	where ${columnName} = #{value}
+    	<!-- idValue（画面から来たID）がnullでない＝更新時のみ、自分を除外する条件を追加 -->
+    	<if test="id != null">
+        	and id != #{id}
+    	</if>
+</select>
+	
 </mapper>

@@ -1,49 +1,54 @@
 package com.example.domain.products.validation.info;
 
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.example.domain.products.service.ProductInfoService;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.example.repository.ProductMapper;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * PasswordMatches アノテーションの検証処理を行う.
+ * UniqueProductNumber アノテーションの検証処理を行う.
  * 
  * null の場合は @NotBlank に任す.
- * 一致しない場合は password フィールドにエラーを紐付ける.
+ * 一致しない場合は productNumber フィールドにエラーを紐付ける.
  */
 @Slf4j
 public class UniqueProductNumberValidator implements ConstraintValidator<UniqueProductNumber, Object> {
 
 	@Autowired
-	private ProductInfoService productInfoService;
+	private ProductMapper productMapper;
 
 	private String message; // エラーメッセージ;
 
+	private String productId;
+	
 	private String productNumber;
 
 	/**
 	 * UniqueProductNumber アノテーションの初期化処理を行う.
-	 * 入力されたパスワードと確認用パスワード,デフォルトのエラーメッセージをアノテーションから取得して保持する.
+	 * 入力された商品番号,デフォルトのエラーメッセージをアノテーションから取得して保持する.
 	 *
 	 * @param annotation UniqueProductNumber アノテーションの属性値を持ったオブジェクト.
 	 */
 	@Override
 	public void initialize(UniqueProductNumber annotation) {
 		this.message = annotation.message();
-		this.productNumber = annotation.productNumber();
+		this.productId = annotation.productIdField();
+		this.productNumber = annotation.productNumberField();
 
 	}
 
 	/**
-	 * パスワードと確認用パスワードが一致するか確認する.
+	 * 入力された商品番号がデータベースに登録されている m_product と登録されている商品番号と重複していないか確認する.
 	 *
 	 * @param value 検証対象のオブジェクト.
 	 * @param context バリデーションコンテキスト.
-	 * @return フィールドが一致する場合は true,一致しない場合は false.
+	 * @return 重複がなければ true,重複があれば false.
 	 */
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
@@ -53,21 +58,29 @@ public class UniqueProductNumberValidator implements ConstraintValidator<UniqueP
 		}
 
 		try {
-			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value);	// 入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップ.
-			Object productNumberValue = beanWrapperImpl.getPropertyValue(productNumber);	// 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
-
+			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value); // 入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップ.
+			Object productIdValue = beanWrapperImpl.getPropertyValue(productId);
+			Object productNumberValue = beanWrapperImpl.getPropertyValue(productNumber); // 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
+			
 			if (productNumberValue == null) {
 
 				return true;
+				
 
-			} else {
-				
-				boolean isNotDuplicate = productInfoService.isNotDuplicateProductNumber(productNumber);
-				
-				if (isNotDuplicate) {	// 重複がないとtrue;
-					
+			} 
+			
+				int count = productMapper.countDuplicates("number", productNumberValue, productIdValue);// 第一引数は商品番号のカラム名を直接設定している.
+				if(count == 0) {
 					return true;
 					
+		        // 0件なら「自分以外の重複なし」なのでOK
+		        //return count == 0;
+//				boolean isNotDuplicate = productInfoService.isNotDuplicateProductNumber(productNumberValue.toString());
+//
+//				if (isNotDuplicate) { // 重複がないとtrueになる.
+//
+//					return true;
+
 				} else {
 
 					// エラーを特定のフィールドに紐づけて伝える
@@ -78,11 +91,16 @@ public class UniqueProductNumberValidator implements ConstraintValidator<UniqueP
 
 					return false;
 				}
-			}
-		} catch (Exception e) {
-
-			log.error("@UniqueProductNumber バリデーション中に例外が発生しました", e);
-			return false;
-		}
+			
+		} catch (BeansException e) {
+            log.error("@UniqueProductNumberValidator バリデーション中に例外が発生しました。フィールド名が正しいか確認してください: {}", e.getMessage());
+            
+            return false; 
+            
+        } catch (Exception e) {
+            // その他予期せぬエラー（DB接続エラーなど）.
+            log.error("@UniqueProductNumberValidator で予期せぬエラーが発生しました", e);
+            return false;
+        }
 	}
 }

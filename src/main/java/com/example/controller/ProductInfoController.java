@@ -120,21 +120,6 @@ public class ProductInfoController {
 			@ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
 
-		// 商品番号がnullや空白でないか確認する.
-		String productNumber = form.getProductNumber();
-		if (productNumber == null || productNumber.equals("")) {
-			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
-		} else {
-			boolean isNotDuplicate = productInfoService.isNotDuplicateProductNumber(productNumber);
-			// 登録済みの商品番号と重複しないか確認する. 
-			if (isNotDuplicate) {
-				// trueなら商品番号に重複がないのでなにもしない.
-			} else {
-				// falseなら商品番号に重複があるのでエラーとエラーメッセージを追加する.
-				bindingResult.rejectValue("productNumber", "DuplicateProductNumber");
-			}
-		}
-
 		// 入荷先IDが入荷先情報に登録されているか確認する.
 		Integer supplierId = form.getSupplierId();
 		if (supplierId == null) {
@@ -279,22 +264,22 @@ public class ProductInfoController {
 			return "/error";
 		}
 
-		// 商品番号がnullや空白でないか確認する.
-		String productNumber = form.getProductNumber();
-		if (productNumber == null || productNumber.equals("")) {
-			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
-		} else {
-			boolean isNotDuplicate = productInfoService.isNotDuplicateProductNumber(productNumber);
-			// 登録済みの商品番号と重複しないか確認する. 
-			if (isNotDuplicate) {
-				// trueなら商品番号に重複がないのでなにもしない.
-			} else if (productNumber.equals(productWithSupplier.getProduct().getProductNumber())) {
-				// 重複があっても,もとの商品番号と一緒ならtrueで商品番号に変更がなかっただけなのでなにもしない.
-			} else {
-				// falseなら商品番号に重複があるのでエラーとエラーメッセージを追加する.
-				bindingResult.rejectValue("productNumber", "DuplicateProductNumber");
-			}
-		}
+//		// 商品番号がnullや空白でないか確認する.
+//		String productNumber = form.getProductNumber();
+//		if (productNumber == null || productNumber.equals("")) {
+//			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
+//		} else {
+//			boolean isNotDuplicate = productInfoService.isNotDuplicateProductNumber(productNumber);
+//			// 登録済みの商品番号と重複しないか確認する. 
+//			if (isNotDuplicate) {
+//				// trueなら商品番号に重複がないのでなにもしない.
+//			} else if (productNumber.equals(productWithSupplier.getProduct().getProductNumber())) {
+//				// 重複があっても,もとの商品番号と一緒ならtrueで商品番号に変更がなかっただけなのでなにもしない.
+//			} else {
+//				// falseなら商品番号に重複があるのでエラーとエラーメッセージを追加する.
+//				bindingResult.rejectValue("productNumber", "DuplicateProductNumber");
+//			}
+//		}
 
 		// 入荷先IDが入荷先情報に登録されているか確認する.
 		Integer supplierId = form.getSupplierId();

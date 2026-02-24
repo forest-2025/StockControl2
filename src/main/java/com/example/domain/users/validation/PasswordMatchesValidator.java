@@ -1,9 +1,11 @@
 package com.example.domain.users.validation;
 
-import org.springframework.beans.BeanWrapperImpl;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.BeansException;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -72,12 +74,17 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 
 				return false;
 			}
-
-		} catch (Exception e) {
-
-			log.error("@PasswordMatches バリデーション中に例外が発生しました", e);
-			return false;
-		}
+			
+		} catch (BeansException e) {
+            log.error("@PasswordMatches バリデーション中に例外が発生しました。フィールド名が正しいか確認してください: {}", e.getMessage());
+            
+            return false; 
+            
+        } catch (Exception e) {
+            // その他予期せぬエラー（DB接続エラーなど）.
+            log.error("@PasswordMatches バリデーション中に例外が発生しました", e);
+            return false;
+        }
 	}
 }
 /*コントローラーなどで引数に@Validが付いたオブジェクトが渡される						バリデーションエンジン（Hibernate Validator）が起動

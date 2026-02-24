@@ -1,13 +1,16 @@
 package com.example.form.products.info;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.validation.ValidGroup1;
-import com.example.validation.ValidGroup2;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.domain.products.validation.info.UniqueProductNumber;
+import com.example.validation.ValidGroup1;
+import com.example.validation.ValidGroup2;
+import com.example.validation.ValidGroup3;
+
 import lombok.Data;
 
 /**
@@ -15,8 +18,11 @@ import lombok.Data;
  * 
  */
 @Data
+@UniqueProductNumber(productIdField="productId",productNumberField="productNumber", groups = ValidGroup3.class)
 public class RegisterForm {
 
+	private Integer productId;	// 商品ID(バリデーションに必要).
+	
 	@NotBlank(groups = ValidGroup1.class)
 	@Size(min = 1, max = 50, groups = ValidGroup2.class)
 	private String productNumber; // 商品番号.

@@ -1,13 +1,14 @@
 package com.example.form.users;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 import com.example.domain.users.validation.PasswordMatches;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
 import com.example.validation.ValidGroup3;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**

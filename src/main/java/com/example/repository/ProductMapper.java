@@ -52,8 +52,17 @@ public interface ProductMapper {
 	/** 
 	 * 商品の画像情報を更新する.
 	 * 
-	 * @param  product 更新する商品情報.
+	 * @param product 更新する商品情報.
 	 */
 	public void updateProductImage(MProduct product);
+	
+	/** 
+	 * 検索するカラム名の値が検索する値であった時の件数を取得する.
+	 * 
+	 * @param columnName 検索するカラム名.
+	 * @param value	検索する値.
+	 * @param id 
+	 */
+	public int countDuplicates(String columnName, Object value, Object id);
 	
 }
