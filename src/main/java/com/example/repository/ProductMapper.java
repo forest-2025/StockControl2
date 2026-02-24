@@ -63,6 +63,18 @@ public interface ProductMapper {
 	 * @param value	検索する値.
 	 * @param id 
 	 */
+	/**
+	 * 指定したカラムにおけるデータの重複件数を取得します。
+	 * <p>
+	 * 新規登録時は全レコードを対象とし、更新時は自分自身（id）を除外して
+	 * 重複チェックを行います。
+	 * </p>
+	 * 
+	 * @param columnName 重複をチェックするDBのカラム名（例: "email", "number"）
+	 * @param value      画面から入力されたチェック対象の値
+	 * @param id         現在のデータの主キー（新規登録時はnull、更新時は既存のID）
+	 * @return 一致するレコード数（0なら重複なし、1以上なら重複あり）
+	 */
 	public int countDuplicates(String columnName, Object value, Object id);
 	
 }
