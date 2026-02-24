@@ -56,24 +56,16 @@ public interface ProductCountService {
 	public List<MCustomer> getCustomerList(); 
 	
 	/** 
-	 * 出荷先が登録されているか(また,削除済みでないかを)出荷先IDで検索する.
+	 * 出荷先が登録されていて,削除済みでないかを出荷先IDで検索して確認する.
 	 * 
 	 * @param customerId 検索する出荷先ID.
-	 * @return 出荷先情報.
-	 */
-	public MCustomer getCustomer(Integer customerId);
-	
-	/** 
-	 * 出荷先が登録されているか(また,削除済みでないかを)出荷先IDで検索する.
-	 * 
-	 * @param customerId 検索する出荷先ID.
-	 * @return 出荷先情報.
+	 * @return 出荷先が存在して,かつ削除されていないなら true, 存在していないか削除済みなら false.
 	 */
 	public boolean existsByCustomerId(Integer customerId);
 	
 	/** 
 	 * 商品IDから商品の在庫情報を取得し,在庫数のみ返す.
-	 * (出荷数が在庫数を越えていないか確認するため.) *
+	 * (出荷数が在庫数を越えていないか確認するため.)
 	 * 
 	 * @param productId 取得する在庫情報の商品ID.
 	 * @return 商品の在庫数.

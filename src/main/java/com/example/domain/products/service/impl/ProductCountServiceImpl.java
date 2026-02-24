@@ -104,15 +104,7 @@ public class ProductCountServiceImpl implements ProductCountService {
 		return customerList;
 	}
 
-	// 出荷先が登録されているか(また,削除済みでないかを)出荷先IDで検索する.
-	@Override
-	public MCustomer getCustomer(Integer customerId) {
-
-		MCustomer customer = customerMapper.findByCustomerId(customerId);
-
-		return customer;
-	}
-	
+	// 出荷先が登録されていて,削除済みでないかを出荷先IDで検索して確認する.
 	public boolean existsByCustomerId(Integer customerId) {
 		MCustomer customer = customerMapper.findByCustomerId(customerId);
 		if(customer == null) {

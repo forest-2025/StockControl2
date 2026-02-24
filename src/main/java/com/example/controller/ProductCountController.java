@@ -202,34 +202,10 @@ public class ProductCountController {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct product = productCountService.getOneProduct(productId);
-
+		
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (product == null) {
 			return "/error";
-		}
-
-		// 出荷先IDを取得し、出荷先IDから出荷先情報を取得する(削除済み以外).
-		Integer customerId = form.getCustomerId();
-		MCustomer customer = productCountService.getCustomer(customerId);
-		/* 出荷先IDがnullでなくて(出荷先がフォームで選択されていて)、そのIDから取得した出荷先情報がnullでない
-		 * (出荷先情報に登録がある)ことを確認する.*/
-		if (customerId == null) {
-			// null(出荷先が選択されていない)ならif文を抜けて@NotNullのエラーメッセージが表示されるのでなにもしない.
-		} else if (customer == null) {
-			// customerIdで検索した出荷先が出荷先情報に登録されていないとき,または削除済みの場合はエラーとエラーメッセージを追加する.
-			bindingResult.rejectValue("customerId", "NotCustomer");
-		}
-
-		// 出荷数と在庫数を取得する.
-		Integer amountOfChange = form.getAmountOfChange();
-		Integer stockQuantity = productCountService.getOneStockQuantity(productId);
-
-		// 出荷数がnullではなくて、また在庫数を超えていないか確認する.
-		if (amountOfChange == null) {
-			// nullならif文を抜けて@NotNullのエラーメッセージが表示されるのでなにもしない.
-		} else if (stockQuantity < amountOfChange) {
-			// 出荷数が在庫数を超えていたらエラーとエラーメッセージを追加する.
-			bindingResult.rejectValue("amountOfChange", "QuantityExceedsStock");
 		}
 
 		// バリデーションエラーがあれば出荷フォーム画面へ戻る.
@@ -325,15 +301,6 @@ public class ProductCountController {
 			return "/error";
 		}
 
-		// 在庫数と実在庫数が一緒だと在庫数の変動がないため処理の意味がないのでエラーにする.
-		// 商品の在庫数を取得する.
-		Integer stockQuantity = productCountService.getOneStockQuantity(productId);
-		// 入力された実在庫数を取得する.
-		Integer actualProductCount = form.getActualProductCount();
-		if (stockQuantity == actualProductCount) {
-			bindingResult.rejectValue("actualProductCount", "SameQuantity");
-		}
-
 		// バリデーションエラーがあれば在庫修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 			/* productをmodelに格納する処理・ログイン中のユーザーのフルネームを取得しmodelに格納する処理・
@@ -350,10 +317,13 @@ public class ProductCountController {
 		// 修正履歴を更新するため、担当者（ログイン中のユーザーの姓と名）からm_userテーブルのIDを取得する(削除済みは除く).
 		Integer userId = productCountService.getUserId(userDetails);
 
+		// 商品の在庫数を取得する.
+		Integer stockQuantity = productCountService.getOneStockQuantity(productId);
+		
 		/* 実在庫数と商品の在庫数との差をamountOfChange(在庫の増減数)に設定する.
 		 * 実在庫数より商品の在庫数が少なければ在庫が増えたということなので正の数がamountOfChangeに格納され,
 		 * 実在庫数より商品の在庫数が多ければ在庫が減ったということなので負の数が格納される. */
-		Integer amountOfChange = actualProductCount - stockQuantity;
+		Integer amountOfChange = form.getActualProductCount() - stockQuantity;
 
 		// 商品ID・ユーザーID・在庫の増減数をを設定する.
 		transactionHistory.setProductId(productId);

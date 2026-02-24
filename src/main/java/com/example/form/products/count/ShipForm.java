@@ -1,7 +1,10 @@
 package com.example.form.products.count;
 
+import com.example.domain.products.validation.count.CustomerIdExists;
+import com.example.domain.products.validation.count.WithinStock;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
+import com.example.validation.ValidGroup3;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -13,9 +16,13 @@ import lombok.Data;
  * 
  */
 @Data
+@WithinStock(groups = ValidGroup3.class)
 public class ShipForm {
 
+	private Integer productId;	// 商品ID(バリデーションに必要).
+	
 	@NotNull(groups = ValidGroup1.class)
+	@CustomerIdExists(groups = ValidGroup2.class)
 	private Integer customerId; // 出荷先ID.
 
 	@NotNull(groups = ValidGroup1.class)

@@ -1,18 +1,17 @@
 package com.example.form.users;
 
+import org.hibernate.validator.constraints.Range;
+
+import com.example.domain.users.validation.PasswordMatches;
+import com.example.validation.ValidGroup1;
+import com.example.validation.ValidGroup2;
+import com.example.validation.ValidGroup3;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Range;
-
-import com.example.validation.PasswordMatches;
-import com.example.validation.ValidGroup1;
-import com.example.validation.ValidGroup2;
-import com.example.validation.ValidGroup3;
-
 import lombok.Data;
 
 /**

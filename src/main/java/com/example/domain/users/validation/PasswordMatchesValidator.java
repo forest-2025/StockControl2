@@ -1,10 +1,9 @@
-package com.example.validation;
-
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
+package com.example.domain.users.validation;
 
 import org.springframework.beans.BeanWrapperImpl;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,8 +30,8 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 	@Override
 	public void initialize(PasswordMatches annotation) {
 		this.message = annotation.message();
-		this.password = annotation.password();
-		this.reEnterPassword = annotation.reEnterPassword();
+		this.password = annotation.password();					// 各formクラスのpassword属性の値(フィールド名)が取得され代入されている.
+		this.reEnterPassword = annotation.reEnterPassword();	 // 各formクラスのreEnterPassword属性の値(フィールド名)が取得され代入されている.
 	}
 
 	/**
@@ -44,14 +43,20 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 	 */
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
+		
+		if (value == null) {
+			
+	        return true;
+	    }
+		
 		try {
 			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value);
 			Object firstPassword = beanWrapperImpl.getPropertyValue(password);
 			Object secondPassword = beanWrapperImpl.getPropertyValue(reEnterPassword);
 
 			if (firstPassword == null || secondPassword == null) {
-
-				return false;
+				
+				return true;
 			}
 
 			if (firstPassword.equals(secondPassword)) {
@@ -62,7 +67,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 				// エラーを特定のフィールドに紐づけて伝える
 				context.disableDefaultConstraintViolation(); // デフォルトのクラスエラーを無効化.
 				context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージをメッセージに再設定する.
-						.addPropertyNode("password") // passwordフィールドにエラーをつける.
+						.addPropertyNode("password")// passwordフィールドにエラーをつける.
 						.addConstraintViolation(); // バリデーションエラーを確定する.
 
 				return false;
@@ -70,7 +75,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 
 		} catch (Exception e) {
 
-			log.error("@PasswordMatch バリデーション中に例外が発生しました", e);
+			log.error("@PasswordMatches バリデーション中に例外が発生しました", e);
 			return false;
 		}
 	}
@@ -97,7 +102,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
  * 
  * implements ConstraintValidator<PasswordMatches, Object>　は第一引数でこのクラスがバリデーションする型(どのアノテーションか)を指定し,第二引数でチェック対象となるデータの型を指定している.
  * この第二引数は,アノテーションがフィールドについていたらそのフィールドの型を,クラスについていたらそのクラスの型を指定する.しかし今回のパスワードと確認用パスワードが一致するか確認するバリデーションでは,ユーザー登録フォームとパスワード修正フォームで使用したい.
- * このように複数で使用したいバリデーションの時は台に引数にObjectを指定している.
+ * このように複数で使用したい時は引数にObjectを指定している.
  * 
  * isValid()メソッドの第一引数のObject valueは入力されたformクラスのオブジェクトが格納されていて,そのオブジェクトをもとにBeanWrapperImplをnewすることで中身がどんな型であろうが,指定されたフィールドの値を取り出してくれる.
  * (BeanWrapperImplオブジェクトは指定されたプロパティ名から自身のgetterを探して値を渡してくれる).

@@ -1,4 +1,4 @@
-package com.example.validation;
+package com.example.domain.products.validation.count;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
