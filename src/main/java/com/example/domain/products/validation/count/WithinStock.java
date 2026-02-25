@@ -21,7 +21,7 @@ import jakarta.validation.Payload;
 @Documented
 public @interface WithinStock {
 	
-	String message() default "出荷数が在庫数を越えています";	// デフォルトエラーメッセージ.
+	String message() default "{WithinStock.message}";	// デフォルトエラーメッセージ.
     Class<?>[] groups() default {};					// groupsを指定できる仕組みの設定.
     Class<? extends Payload>[] payload() default {};
    

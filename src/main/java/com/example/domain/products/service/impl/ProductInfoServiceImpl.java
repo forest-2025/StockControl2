@@ -139,9 +139,19 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	// 指定した商品番号と重複するデータの件数を取得する.
 	@Override
-	public int getCountDuplicates(Object productIdValue, Object productNumberValue) {
+	public boolean getCountDuplicates(Object productIdValue, Object productNumberValue) {
 		
-		return productMapper.countDuplicates(productIdValue,productNumberValue);
+		/* 取得した商品の商品番号と商品IDから,商品番号が既存の商品番号と(修正時は自身の商品番号は除外して)重複しているか確認し,
+		 * 重複している件数をcountに代入する.*/
+		int count = productMapper.countDuplicates(productIdValue,productNumberValue);
+
+		// 重複している件数が0件なら重複はないためtrueになる(修正時なら自身の商品番号との重複は重複とみなさないため0件になり,trueになる).
+		if (count == 0) {
+
+			return true;
+		}
+		
+		return false;
 	}
 
 	// 商品情報を登録する.

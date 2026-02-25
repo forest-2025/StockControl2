@@ -36,34 +36,17 @@ public interface UserService {
 	 * @return ユーザー一覧のページ情報.
 	 */
 	public PageInfo<MUser> getSearchUsers(int page, int size, String search) ;
-
-//	/** 
-//	 * DB に登録済みの従業員番号と重複していないか確認する. 
-//	 *  
-//	 * @param employeeNumber 重複していないか確認する従業員番号.
-//	 * @return 	重複しなければ true.
-//	 * 			重複すれば false.
-//	 */
-//	public boolean isNotDuplicateEmployeeNumber(String employeeNumber);
-//	
-//	/** 
-//	 * DB に登録済みのメールアドレスと重複していないか確認する.
-//	 * 
-//	 * @param emailAddress 重複していないか確認するメールアドレス.
-//	 * @return 	重複しなければ true.
-//	 * 			重複すれば false.  
-//	 */
-//	public boolean isNotDuplicateEmailAddress(String emailAddress);
 	
 	/** 
-	 * 指定した商品番号と重複するデータの件数を取得する.
-	 * 登録時はすべてのレコードを対象とし,更新時は商品IDで商品自身を除外して確認する.
+	 * 指定した文字列(checkItem)と重複するデータが存在するか判別する.
+	 * 登録時はすべてのレコードを対象とし,更新時はユーザーIDで自身は除外して確認する.
 	 * 
-	 * @param productIdValue 商品ID.
-	 * @param productNumberValue 商品番号.
-	 * @return 一致するレコード数（0なら重複なし,1以上なら重複あり）.
+	 * @param columnName カラム名(フィールド名とテーブルのカラム名が違うため).
+	 * @param userIdValue ユーザーID.
+	 * @param checkItemValue 重複があるか判別したいフィールドの値.
+	 * @return 重複がなければ true,あれば false.
 	 */
-	public boolean isNotDuplicates(String columnName, Integer userId , String checkItem);
+	public boolean isNotDuplicates(String columnName, Object userIdValue , Object checkItemValue);
 	
 	/** 
 	 * ユーザーを登録をする.

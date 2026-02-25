@@ -1,4 +1,4 @@
-package com.example.domain.products.validation.count;
+package com.example.domain.products.validation.info;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,18 +10,19 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 /**
- * 実在庫数が在庫数とおなじ数量でないかを検証するアノテーション.
+ * 入荷先IDが m_supplier に存在するか検証するアノテーション.
  * 
- * このアノテーションはクラスに付与する.
+ * このアノテーションはフィールドに付与する.
  * 
  */
-@Target({ElementType.TYPE}) 
+@Target({ElementType.FIELD}) 
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = RequiresStockUpdateValidator.class)
+@Constraint(validatedBy = SupplierIdExistsValidator.class)
 @Documented
-public @interface RequiresStockUpdate {
+public @interface SupplierIdExists {
 
-	String message() default "{RequiresStockUpdate.message}";	// デフォルトエラーメッセージ.
+	String message() default "{SupplierIdExists.message}";	// デフォルトエラーメッセージ.
     Class<?>[] groups() default {};					// groupsを指定できる仕組みの設定.
     Class<? extends Payload>[] payload() default {};
+
 }

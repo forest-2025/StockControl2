@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.domain.products.validation.info.SupplierIdExists;
 import com.example.domain.products.validation.info.UniqueProductNumber;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
@@ -32,6 +33,7 @@ public class RegisterForm {
 	private String productName; // 商品名.
 
 	@NotNull(groups = ValidGroup1.class)
+	@SupplierIdExists(groups = ValidGroup2.class)
 	private Integer supplierId; // 入荷先ID.
 
 	private MultipartFile productFile; // 商品画像.

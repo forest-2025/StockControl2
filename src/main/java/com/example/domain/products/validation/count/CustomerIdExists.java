@@ -22,7 +22,7 @@ import jakarta.validation.Payload;
 @Documented
 public @interface CustomerIdExists {
 	
-	String message() default "選択された項目が見つかりません";	// デフォルトエラーメッセージ.
+	String message() default "{CustomerIdExists.message}";	// デフォルトエラーメッセージ.
     Class<?>[] groups() default {};					// groupsを指定できる仕組みの設定.
     Class<? extends Payload>[] payload() default {};
     

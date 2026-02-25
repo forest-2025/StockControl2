@@ -26,7 +26,7 @@ import jakarta.validation.Payload;
 @Documented
 public @interface PasswordMatches {
 	
-	    String message() default "パスワードと確認用パスワードが一致しませんでした";	// デフォルトエラーメッセージ.
+	    String message() default "{PasswordMatches.message}";	// デフォルトエラーメッセージ.
 	    Class<?>[] groups() default {};									// groupsを指定できる仕組みの設定.
 	    Class<? extends Payload>[] payload() default {};
 	    

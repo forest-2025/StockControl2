@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import com.example.domain.products.validation.info.SupplierIdExists;
 import com.example.domain.products.validation.info.UniqueProductNumber;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
@@ -30,6 +31,7 @@ public class ProductEditForm {
 	private String productName; // 商品名.
 
 	@NotNull(groups = ValidGroup1.class)
+	@SupplierIdExists(groups = ValidGroup2.class)
 	private Integer supplierId; // 入荷先ID.
 
 }

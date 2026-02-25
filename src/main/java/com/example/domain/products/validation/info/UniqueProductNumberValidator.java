@@ -1,13 +1,14 @@
 package com.example.domain.products.validation.info;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.domain.products.service.ProductInfoService;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -30,7 +31,7 @@ public class UniqueProductNumberValidator implements ConstraintValidator<UniqueP
 
 	/**
 	 * UniqueProductNumber アノテーションの初期化処理を行う.
-	 * 入力された商品番号,デフォルトのエラーメッセージをアノテーションから取得して保持する.
+	 * 商品IDのフィールド名,商品番号のフィールド名,デフォルトのエラーメッセージをアノテーションから取得して保持する.
 	 *
 	 * @param annotation UniqueProductNumber アノテーションの属性値を持ったオブジェクト.
 	 */
@@ -68,12 +69,10 @@ public class UniqueProductNumberValidator implements ConstraintValidator<UniqueP
 
 			}
 
-			/* 取得した商品の商品番号と商品IDから,商品番号が既存の商品番号と(修正時は自身の商品番号は除外して)重複しているか確認し,
-			 * 重複している件数をcountに代入する.*/
-			int count = productInfoService.getCountDuplicates(productIdValue, productNumberValue);
+			// 重複があるか確認する.
+			boolean isUnique = productInfoService.getCountDuplicates(productIdValue, productNumberValue);
 
-			// 重複している件数が0件なら重複はないためtrueになる(修正時なら自身の商品番号との重複は重複とみなさないため0件になり,trueになる).
-			if (count == 0) {
+			if (isUnique) {
 
 				return true;
 
@@ -82,7 +81,7 @@ public class UniqueProductNumberValidator implements ConstraintValidator<UniqueP
 				// エラーを特定のフィールドに紐づけて伝える
 				context.disableDefaultConstraintViolation(); // デフォルトのクラスエラーを無効化.
 				context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージをメッセージに再設定する.
-						.addPropertyNode("productNumber") // productNumberフィールドにエラーをつける.
+						.addPropertyNode(productNumber) // productNumberフィールドにエラーをつける.
 						.addConstraintViolation(); // バリデーションエラーを確定する.
 
 				return false;

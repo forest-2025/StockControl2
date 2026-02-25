@@ -120,19 +120,19 @@ public class ProductInfoController {
 			@ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
 
-		// 入荷先IDが入荷先情報に登録されているか確認する.
-		Integer supplierId = form.getSupplierId();
-		if (supplierId == null) {
-			// nullならif文を抜けて@NotNullのエラーメッセージが表示されるのでなにもしない.
-		} else {
-			if (productInfoService.isRegister(supplierId)) {
-				// trueなら入荷先が入荷先情報に登録されているのでなにもしない.
-			} else {
-				// falseなら入荷先が入荷先情報に登録されていない,または削除済みなのでエラーとエラーメッセージを追加する.
-				bindingResult.rejectValue("supplierId", "NotSupplier");
-			}
-
-		}
+//		// 入荷先IDが入荷先情報に登録されているか確認する.
+//		Integer supplierId = form.getSupplierId();
+//		if (supplierId == null) {
+//			// nullならif文を抜けて@NotNullのエラーメッセージが表示されるのでなにもしない.
+//		} else {
+//			if (productInfoService.isRegister(supplierId)) {
+//				// trueなら入荷先が入荷先情報に登録されているのでなにもしない.
+//			} else {
+//				// falseなら入荷先が入荷先情報に登録されていない,または削除済みなのでエラーとエラーメッセージを追加する.
+//				bindingResult.rejectValue("supplierId", "NotSupplier");
+//			}
+//
+//		}
 
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
@@ -268,18 +268,18 @@ public class ProductInfoController {
 			return "/error";
 		}
 
-		// 入荷先IDが入荷先情報に登録されているか確認する.
-		Integer supplierId = form.getSupplierId();
-		if (supplierId == null) {
-			// nullならif文を抜けて@NotNullのエラーメッセージが表示されるのでなにもしない.
-		} else {
-			if (productInfoService.isRegister(supplierId)) {
-				// trueなら入荷先が入荷先情報に登録されているのでなにもしない.
-			} else {
-				// falseなら入荷先が入荷先情報に登録されていない,または削除済みなのでエラーとエラーメッセージを追加する.
-				bindingResult.rejectValue("supplierId", "NotSupplier");
-			}
-		}
+//		// 入荷先IDが入荷先情報に登録されているか確認する.
+//		Integer supplierId = form.getSupplierId();
+//		if (supplierId == null) {
+//			// nullならif文を抜けて@NotNullのエラーメッセージが表示されるのでなにもしない.
+//		} else {
+//			if (productInfoService.isRegister(supplierId)) {
+//				// trueなら入荷先が入荷先情報に登録されているのでなにもしない.
+//			} else {
+//				// falseなら入荷先が入荷先情報に登録されていない,または削除済みなのでエラーとエラーメッセージを追加する.
+//				bindingResult.rejectValue("supplierId", "NotSupplier");
+//			}
+//		}
 
 		// バリデーションエラーがあれば商品情報修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {

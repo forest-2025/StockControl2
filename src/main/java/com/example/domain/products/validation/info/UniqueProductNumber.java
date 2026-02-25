@@ -26,7 +26,7 @@ import jakarta.validation.Payload;
 @Documented
 public @interface UniqueProductNumber {
 	
-	String message() default "商品番号が重複しているため登録できません";	// デフォルトエラーメッセージ.
+	String message() default "{UniqueProductNumber.message}";	// デフォルトエラーメッセージ.
     Class<?>[] groups() default {};							// groupsを指定できる仕組みの設定.
     Class<? extends Payload>[] payload() default {};
     
