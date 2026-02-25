@@ -37,23 +37,33 @@ public interface UserService {
 	 */
 	public PageInfo<MUser> getSearchUsers(int page, int size, String search) ;
 
-	/** 
-	 * DB に登録済みの従業員番号と重複していないか確認する. 
-	 *  
-	 * @param employeeNumber 重複していないか確認する従業員番号.
-	 * @return 	重複しなければ true.
-	 * 			重複すれば false.
-	 */
-	public boolean isNotDuplicateEmployeeNumber(String employeeNumber);
+//	/** 
+//	 * DB に登録済みの従業員番号と重複していないか確認する. 
+//	 *  
+//	 * @param employeeNumber 重複していないか確認する従業員番号.
+//	 * @return 	重複しなければ true.
+//	 * 			重複すれば false.
+//	 */
+//	public boolean isNotDuplicateEmployeeNumber(String employeeNumber);
+//	
+//	/** 
+//	 * DB に登録済みのメールアドレスと重複していないか確認する.
+//	 * 
+//	 * @param emailAddress 重複していないか確認するメールアドレス.
+//	 * @return 	重複しなければ true.
+//	 * 			重複すれば false.  
+//	 */
+//	public boolean isNotDuplicateEmailAddress(String emailAddress);
 	
 	/** 
-	 * DB に登録済みのメールアドレスと重複していないか確認する.
+	 * 指定した商品番号と重複するデータの件数を取得する.
+	 * 登録時はすべてのレコードを対象とし,更新時は商品IDで商品自身を除外して確認する.
 	 * 
-	 * @param emailAddress 重複していないか確認するメールアドレス.
-	 * @return 	重複しなければ true.
-	 * 			重複すれば false.  
+	 * @param productIdValue 商品ID.
+	 * @param productNumberValue 商品番号.
+	 * @return 一致するレコード数（0なら重複なし,1以上なら重複あり）.
 	 */
-	public boolean isNotDuplicateEmailAddress(String emailAddress);
+	public boolean isNotDuplicates(String columnName, Integer userId , String checkItem);
 	
 	/** 
 	 * ユーザーを登録をする.

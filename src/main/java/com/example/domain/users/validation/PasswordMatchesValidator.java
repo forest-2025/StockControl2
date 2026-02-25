@@ -1,11 +1,10 @@
 package com.example.domain.users.validation;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -46,12 +45,13 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 		
-		if (value == null) {
-			
-	        return true;
-	    }
-		
 		try {
+			
+			if (value == null) {
+				
+		        return true;
+		    }
+			
 			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value);
 			Object firstPassword = beanWrapperImpl.getPropertyValue(password);
 			Object secondPassword = beanWrapperImpl.getPropertyValue(reEnterPassword);

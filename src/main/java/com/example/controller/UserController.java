@@ -115,36 +115,37 @@ public class UserController {
 	@PostMapping("/register")
 	public String postRegister(Model model, @ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
+		System.out.println(form);
 		
-		// 従業員番号がnullや空白でないかを確認する.
-		String employeeNumber = form.getEmployeeNumber();
-		if (employeeNumber == null || employeeNumber.equals("")) {
-			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
-		} else {
-			boolean isNotDuplicate = userService.isNotDuplicateEmployeeNumber(employeeNumber);
-			// 登録済みの従業員番号と重複しないか確認する. 
-			if (isNotDuplicate) {
-				// trueなら従業員番号に重複がないのでなにもしない.
-			} else {
-				// falseなら従業員番号に重複があるのでエラーとエラーメッセージを追加する.
-				bindingResult.rejectValue("employeeNumber", "DuplicateEmployeeNumber");
-			}
-		}
-
-		// メールアドレスがnullや空白でないかを確認する.
-		String emailAddress = form.getEmailAddress();
-		if (emailAddress == null || emailAddress.equals("")) {
-			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
-		} else {
-			boolean isNotDuplicate = userService.isNotDuplicateEmailAddress(emailAddress);
-			// 登録済みのメールアドレスと重複しないか確認する. 
-			if (isNotDuplicate) {
-				// trueならメールアドレスに重複がないのでなにもしない.
-			} else {
-				// falseならメールアドレスに重複があるのでエラーとエラーメッセージを追加する.
-				bindingResult.rejectValue("emailAddress", "DuplicateEmailAddress");
-			}
-		}
+//		// 従業員番号がnullや空白でないかを確認する.
+//		String employeeNumber = form.getEmployeeNumber();
+//		if (employeeNumber == null || employeeNumber.equals("")) {
+//			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
+//		} else {
+//			boolean isNotDuplicate = userService.isNotDuplicateEmployeeNumber(employeeNumber);
+//			// 登録済みの従業員番号と重複しないか確認する. 
+//			if (isNotDuplicate) {
+//				// trueなら従業員番号に重複がないのでなにもしない.
+//			} else {
+//				// falseなら従業員番号に重複があるのでエラーとエラーメッセージを追加する.
+//				bindingResult.rejectValue("employeeNumber", "DuplicateEmployeeNumber");
+//			}
+//		}
+//
+//		// メールアドレスがnullや空白でないかを確認する.
+//		String emailAddress = form.getEmailAddress();
+//		if (emailAddress == null || emailAddress.equals("")) {
+//			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
+//		} else {
+//			boolean isNotDuplicate = userService.isNotDuplicateEmailAddress(emailAddress);
+//			// 登録済みのメールアドレスと重複しないか確認する. 
+//			if (isNotDuplicate) {
+//				// trueならメールアドレスに重複がないのでなにもしない.
+//			} else {
+//				// falseならメールアドレスに重複があるのでエラーとエラーメッセージを追加する.
+//				bindingResult.rejectValue("emailAddress", "DuplicateEmailAddress");
+//			}
+//		}
 
 		// バリデーションエラーがあればユーザー登録フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
@@ -230,40 +231,40 @@ public class UserController {
 		if (user == null) {
 			return "/error";
 		}
-
-		// 従業員番号がnullや空白でないかを確認する.
-		String employeeNumber = form.getEmployeeNumber();
-		if (employeeNumber == null || employeeNumber.equals("")) {
-			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
-		} else {
-			boolean isNotDuplicate = userService.isNotDuplicateEmployeeNumber(employeeNumber);
-			// 登録済みの従業員番号と重複しないか確認する. 
-			if (isNotDuplicate) {
-				// trueなら従業員番号に重複がないのでなにもしない.
-			} else if (employeeNumber.equals(user.getEmployeeNumber())) {
-				// 重複があっても,もとの従業員番号と一緒ならtrueで従業員番号に変更がなかっただけなのでなにもしない.
-			} else {
-				// falseなら従業員番号に重複があるのでエラーとエラーメッセージを追加する.
-				bindingResult.rejectValue("employeeNumber", "DuplicateEmployeeNumber");
-			}
-		}
-
-		// メールアドレスがnullや空白でないかを確認する.
-		String emailAddress = form.getEmailAddress();
-		if (emailAddress == null || emailAddress.equals("")) {
-			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
-		} else {
-			boolean isNotDuplicate = userService.isNotDuplicateEmailAddress(emailAddress);
-			// 登録済みのメールアドレスと重複しないか確認する. 
-			if (isNotDuplicate) {
-				// trueならメールアドレスに重複がないのでなにもしない.
-			} else if (emailAddress.equals(user.getEmailAddress())) {
-				// 重複があっても,もとのメールアドレスと一緒ならtrueでメールアドレスに変更がなかっただけなのでなにもしない.
-			} else {
-				// falseならメールアドレスに重複があるのでエラーとエラーメッセージを追加する.
-				bindingResult.rejectValue("emailAddress", "DuplicateEmailAddress");
-			}
-		}
+//
+//		// 従業員番号がnullや空白でないかを確認する.
+//		String employeeNumber = form.getEmployeeNumber();
+//		if (employeeNumber == null || employeeNumber.equals("")) {
+//			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
+//		} else {
+//			boolean isNotDuplicate = userService.isNotDuplicateEmployeeNumber(employeeNumber);
+//			// 登録済みの従業員番号と重複しないか確認する. 
+//			if (isNotDuplicate) {
+//				// trueなら従業員番号に重複がないのでなにもしない.
+//			} else if (employeeNumber.equals(user.getEmployeeNumber())) {
+//				// 重複があっても,もとの従業員番号と一緒ならtrueで従業員番号に変更がなかっただけなのでなにもしない.
+//			} else {
+//				// falseなら従業員番号に重複があるのでエラーとエラーメッセージを追加する.
+//				bindingResult.rejectValue("employeeNumber", "DuplicateEmployeeNumber");
+//			}
+//		}
+//
+//		// メールアドレスがnullや空白でないかを確認する.
+//		String emailAddress = form.getEmailAddress();
+//		if (emailAddress == null || emailAddress.equals("")) {
+//			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
+//		} else {
+//			boolean isNotDuplicate = userService.isNotDuplicateEmailAddress(emailAddress);
+//			// 登録済みのメールアドレスと重複しないか確認する. 
+//			if (isNotDuplicate) {
+//				// trueならメールアドレスに重複がないのでなにもしない.
+//			} else if (emailAddress.equals(user.getEmailAddress())) {
+//				// 重複があっても,もとのメールアドレスと一緒ならtrueでメールアドレスに変更がなかっただけなのでなにもしない.
+//			} else {
+//				// falseならメールアドレスに重複があるのでエラーとエラーメッセージを追加する.
+//				bindingResult.rejectValue("emailAddress", "DuplicateEmailAddress");
+//			}
+//		}
 
 		// バリデーションエラーがあればユーザー情報修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {

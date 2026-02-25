@@ -57,24 +57,13 @@ public interface ProductMapper {
 	public void updateProductImage(MProduct product);
 	
 	/** 
-	 * 検索するカラム名の値が検索する値であった時の件数を取得する.
+	 * 指定した商品番号と重複するデータの件数を取得する.
+	 * 登録時はすべてのレコードを対象とし,更新時は商品IDで商品自身を除外して確認する.
 	 * 
-	 * @param columnName 検索するカラム名.
-	 * @param value	検索する値.
-	 * @param id 
+	 * @param productIdValue 商品ID.
+	 * @param productNumberValue 商品番号.
+	 * @return 一致するレコード数（0なら重複なし,1以上なら重複あり）.
 	 */
-	/**
-	 * 指定したカラムにおけるデータの重複件数を取得します。
-	 * <p>
-	 * 新規登録時は全レコードを対象とし、更新時は自分自身（id）を除外して
-	 * 重複チェックを行います。
-	 * </p>
-	 * 
-	 * @param columnName 重複をチェックするDBのカラム名（例: "email", "number"）
-	 * @param value      画面から入力されたチェック対象の値
-	 * @param id         現在のデータの主キー（新規登録時はnull、更新時は既存のID）
-	 * @return 一致するレコード数（0なら重複なし、1以上なら重複あり）
-	 */
-	public int countDuplicates(String columnName, Object value, Object id);
+	public int countDuplicates(Object productIdValue , Object productNumberValue);
 	
 }

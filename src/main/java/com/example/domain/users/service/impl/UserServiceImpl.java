@@ -70,36 +70,48 @@ public class UserServiceImpl implements UserService {
 
         return new PageInfo<>(result);
     }
-
-	// DBに登録済みの従業員番号と重複していないか確認する.
+//
+//	// DBに登録済みの従業員番号と重複していないか確認する.
+//	@Override
+//	public boolean isNotDuplicateEmployeeNumber(String employeeNumber) {
+//
+//		// 変数employeeNumberの従業員番号でユーザーを取得する(従業員番号はユニーク制約なので削除済みのユーザーも含む).
+//		MUser user = userMapper.findByEmployeeNumber(employeeNumber);
+//
+//		// 変数userがnullなら重複する従業員番号がないのでtrueを返し,nullでなければその従業員番号のユーザーが存在する(重複する)のでfalseを返す.
+//		if (user == null) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+//
+//	}
+//
+//	// DB に登録済みのメールアドレスと重複していないか確認する.
+//	@Override
+//	public boolean isNotDuplicateEmailAddress(String emailAddress) {
+//
+//		// 変数emailAddressのメールアドレスでユーザーを取得する.
+//		MUser user = userMapper.findByEmailAddress(emailAddress);
+//
+//		// 変数userがnullなら重複するメールアドレスがないのでtrueを返し,nullでなければそのメールアドレスのユーザーが存在する(重複する)のでfalseを返す.
+//		if (user == null) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
+	
 	@Override
-	public boolean isNotDuplicateEmployeeNumber(String employeeNumber) {
-
-		// 変数employeeNumberの従業員番号でユーザーを取得する(従業員番号はユニーク制約なので削除済みのユーザーも含む).
-		MUser user = userMapper.findByEmployeeNumber(employeeNumber);
-
-		// 変数userがnullなら重複する従業員番号がないのでtrueを返し,nullでなければその従業員番号のユーザーが存在する(重複する)のでfalseを返す.
-		if (user == null) {
+	public boolean isNotDuplicates(String columnName, Integer userId , String checkItem) {
+		
+		int count = userMapper.countDuplicates(columnName, userId, checkItem);
+		
+		if(count == 0) {
+			
 			return true;
-		} else {
-			return false;
 		}
-
-	}
-
-	// DB に登録済みのメールアドレスと重複していないか確認する.
-	@Override
-	public boolean isNotDuplicateEmailAddress(String emailAddress) {
-
-		// 変数emailAddressのメールアドレスでユーザーを取得する.
-		MUser user = userMapper.findByEmailAddress(emailAddress);
-
-		// 変数userがnullなら重複するメールアドレスがないのでtrueを返し,nullでなければそのメールアドレスのユーザーが存在する(重複する)のでfalseを返す.
-		if (user == null) {
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	// ユーザーを登録する.

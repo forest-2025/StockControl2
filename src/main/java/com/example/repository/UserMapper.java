@@ -80,4 +80,16 @@ public interface UserMapper {
 	 * @param user 更新するユーザー情報.
 	 */
 	public void updateIsDeleted(MUser user);
+	
+
+	/** 
+	 * 指定した商品番号と重複するデータの件数を取得する.
+	 * 登録時はすべてのレコードを対象とし,更新時は商品IDで商品自身を除外して確認する.
+	 * 
+	 * @param productIdValue 商品ID.
+	 * @param productNumberValue 商品番号.
+	 * @return 一致するレコード数（0なら重複なし,1以上なら重複あり）.
+	 */
+	public int countDuplicates(String columnName, Integer userId , String checkItem);
+	
 }

@@ -65,14 +65,14 @@ public interface ProductInfoService {
 	public boolean isRegister(Integer supplierId);
 
 	/** 
-	 * DB に登録済みの商品番号と重複していないか確認する. 
-	 * 入力後のバリデーション時に使用する.
+	 * 指定した商品番号と重複するデータの件数を取得する.
+	 * 登録時はすべてのレコードを対象とし,更新時は商品IDで商品自身を除外して確認する.
 	 * 
-	 * @param productNumber 重複していないか確認する商品番号.
-	 * @return 	重複しなければ true.
-	 * 			重複すれば false.
+	 * @param productIdValue 商品ID.
+	 * @param productNumberValue 商品番号.
+	 * @return 一致するレコード数（0なら重複なし,1以上なら重複あり）.
 	 */
-	public boolean isNotDuplicateProductNumber(String productNumber);
+	public int getCountDuplicates(Object productIdValue, Object productNumberValue);
 
 	/** 
 	 * 商品情報を登録する. 
@@ -80,7 +80,6 @@ public interface ProductInfoService {
 	 * @param product 登録する商品情報.
 	 */
 	public void registerProduct(MProduct product);
-
 
 	/** 
 	 * 商品情報(商品番号・商品名・入荷先)を更新する. 

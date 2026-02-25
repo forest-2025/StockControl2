@@ -178,4 +178,20 @@
 			id  = #{userId}
 	</update>
 	
+	<!-- 指定した商品番号と重複するデータの件数を取得する. -->
+	<select id="countDuplicates" resultType="int">
+   		 select 
+   		 	count(*)
+   		 from
+   		 	 m_user
+    	where ${columnName} = #{checkItem}
+    	<!-- 商品情報の登録のときは入力された商品番号の値と同じデータがあるか確認するだけでいい(商品登録前なのでidはnullになる).
+    		商品情報の修正のときは商品自身の商品番号が既に登録されているため,
+    		ほかの商品情報を修正したいが商品番号に修正がないときなどで商品自身のデータと重複すると判断されるのを防ぐために,
+    		商品自身の商品IDを除外するif文を設定する. -->
+    	<if test="userId != null">
+        	and id != #{userId}
+    	</if>
+	</select>
+	
 </mapper>

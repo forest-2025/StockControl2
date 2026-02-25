@@ -3,6 +3,7 @@ package com.example.form.users;
 import org.hibernate.validator.constraints.Range;
 
 import com.example.domain.users.validation.PasswordMatches;
+import com.example.domain.users.validation.UniqueUser;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
 import com.example.validation.ValidGroup3;
@@ -20,7 +21,11 @@ import lombok.Data;
  */
 @Data
 @PasswordMatches(password = "password",reEnterPassword = "reEnterPassword",groups = ValidGroup3.class)
+@UniqueUser(userIdField="userId",checkField="employeeNumber",columnName="employee_number",groups = ValidGroup3.class)
+@UniqueUser(userIdField="userId",checkField="emailAddress",columnName="email_address",groups = ValidGroup3.class)
 public class RegisterForm {
+	
+	private Integer userId;
 
 	@NotBlank(groups = ValidGroup1.class)
 	@Pattern(regexp = "^[A-Z][0-9]{5}$", groups = ValidGroup2.class)

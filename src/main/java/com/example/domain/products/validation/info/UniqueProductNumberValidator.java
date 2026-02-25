@@ -1,14 +1,13 @@
 package com.example.domain.products.validation.info;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.repository.ProductMapper;
+import com.example.domain.products.service.ProductInfoService;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -21,12 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 public class UniqueProductNumberValidator implements ConstraintValidator<UniqueProductNumber, Object> {
 
 	@Autowired
-	private ProductMapper productMapper;
+	private ProductInfoService productInfoService;
 
 	private String message; // エラーメッセージ;
 
 	private String productId;
-	
+
 	private String productNumber;
 
 	/**
@@ -44,7 +43,7 @@ public class UniqueProductNumberValidator implements ConstraintValidator<UniqueP
 	}
 
 	/**
-	 * 入力された商品番号がデータベースに登録されている m_product と登録されている商品番号と重複していないか確認する.
+	 * 入力された商品番号がデータベースに登録されている m_product に登録されている商品番号と重複していないか確認する.
 	 *
 	 * @param value 検証対象のオブジェクト.
 	 * @param context バリデーションコンテキスト.
@@ -53,54 +52,52 @@ public class UniqueProductNumberValidator implements ConstraintValidator<UniqueP
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 
-		if (value == null) {
-			return true;
-		}
-
 		try {
-			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value); // 入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップ.
-			Object productIdValue = beanWrapperImpl.getPropertyValue(productId);
-			Object productNumberValue = beanWrapperImpl.getPropertyValue(productNumber); // 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
-			
+
+			if (value == null) {
+				return true;
+			}
+
+			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value); // フォームで入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップする.
+			Object productIdValue = beanWrapperImpl.getPropertyValue(productId);	// 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
+			Object productNumberValue = beanWrapperImpl.getPropertyValue(productNumber);
+
 			if (productNumberValue == null) {
 
 				return true;
-				
 
-			} 
-			
-				int count = productMapper.countDuplicates("number", productNumberValue, productIdValue);// 第一引数は商品番号のカラム名を直接設定している.
-				if(count == 0) {
-					return true;
-					
-		        // 0件なら「自分以外の重複なし」なのでOK
-		        //return count == 0;
-//				boolean isNotDuplicate = productInfoService.isNotDuplicateProductNumber(productNumberValue.toString());
-//
-//				if (isNotDuplicate) { // 重複がないとtrueになる.
-//
-//					return true;
+			}
 
-				} else {
+			/* 取得した商品の商品番号と商品IDから,商品番号が既存の商品番号と(修正時は自身の商品番号は除外して)重複しているか確認し,
+			 * 重複している件数をcountに代入する.*/
+			int count = productInfoService.getCountDuplicates(productIdValue, productNumberValue);
 
-					// エラーを特定のフィールドに紐づけて伝える
-					context.disableDefaultConstraintViolation(); // デフォルトのクラスエラーを無効化.
-					context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージをメッセージに再設定する.
-							.addPropertyNode("productNumber") // productNumberフィールドにエラーをつける.
-							.addConstraintViolation(); // バリデーションエラーを確定する.
+			// 重複している件数が0件なら重複はないためtrueになる(修正時なら自身の商品番号との重複は重複とみなさないため0件になり,trueになる).
+			if (count == 0) {
 
-					return false;
-				}
-			
+				return true;
+
+			} else {
+
+				// エラーを特定のフィールドに紐づけて伝える
+				context.disableDefaultConstraintViolation(); // デフォルトのクラスエラーを無効化.
+				context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージをメッセージに再設定する.
+						.addPropertyNode("productNumber") // productNumberフィールドにエラーをつける.
+						.addConstraintViolation(); // バリデーションエラーを確定する.
+
+				return false;
+			}
+
 		} catch (BeansException e) {
-            log.error("@UniqueProductNumberValidator バリデーション中に例外が発生しました。フィールド名が正しいか確認してください: {}", e.getMessage());
-            
-            return false; 
-            
-        } catch (Exception e) {
-            // その他予期せぬエラー（DB接続エラーなど）.
-            log.error("@UniqueProductNumberValidator で予期せぬエラーが発生しました", e);
-            return false;
-        }
+			
+			log.error("@UniqueProductNumberValidator バリデーション中に例外が発生しました。フィールド名が正しいか確認してください: {}", e.getMessage());
+
+			return false;
+
+		} catch (Exception e) {
+			// その他予期せぬエラー（DB接続エラーなど）.
+			log.error("@UniqueProductNumberValidator で予期せぬエラーが発生しました", e);
+			return false;
+		}
 	}
 }

@@ -219,14 +219,17 @@ public class ProductInfoController {
 
 		// 商品IDから商品情報と入荷先情報を取得する(削除済みは除く.初期値として入荷先名も表示したいためMProductではなくProductWithSupplierを使用している).
 		ProductWithSupplier productWithSupplier = productInfoService.getOneProductWithSupplier(productId);
-
+		
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productWithSupplier == null) {
 			return "/error";
 		}
 
-		// 取得した商品情報を商品情報修正画面に渡すためformに変換してmodelに格納する.
-		form = modelMapper.map(productWithSupplier, ProductEditForm.class);
+		/* ModelMapperによる自動マッピングだとformクラスのフィールドproductIdがマッピングされず,エラーになるため一つずつ設定している.
+		 * (productIdは@PathVariableのInteger productIdの値が自動で入っているため設定していない). */
+		form.setProductName(productWithSupplier.getProduct().getProductName());
+		form.setProductNumber(productWithSupplier.getProduct().getProductNumber());
+		form.setSupplierId(productWithSupplier.getSupplier().getSupplierId());
 		model.addAttribute("productEditForm", form);
 
 		/* 商品IDと入荷先名フォームに初期値を渡すために商品情報と入荷先情報をmodelに格納する処理・入荷先名全件取得しmodelに格納する処理,
@@ -253,6 +256,7 @@ public class ProductInfoController {
 			@ModelAttribute @Validated(GroupOrder.class) ProductEditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
+		
 
 		/* 商品IDから商品情報を取得する.
 		 * (削除済みは除く.また商品番号が変更されていない場合,商品番号の重複チェックを行う際に元の商品番号と重複していると誤判断することを防ぐために比較対象として取得する.
@@ -263,23 +267,6 @@ public class ProductInfoController {
 		if (productWithSupplier == null) {
 			return "/error";
 		}
-
-//		// 商品番号がnullや空白でないか確認する.
-//		String productNumber = form.getProductNumber();
-//		if (productNumber == null || productNumber.equals("")) {
-//			// nullまたは空白ならif文を抜けて@NotBlankのエラーメッセージが表示されるのでなにもしない.
-//		} else {
-//			boolean isNotDuplicate = productInfoService.isNotDuplicateProductNumber(productNumber);
-//			// 登録済みの商品番号と重複しないか確認する. 
-//			if (isNotDuplicate) {
-//				// trueなら商品番号に重複がないのでなにもしない.
-//			} else if (productNumber.equals(productWithSupplier.getProduct().getProductNumber())) {
-//				// 重複があっても,もとの商品番号と一緒ならtrueで商品番号に変更がなかっただけなのでなにもしない.
-//			} else {
-//				// falseなら商品番号に重複があるのでエラーとエラーメッセージを追加する.
-//				bindingResult.rejectValue("productNumber", "DuplicateProductNumber");
-//			}
-//		}
 
 		// 入荷先IDが入荷先情報に登録されているか確認する.
 		Integer supplierId = form.getSupplierId();

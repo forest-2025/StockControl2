@@ -137,19 +137,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		}
 	}
 
-	// DBに登録済みの商品番号と重複していないか確認する.
+	// 指定した商品番号と重複するデータの件数を取得する.
 	@Override
-	public boolean isNotDuplicateProductNumber(String productNumber) {
-
-			// 商品番号から商品情報を取得する.
-			MProduct product = productMapper.findByProductNumber(productNumber);
-			// productがnull(重複無し)か確認する.
-			if (product == null) {
-				// 重複がないのでtrueを返す.
-				return true;
-			} else {
-				return false;
-			}
+	public int getCountDuplicates(Object productIdValue, Object productNumberValue) {
+		
+		return productMapper.countDuplicates(productIdValue,productNumberValue);
 	}
 
 	// 商品情報を登録する.
