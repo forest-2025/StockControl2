@@ -23,12 +23,13 @@ public interface ProductListMapper {
 	public List<ProductList> findAll();
 	
 	/** 
-	 * 削除済み以外の商品検索結果一覧商品番号の昇順で取得する.
+	 * 削除済み以外の商品検索結果一覧を商品番号の指定された並び替え順序で取得する(商品番号・商品名・入荷先名・入荷先ふりがなで検索する).
 	 * 
 	 * @param search 検索語句.
+	 * @param sort 並べ替え順序（昇順または降順）.
 	 * @return 商品一覧.
 	 */
-	public List<ProductList> findSearchResults(String search);
+	public List<ProductList> findSearchResults(String search,String sort);
 	
 	/** 
 	 * 削除済み以外の商品IDから商品情報を商品番号の昇順で取得する.

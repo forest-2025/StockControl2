@@ -30,12 +30,13 @@ public interface UserMapper {
 	public List<MUser> findAll();
 
 	/** 
-	 * 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索する).
+	 * 削除済み以外のユーザー検索結果一覧を指定された並び替え順序で取得する(従業員番号・姓・名・管理者権限で検索する).
 	 * 
 	 * @param search 検索語句.
+	 * @param sort 並べ替え順序（昇順または降順）.
 	 * @return ユーザー情報一覧.
 	 */
-	public List<MUser> findSearchResults(String search);
+	public List<MUser> findSearchResults(String search, String sort);
 
 	/** 
 	 * 従業員番号からユーザー情報を取得する(削除済みも含む).

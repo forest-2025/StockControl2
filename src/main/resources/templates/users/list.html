@@ -49,7 +49,22 @@
 				<table class="table table-striped text-center">
 					<thead>
 						<tr>
-							<th scope="col" th:text="#{employeeNumber}"></th>
+							<th scope="col">
+								<div class="d-flex justify-content-center align-items-center">
+									<div th:text="#{employeeNumber}"></div>
+									
+									<!-- 昇順アイコン -->
+									<a class="ms-2 text-dark text-decoration-non link-secondary"
+										th:href="@{/users/list(sort='asc',search=${search})}">
+										<i class="bi bi-caret-up-fill"></i>
+									</a>
+									<!-- 降順アイコン -->
+									<a class="text-dark text-decoration-non link-secondary"
+										th:href="@{/users/list(sort='desc',search=${search})}">
+										<i class="bi bi-caret-down-fill"></i>
+									</a>
+								</div>
+							</th>
 							<th scope="col" th:text="#{familyName}"></th>
 							<th scope="col" th:text="#{firstName}"></th>
 							<th scope="col" th:text="#{emailAddress}"></th>

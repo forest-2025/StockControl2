@@ -56,8 +56,10 @@ public class CustomerController {
 			@RequestParam(defaultValue = "1") int page) {
 
 		/* 出荷先一覧を押して遷移してきたとき,search(検索語句)はrequired = falseのためnull,
-		 * sortItem(並び替え項目)とsort(並び替え順序)はdefaultValueの値がそれぞれ入っている. */
-
+		 * sortItem(並び替え項目)とsort(並び替え順序)はdefaultValueの値がそれぞれ入っている.
+		 * (sortItemとsortにdefaultValueが入っていることで語句検索だけをしたいときに自動で出荷先IDの昇順に並び替えてくれる.
+		 * また開発者ツールでsortItemとsortのクエリパラメータの値を空白に変えられても自動的に代入してくれる). */
+		
 		PageInfo<MCustomer> customerList = customerService.findAllSorted(search, sortItem, sort, page);
 
 		// 不正な並び替え項目・並び替え順序のとき,検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.

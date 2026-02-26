@@ -19,25 +19,33 @@ import com.github.pagehelper.PageInfo;
 public interface ProductInfoService {
 
 	/** 
+	 * 商品番号を指定された並べ替え順序（昇順または降順）に基づいて並び替えた商品一覧を取得する.
+	 *
+	 * @param search 検索語句.
+	 * @param sort 並べ替え順序（昇順または降順）.
+	 * @param page 何ページ目かを表すページ番号（1始まり）.
+	 * @return 商品一覧のページ情報.
+	 */
+	public PageInfo<ProductList> findAllSorted(String search, String sort, int page);
+
+	/** 
 	 * 削除済み以外の商品一覧を商品番号の昇順でページングして取得する.
 	 *
 	 * @param page 何ページ目かを表すページ番号（1始まり）.
-	 * @param size 1ページあたりの取得件数.
 	 * @return 商品一覧のページ情報.
 	 */
-	public PageInfo<ProductList> getProductList(int page, int size);
+	public PageInfo<ProductList> getProductList(int page);
 
 	/** 
-	 * 削除済み以外の商品一覧から検索語句が商品番号・商品名・入荷先名と一致する商品を,
+	 * 削除済み以外の商品一覧から検索語句が商品番号・商品名・入荷先名・入荷先ふりがなと一致する商品を,
 	 * 商品番号の昇順でページングして取得する.
 	 * 
-	 * @param page 何ページ目かを表すページ番号（1始まり）.
-	 * @param size 1ページあたりの取得件数.
 	 * @param search 検索語句.
+	 * @param sort 並べ替え順序（昇順または降順）.
+	 * @param page 何ページ目かを表すページ番号（1始まり）.
 	 * @return 商品一覧のページ情報.
 	 */
-	public PageInfo<ProductList> getSearchProductList(int page, int size, String search);
-	
+	public PageInfo<ProductList> getSearchProductList(String search, String sort, int page);
 
 	/** 
 	 * 商品のIDから商品情報と入荷先情報を取得する(削除済みは除く).
@@ -117,11 +125,10 @@ public interface ProductInfoService {
 	 * 商品IDからその商品の履歴を降順でページングして取得する. 
 	 *
 	 * @param page 何ページ目かを表すページ番号（1始まり）.
-	 * @param size 1ページあたりの取得件数.
 	 * @param productId 取得する商品履歴の商品ID.
 	 * @return 履歴一覧のページ情報.
 	 */
-	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, int size, Integer productId);
+	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, Integer productId);
 
 	/** 
 	 * 商品画像をバリデーションチェックし,ローカルファイルストレージ(プロジェクト直下)に保存する. 
@@ -131,8 +138,8 @@ public interface ProductInfoService {
 	 * 				(if文の外で利用したいため先に作成して,フィールドerrors ・ fileNameともにnullの状態で渡す).
 	 * @return 	バリデーション結果を保持するオブジェクト.
 	 * 			バリデーションエラーがある場合：fileName は null,errors にエラーメッセージが格納される.
- *             	バリデーションエラーがない場合：errors は null,fileName に DB に保存するための一意の名前のファイル名が格納される.
- *             	(引数 result に結果を設定して返す).
+	*             	バリデーションエラーがない場合：errors は null,fileName に DB に保存するための一意の名前のファイル名が格納される.
+	*             	(引数 result に結果を設定して返す).
 	 * @throws RuntimeException 画像ファイルの処理で例外が発生した場合. 
 	 */
 	public UploadResult validateAndUpload(MultipartFile file, UploadResult result);

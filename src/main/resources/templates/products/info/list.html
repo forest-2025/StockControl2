@@ -12,8 +12,7 @@
 			<!-- 商品登録ボタン -->
 			<!--/* パソコン用(992px以上)なら商品登録ボタンと検索フォームが横並びになるようにしている.
 			pb-4は小さい画面で商品登録ボタンと検索フォームが二段になっているときに余白をつけるためのもの. */-->
-			<div class="col-lg-6 pb-4"
-				sec:authorize="hasAuthority('ROLE_ADMIN')">
+			<div class="col-lg-6 pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
 				<a class="btn btn-dark btn-lg" th:href="@{/products/info/register}" role="button"
 					th:text="#{productRegister}"></a>
 			</div>
@@ -42,7 +41,22 @@
 				<table class="table table-striped text-center">
 					<thead>
 						<tr>
-							<th scope="col" th:text="#{productNumber}"></th>
+							<th scope="col">
+								<div class="d-flex justify-content-center align-items-center">
+									<div th:text="#{productNumber}"></div>
+									
+									<!-- 昇順アイコン -->
+									<a class="ms-2 text-dark text-decoration-non link-secondary"
+										th:href="@{/products/info/list(sort='asc',search=${search})}">
+										<i class="bi bi-caret-up-fill"></i>
+									</a>
+									<!-- 降順アイコン -->
+									<a class="text-dark text-decoration-non link-secondary"
+										th:href="@{/products/info/list(sort='desc',search=${search})}">
+										<i class="bi bi-caret-down-fill"></i>
+									</a>
+								</div>
+							</th>
 							<th scope="col" th:text="#{productName}"></th>
 							<th scope="col" th:text="#{supplierName}"></th>
 							<th scope="col" th:text="#{stockQuantity}"></th>
@@ -61,31 +75,33 @@
 							<td th:text="${item.supplierName}"></td>
 							<td th:text="${item.stockQuantity}"></td>
 							<td>
+								<!-- 入荷ボタン -->
 								<a class="btn btn-danger btn-lg me-3 mb-2"
 									th:href="@{'/products/' + ${item.productId} + '/count/arrive'}" role="button"
 									th:text="#{arrival}"></a>
+								<!-- 出荷ボタン -->
 								<a class="btn btn-primary btn-lg me-3 mb-2"
 									th:href="@{'/products/' + ${item.productId} + '/count/ship'}" role="button"
 									th:text="#{shipping}"></a>
+								<!-- 詳細ボタン -->
 								<a class="btn btn-success btn-lg me-3 mb-2"
-									th:href="@{'/products/' + ${item.productId} + '/info/display-details'}" role="button"
-									th:text="#{details}"></a>
+									th:href="@{'/products/' + ${item.productId} + '/info/display-details'}"
+									role="button" th:text="#{details}"></a>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 
 				<!-- ページネーション -->
-				<div class="d-flex overflow-x-auto justify-content-sm-center mt-5 mb-5" th:if="${productList.pages > 1}">
+				<div class="d-flex overflow-x-auto justify-content-sm-center mt-5 mb-5"
+					th:if="${productList.pages > 1}">
 					<nav class="m-2" aria-label="Page navigation">
 						<ul class="pagination pagination-lg">
 
 							<!-- 前のページ -->
 							<li class="page-item" th:classappend="${!productList.hasPreviousPage} ? 'disabled'">
-								<a class="page-link"
-									th:href="@{/products/info/list(page=${productList.prePage == 0} ? '1' : ${productList.prePage},
-									search=${search})}"
-									aria-label="Previous">
+								<a class="page-link" th:href="@{/products/info/list(page=${productList.prePage == 0} ? '1' : ${productList.prePage},
+									search=${search})}" aria-label="Previous">
 									<span aria-hidden="true">&laquo;</span>
 								</a>
 							</li>
@@ -93,15 +109,14 @@
 							<!-- ページ番号 -->
 							<li class="page-item" th:each="i : ${productList.navigatepageNums}"
 								th:classappend="${i} == ${productList.pageNum} ? 'active'">
-								<a class="page-link" th:href="@{/products/info/list(page=${i},search=${search})}" th:text="${i}"></a>
+								<a class="page-link" th:href="@{/products/info/list(page=${i},search=${search})}"
+									th:text="${i}"></a>
 							</li>
 
 							<!-- 次のページ -->
 							<li class="page-item" th:classappend="${!productList.hasNextPage} ? 'disabled'">
-								<a class="page-link"
-									th:href="@{/products/info/list(page=${productList.nextPage == 0} ? '1' : ${productList.nextPage},
-									search=${search})}"
-									aria-label="Next">
+								<a class="page-link" th:href="@{/products/info/list(page=${productList.nextPage == 0} ? '1' : ${productList.nextPage},
+									search=${search})}" aria-label="Next">
 									<span aria-hidden="true">&raquo;</span>
 								</a>
 							</li>

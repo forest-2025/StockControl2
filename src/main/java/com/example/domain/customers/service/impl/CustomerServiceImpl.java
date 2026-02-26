@@ -42,7 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
 				return this.getSearchResults(search, sortItem, sort, page);
 
 				/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
-				 * 削除済み以外の入荷先情報を出荷先IDで昇順に並べた入荷先一覧を取得する. */
+				 * 削除済み以外の出荷先情報を出荷先IDで昇順に並べた出荷先一覧を取得する. */
 			} else {
 				return this.getAllInAscById(page);
 

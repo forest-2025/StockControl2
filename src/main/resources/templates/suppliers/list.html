@@ -2,8 +2,6 @@
 <html lang="ja" layout:decorate="~{layout/main-layout}">
 
 <head>
-	<!-- 個別CSS読込 -->
-	<link rel="stylesheet" href="/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css">
 	<!--/* titleはfragmentで置換する */-->
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
@@ -47,13 +45,13 @@
 							<th scope="col">
 								<div class="d-flex justify-content-center align-items-center">
 									<div th:text="#{supplierId}"></div>
-									<!-- 昇順ボタン -->
+									<!-- 昇順アイコン -->
 									<a class="ms-2 text-dark text-decoration-non link-secondary"
 										th:href="@{/suppliers/list(sortItem='id',sort='asc',search=${search})}">
 										<i class="bi bi-caret-up-fill"></i>
 									</a>
 
-									<!-- 降順ボタン -->
+									<!-- 降順アイコン -->
 									<a class="text-dark text-decoration-non link-secondary"
 										th:href="@{/suppliers/list(sortItem='id',sort='desc',search=${search})}">
 										<i class="bi bi-caret-down-fill"></i>

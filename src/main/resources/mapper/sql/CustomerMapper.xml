@@ -63,7 +63,8 @@
 			or
 			furigana like '%' || #{search} || '%' 
 			)
-        order by ${sortItem} ${sort}
+        order by 
+        	${sortItem} ${sort}
 	</select>
 	
 	<!-- 出荷先を登録する -->

@@ -27,6 +27,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	// 1ページで表示するユーザーの人数を10人に設定する.
+	private final int SHOW_SIZE = 10;
+
 	// メールアドレスからユーザー情報を取得する(削除済みは除く).
 	@Override
 	public MUser getByEmailAddress(String emailAddress) {
@@ -36,49 +39,70 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 	
-	// 削除済み以外のユーザー情報を従業員番号の昇順でページングして取得する.
-	public PageInfo<MUser> getUsers(int page, int size) {
+	//  従業員番号を指定された並べ替え順序（昇順または降順）に基づいて並び替えたユーザー一覧を取得する.
+	@Override
+	public PageInfo<MUser> findAllSorted(String search, String sort, int page){
 		
+		if (search == null) {
+			return this.getUsers(page);
+
+			// 検索ボタン,商品番号の昇順・降順ボタンを押したときのsearchには,検索フォームに何も入っていなければ空白が入るのでnullではないためこちらに分岐する.
+		} else if (sort.equals("asc") || sort.equals("desc")) {
+			return this.getSearchUsers(search, sort, page);
+
+			/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
+			 * 削除済み以外の取得する. */
+		} else {
+			return this.getUsers(page);
+
+		}
+	}
+
+	// 削除済み以外のユーザー情報を従業員番号の昇順でページングして取得する.
+	@Override
+	public PageInfo<MUser> getUsers(int page) {
+
 		/* ページング(大量のデータを小分けにして表示・取得する仕組み)には外部ライブラリのPageHelprを使用する.
 		 * PageHelperクラスのstartPage(page, size)メソッドでSQLのLIMIT句(取得するデータの上限件数を指定)と,
 		 * OFFSET句(データの取得を行う最初の位置を指定)をSQLに適用する準備をする(適用するMapperの直前に呼ばないといけない,
 		 * この時点ではSQLはまだ変更されていない).
 		 * 内部ではThreadLocal(スレッドローカル スレッド(リクエスト単位の処理を担当する作業単位)専用の一時記憶領域))にページ番号やページサイズなどの情報を保持する. */
-        PageHelper.startPage(page, size);
+		PageHelper.startPage(page, SHOW_SIZE);
 
-        /* findAll()で削除されていないユーザー情報をすべて取得するがその際にSQLにLIMIT句(LIMIT page)とOFFSET句(OFFSET size)が,
-         * 自動的に付与されるため変数sizeのデータの位置から変数pageの件数分を取得するという条件に変更される(実際のMapperを変更せず自動的に行われている).
-         * この時点では変数resultにはsizeのデータの位置からpageの件数分だけ取得したデータだけ格納されている.
-         * この時格納されているのはArrayListを継承したPage<T>クラスのオブジェクトで,Page<T>でラップすることで元のリスト(ユーザー情報)とページ情報をすべて保持できるようになる.
-         * (ArrayListを継承しているためListに格納できる.) */
-        List<MUser> result = userMapper.findAll();
+		/* findAll()で削除されていないユーザー情報をすべて取得するがその際にSQLにLIMIT句(LIMIT page)とOFFSET句(OFFSET size)が,
+		 * 自動的に付与されるため変数sizeのデータの位置から変数pageの件数分を取得するという条件に変更される(実際のMapperを変更せず自動的に行われている).
+		 * この時点では変数resultにはsizeのデータの位置からpageの件数分だけ取得したデータだけ格納されている.
+		 * この時格納されているのはArrayListを継承したPage<T>クラスのオブジェクトで,Page<T>でラップすることで元のリスト(ユーザー情報)とページ情報をすべて保持できるようになる.
+		 * (ArrayListを継承しているためListに格納できる.) */
+		List<MUser> result = userMapper.findAll();
 
-        /* PageInfo<T>はページング(大量のデータを小分けにして表示・取得する仕組み)結果をまとめて保持するクラス.
+		/* PageInfo<T>はページング(大量のデータを小分けにして表示・取得する仕組み)結果をまとめて保持するクラス.
 		 * 現在のページ番号・1ページあたりの件数・全件数・総ページ数・前後ページの有無・実データ（List）などの情報をもつことができる.
 		 * Mapperから返ってきたList(変数result)をPageInfoにコンストラクタ引数で渡してnewすることで自動でページング情報（総件数や総ページ数など）と,
 		 * Listの情報を持つオブジェクトを作成できる(そのオブジェクトがメソッドの戻り値となっている).
 		 * new PageInfo<>(result,5)とするとページ番号ナビゲーションの最大表示数を5に変更できる(デフォルトは8).*/
-        return new PageInfo<>(result);
-    }
-	
+		return new PageInfo<>(result);
+	}
+
 	// 削除済み以外のユーザー一覧から検索語句が従業員番号・姓・名・管理者権限と一致するユーザーを, 従業員番号の昇順でページングして取得する.
-	public PageInfo<MUser> getSearchUsers(int page, int size,String search) {
-        
-        PageHelper.startPage(page, size);
+	@Override
+	public PageInfo<MUser> getSearchUsers(String search, String sort, int page) {
 
-        List<MUser> result = userMapper.findSearchResults(search);
+		PageHelper.startPage(page, SHOW_SIZE);
 
-        return new PageInfo<>(result);
-    }
-	
+		List<MUser> result = userMapper.findSearchResults(search,sort);
+
+		return new PageInfo<>(result);
+	}
+
 	// 指定した文字列と重複するデータがあるか判別する.
 	@Override
-	public boolean isNotDuplicates(String columnName, Object userIdValue , Object checkItemValue) {
-		
+	public boolean isNotDuplicates(String columnName, Object userIdValue, Object checkItemValue) {
+
 		int count = userMapper.countDuplicates(columnName, userIdValue, checkItemValue);
-		
-		if(count == 0) {
-			
+
+		if (count == 0) {
+
 			return true;
 		}
 		return false;
@@ -91,7 +115,7 @@ public class UserServiceImpl implements UserService {
 		// パスワードをハッシュ化して設定する.
 		String password = passwordEncoder.encode(user.getPassword());
 		user.setPassword(password);
-		
+
 		// ユーザーを登録する.
 		userMapper.insertOne(user);
 	}
@@ -112,18 +136,18 @@ public class UserServiceImpl implements UserService {
 	// ユーザーのパスワードを更新する. 
 	@Override
 	public void updatePassword(MUser user) {
-		
+
 		// パスワードをハッシュ化して設定する.
 		String password = passwordEncoder.encode(user.getPassword());
 		user.setPassword(password);
 		// パスワードを更新する.
 		userMapper.updatePassword(user);
 	}
-	
+
 	// 削除フラグを更新する.
 	@Override
 	public void updateIsDeleted(MUser user) {
-		
+
 		// ユーザー情報の削除は物理削除ではなく論理削除のため,削除フラグ(is_deleted)を削除済みの1に変更する.
 		user.setUserIsDeleted(1);
 		// 削除フラグを更新する.

@@ -35,7 +35,7 @@
 			product.number asc
 	</select>
 	
-	<!-- 削除済み以外の商品検索結果一覧を商品番号の昇順で取得する(商品番号・商品名・入荷先名で検索)  -->
+	<!-- 削除済み以外の商品検索結果一覧を商品番号の指定された並び替え順序で取得する(商品番号・商品名・入荷先名・入荷先ふりがな).  -->
 	<select id="findSearchResults"
 		resultType="ProductList">
 		select
@@ -46,6 +46,7 @@
 			product.image as productImage,
 			product.is_deleted as productIsDeleted,
 			supplier.name as supplierName,
+			supplier.furigana as supplierFurigana,
 			supplier.is_deleted as supplierIsDeleted,
 			stock.id as stockId,
 			stock.stock_quantity
@@ -66,10 +67,12 @@
 			or
 			product.number like '%' || #{search} || '%' 
 			or
-			supplier.name like '%' || #{search} || '%' 
+			supplier.name like '%' || #{search} || '%'
+			or
+			supplier.furigana like '%' || #{search} || '%'  
 			)
 		order by
-			product.number asc
+			product.number ${sort}
 	</select>
 	
 	<!-- 削除済み以外の商品IDから商品情報を取得する(詳細で商品IDの商品が存在するか確認するためなので並びはとくに指定していない)  -->

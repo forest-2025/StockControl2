@@ -48,7 +48,7 @@
 			employee_number asc
 	</select>
 	
-	<!-- 削除済み以外のユーザー検索結果一覧を取得する(従業員番号・姓・名・管理者権限で検索,従業員番号で昇順)  -->
+	<!-- 削除済み以外のユーザー検索結果一覧を指定された並び替え順序で取得する(従業員番号・姓・名・管理者権限で検索,従業員番号)  -->
 	<select id="findSearchResults"
 		resultType="MUser">
 		select
@@ -80,7 +80,7 @@
        		</if>
   			 )
 		order by
-			employee_number asc
+			employee_number ${sort}
 	</select>
 	
 	<!-- 従業員番号からユーザー情報を取得する(削除済みも含む) -->

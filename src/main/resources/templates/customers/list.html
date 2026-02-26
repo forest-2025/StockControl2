@@ -2,8 +2,6 @@
 <html lang="ja" layout:decorate="~{layout/main-layout}">
 
 <head>
-	<!-- 個別CSS読込 -->
-	<link rel="stylesheet" href="/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.min.css">
 	<!--/* titleはfragmentで置換する */-->
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 
@@ -48,7 +46,7 @@
 							<th scope="col">
 								<div class="d-flex justify-content-center align-items-center">
 									<div th:text="#{customerId}"></div>
-									<!-- 昇順ボタン -->
+									<!-- 昇順アイコン -->
 									<!--/* リンクのためアイコンが青くなるのでtext-darkで黒に変更する.
 										text-decoration-nonでリンクの下線がでないようにしている(基本的には出ないが念のためつけている).
 										link-secondaryでホバー時にアイコンの色が変わるようにしている(クリックできるように見せるため). */-->
@@ -56,7 +54,7 @@
 										th:href="@{/customers/list(sortItem='id',sort='asc',search=${search})}">
 										<i class="bi bi-caret-up-fill"></i>
 									</a>
-									<!-- 降順ボタン -->
+									<!-- 降順アイコン -->
 									<a class="text-dark text-decoration-non link-secondary"
 										th:href="@{/customers/list(sortItem='id',sort='desc',search=${search})}">
 										<i class="bi bi-caret-down-fill"></i>

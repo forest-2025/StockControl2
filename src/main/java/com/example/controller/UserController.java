@@ -1,9 +1,5 @@
 package com.example.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,6 +26,10 @@ import com.example.form.users.RegisterForm;
 import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 /** 
  * ユーザーの情報に関するコントローラクラス.
  * 
@@ -47,9 +47,6 @@ public class UserController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	// 1ページで表示するユーザーの人数を10人に設定する.
-	private final int SHOW_SIZE = 10;
-
 	/**
 	 * ユーザー一覧画面に遷移する.
 	 * 
@@ -61,6 +58,7 @@ public class UserController {
 	@GetMapping("/list")
 	public String getList(Model model,
 			@RequestParam(required = false) String search,
+			@RequestParam(defaultValue = "asc") String sort,
 			@RequestParam(defaultValue = "1") int page) {
 
 		/* @RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
@@ -69,14 +67,9 @@ public class UserController {
 		 * 値が含まれるユーザーを検索する.
 		 * @RequestParam(defaultValue = "1") int pageはpage=1がデフォルト. */
 
-		if (search == null) {
-			PageInfo<MUser> userList = userService.getUsers(page, SHOW_SIZE);
-			model.addAttribute("userList", userList);
-		} else {
-			PageInfo<MUser> userList = userService.getSearchUsers(page, SHOW_SIZE, search);
+			PageInfo<MUser> userList = userService.findAllSorted(search, sort, page);
 			model.addAttribute("userList", userList);
 			model.addAttribute("search", search);
-		}
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setYellow("ユーザー一覧");

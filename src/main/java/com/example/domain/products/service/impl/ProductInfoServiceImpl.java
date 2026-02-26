@@ -85,11 +85,34 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	private final Tika tika = new Tika();
 
+	// 1ページで表示する商品数・入出荷履歴数を10に設定する.
+	private static final int SHOW_SIZE = 10;
+
+	// 商品番号を指定された並べ替え順序（昇順または降順）に基づいて並び替えた商品一覧を取得する.
+	@Override
+	public PageInfo<ProductList> findAllSorted(String search, String sort, int page) {
+
+		if (search == null) {
+			return this.getProductList(page);
+
+			// 検索ボタン,商品番号の昇順・降順ボタンを押したときのsearchには,検索フォームに何も入っていなければ空白が入るのでnullではないためこちらに分岐する.
+		} else if (sort.equals("asc") || sort.equals("desc")) {
+			return this.getSearchProductList(search, sort, page);
+
+			/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
+			 * 削除済み以外の取得する. */
+		} else {
+			return this.getProductList(page);
+
+		}
+
+	}
+
 	// 削除済み以外の商品一覧を商品番号の昇順でページングして取得する. 
 	@Override
-	public PageInfo<ProductList> getProductList(int page, int size) {
+	public PageInfo<ProductList> getProductList(int page) {
 
-		PageHelper.startPage(page, size);
+		PageHelper.startPage(page, SHOW_SIZE);
 		List<ProductList> productList = productListMapper.findAll();
 
 		return new PageInfo<>(productList);
@@ -97,10 +120,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	// 削除済み以外の商品一覧から検索語句と一致する商品を,商品番号の昇順でページングして取得する.
 	@Override
-	public PageInfo<ProductList> getSearchProductList(int page, int size, String search) {
+	public PageInfo<ProductList> getSearchProductList(String search, String sort, int page) {
 
-		PageHelper.startPage(page, size);
-		List<ProductList> productItems = productListMapper.findSearchResults(search);
+		PageHelper.startPage(page, SHOW_SIZE);
+		List<ProductList> productItems = productListMapper.findSearchResults(search, sort);
+
 		return new PageInfo<>(productItems);
 	}
 
@@ -140,17 +164,17 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	// 指定した商品番号と重複するデータの件数を取得する.
 	@Override
 	public boolean getCountDuplicates(Object productIdValue, Object productNumberValue) {
-		
+
 		/* 取得した商品の商品番号と商品IDから,商品番号が既存の商品番号と(修正時は自身の商品番号は除外して)重複しているか確認し,
 		 * 重複している件数をcountに代入する.*/
-		int count = productMapper.countDuplicates(productIdValue,productNumberValue);
+		int count = productMapper.countDuplicates(productIdValue, productNumberValue);
 
 		// 重複している件数が0件なら重複はないためtrueになる(修正時なら自身の商品番号との重複は重複とみなさないため0件になり,trueになる).
 		if (count == 0) {
 
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -227,9 +251,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	// 商品IDからその商品の履歴を降順でページングして取得する.  
 	@Override
-	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, int size, Integer productId) {
+	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, Integer productId) {
 
-		PageHelper.startPage(page, size);
+		PageHelper.startPage(page, SHOW_SIZE);
 		List<HistoryDetails> historyList = transactionHistoryMapper.findByProductId(productId);
 
 		return new PageInfo<>(historyList);

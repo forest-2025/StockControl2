@@ -52,9 +52,6 @@ public class ProductInfoController {
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 
-	// 1ページで表示する商品数・入出荷履歴数を10に設定する.
-	private static final int SHOW_SIZE = 10;
-
 	/**
 	 * 商品一覧画面（ホーム画面）へ遷移する.
 	 * 
@@ -66,20 +63,16 @@ public class ProductInfoController {
 	@GetMapping("/info/list")
 	public String getList(Model model,
 			@RequestParam(required = false) String search,
+			@RequestParam(defaultValue = "asc") String sort,
 			@RequestParam(defaultValue = "1") int page) {
 		
 		/*@RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
 		 * パラメータ名searchが無ければ削除されていない全商品の一覧を取得し,あればsearchの値が含まれる商品を検索する. */
-
-		if (search == null) {
-			PageInfo<ProductList> productList = productInfoService.getProductList(page, SHOW_SIZE);
-			model.addAttribute("productList", productList);
-		} else {
-			PageInfo<ProductList> productList = productInfoService.getSearchProductList(page, SHOW_SIZE, search);
+		
+			PageInfo<ProductList> productList = productInfoService.findAllSorted(search,sort,page);
 			model.addAttribute("productList", productList);
 			model.addAttribute("search", search);
-		}
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setGray("商品一覧");
@@ -119,20 +112,6 @@ public class ProductInfoController {
 	public String postRegister(Model model,
 			@ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
-
-//		// 入荷先IDが入荷先情報に登録されているか確認する.
-//		Integer supplierId = form.getSupplierId();
-//		if (supplierId == null) {
-//			// nullならif文を抜けて@NotNullのエラーメッセージが表示されるのでなにもしない.
-//		} else {
-//			if (productInfoService.isRegister(supplierId)) {
-//				// trueなら入荷先が入荷先情報に登録されているのでなにもしない.
-//			} else {
-//				// falseなら入荷先が入荷先情報に登録されていない,または削除済みなのでエラーとエラーメッセージを追加する.
-//				bindingResult.rejectValue("supplierId", "NotSupplier");
-//			}
-//
-//		}
 
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
@@ -194,7 +173,7 @@ public class ProductInfoController {
 		model.addAttribute("oneItem", oneItem);
 
 		// 商品IDからその商品の履歴を降順で取得してmodelに格納する.
-		PageInfo<HistoryDetails> historyList = productInfoService.getHistoryForOneProduct(page, SHOW_SIZE, productId);
+		PageInfo<HistoryDetails> historyList = productInfoService.getHistoryForOneProduct(page, productId);
 		model.addAttribute("historyList", historyList);
 
 		// ヘッダーの色と項目を設定する.
@@ -267,19 +246,6 @@ public class ProductInfoController {
 		if (productWithSupplier == null) {
 			return "/error";
 		}
-
-//		// 入荷先IDが入荷先情報に登録されているか確認する.
-//		Integer supplierId = form.getSupplierId();
-//		if (supplierId == null) {
-//			// nullならif文を抜けて@NotNullのエラーメッセージが表示されるのでなにもしない.
-//		} else {
-//			if (productInfoService.isRegister(supplierId)) {
-//				// trueなら入荷先が入荷先情報に登録されているのでなにもしない.
-//			} else {
-//				// falseなら入荷先が入荷先情報に登録されていない,または削除済みなのでエラーとエラーメッセージを追加する.
-//				bindingResult.rejectValue("supplierId", "NotSupplier");
-//			}
-//		}
 
 		// バリデーションエラーがあれば商品情報修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {

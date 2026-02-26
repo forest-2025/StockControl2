@@ -18,24 +18,34 @@ public interface UserService {
 	public MUser getByEmailAddress(String emailAddress);
 	
 	/** 
+	 * 従業員番号を指定された並べ替え順序（昇順または降順）に基づいて並び替えたユーザー一覧を取得する.
+	 *
+	 * @param search 検索語句.
+	 * @param sort 並べ替え順序（昇順または降順）.
+	 * @param page 何ページ目かを表すページ番号（1始まり）.
+	 * @return 商品一覧のページ情報.
+	 */
+	public PageInfo<MUser> findAllSorted(String search, String sort, int page);
+
+	
+	/** 
 	 * 削除済み以外のユーザー情報を従業員番号の昇順でページングして取得する.
 	 * 
 	 * @param page 何ページ目かを表すページ番号（1始まり）.
-	 * @param size 1ページあたりの取得件数.
 	 * @return ユーザー一覧のページ情報.
 	 */
-	public PageInfo<MUser> getUsers(int page, int size) ;
+	public PageInfo<MUser> getUsers(int page);
 	 
 	/** 
 	 * 削除済み以外のユーザー一覧から検索語句が従業員番号・姓・名・管理者権限と一致するユーザーを,
 	 * 従業員番号の昇順でページングして取得する.
 	 * 
-	 * @param page 何ページ目かを表すページ番号（1始まり）.
-	 * @param size 1ページあたりの取得件数.
 	 * @param search 検索語句.
+	 * @param sort 並べ替え順序（昇順または降順）.
+	 * @param page 何ページ目かを表すページ番号（1始まり）.
 	 * @return ユーザー一覧のページ情報.
 	 */
-	public PageInfo<MUser> getSearchUsers(int page, int size, String search) ;
+	public PageInfo<MUser> getSearchUsers(String search, String sort, int page);
 	
 	/** 
 	 * 指定した文字列(checkItem)と重複するデータが存在するか判別する.
