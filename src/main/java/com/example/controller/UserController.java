@@ -1,5 +1,9 @@
 package com.example.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,10 +29,6 @@ import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;
 import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /** 
  * ユーザーの情報に関するコントローラクラス.
@@ -67,9 +67,9 @@ public class UserController {
 		 * 値が含まれるユーザーを検索する.
 		 * @RequestParam(defaultValue = "1") int pageはpage=1がデフォルト. */
 
-			PageInfo<MUser> userList = userService.findAllSorted(search, sort, page);
-			model.addAttribute("userList", userList);
-			model.addAttribute("search", search);
+		PageInfo<MUser> userList = userService.findAllSorted(search, sort, page);
+		model.addAttribute("userList", userList);
+		model.addAttribute("search", search);
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setYellow("ユーザー一覧");
@@ -260,7 +260,7 @@ public class UserController {
 	 * 			正常に完了した場合,パスワード修正フォーム画面のビュー名.
 	 */
 	@GetMapping("/{userId}/passwordEdit")
-	public String getPasswordEdit(Model model, @PathVariable Integer userId, 
+	public String getPasswordEdit(Model model, @PathVariable Integer userId,
 			@ModelAttribute PasswordEditForm form) {
 
 		// ユーザーIDから情報を取得する.
@@ -355,7 +355,7 @@ public class UserController {
 
 		return "/users/delete";
 	}
-	
+
 	/**
 	 * ユーザー情報削除フォーム画面の削除ボタンを押してくるところ.
 	 * ユーザー情報の削除フラグを更新(1にして論理削除)する.
@@ -398,7 +398,7 @@ public class UserController {
 
 			// 認証情報のクリア・セッション破棄・Cookieの削除を行い,ユーザーをログアウト状態にする.
 			logoutHandler.logout(request, response, authentication);
-			
+
 			// Cookieを削除する(下にあるprivateメソッド).
 			this.deleteCookie(response, "JSESSIONID"); // 上のlogout()でも削除してくれているが念のため.
 			this.deleteCookie(response, "remember-me");

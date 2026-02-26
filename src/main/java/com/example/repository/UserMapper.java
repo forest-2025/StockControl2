@@ -30,7 +30,7 @@ public interface UserMapper {
 	public List<MUser> findAll();
 
 	/** 
-	 * 削除済み以外のユーザー検索結果一覧を指定された並び替え順序で取得する(従業員番号・姓・名・管理者権限で検索する).
+	 * 削除済み以外のユーザー検索結果一覧を従業員番号の指定された並び替え順序で取得する(従業員番号・姓・名・管理者権限で検索する).
 	 * 
 	 * @param search 検索語句.
 	 * @param sort 並べ替え順序（昇順または降順）.
@@ -81,7 +81,6 @@ public interface UserMapper {
 	 * @param user 更新するユーザー情報.
 	 */
 	public void updateIsDeleted(MUser user);
-	
 
 	/** 
 	 * 指定した項目と重複するデータの件数を取得する.
@@ -92,6 +91,6 @@ public interface UserMapper {
 	 * @param checkItemValue 重複があるか判別したいフィールドの値.
 	 * @return 一致するレコード数（0なら重複なし,1以上なら重複あり）.
 	 */
-	public int countDuplicates(String columnName, Object userIdValue , Object checkItemValue);
-	
+	public int countDuplicates(String columnName, Object userIdValue, Object checkItemValue);
+
 }

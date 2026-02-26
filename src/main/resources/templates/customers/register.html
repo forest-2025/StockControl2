@@ -10,16 +10,16 @@
 	<div layout:fragment="content">
 
 		<!-- メッセージ -->
-		<div class="alert alert-success mt-5" role="alert">
+		<div class="m-5 fs-4 fw-bold text-center">
 			<span th:text="#{customerRegisterMessage}"></span>
 		</div>
 
 		<form method="post" th:object="${registerForm}" th:action="@{/customers/register}">
 
 			<!-- 出荷先名 -->
-			<div>
+			<div class="mb-4">
 				<label class="mb-1" for="customerName" th:text="#{customerName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{customerName}" th:errorclass="is-invalid">
+				<input class="form-control mb-2 fs-5" type="text" th:field="*{customerName}" th:errorclass="is-invalid" placeholder="例）株式会社サンプル">
 
 				<!-- エラーメッセージ -->
 				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerName}"></div>
@@ -29,8 +29,8 @@
 			<!-- 出荷先名ふりがな -->
 			<div>
 				<label class="mb-1" for="customerFurigana" th:text="#{customerFurigana}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{customerFurigana}"
-					th:errorclass="is-invalid">
+				<input class="form-control mb-2 fs-5" type="text" th:field="*{customerFurigana}"
+					th:errorclass="is-invalid" placeholder="例）かぶしきがいしゃさんぷる">
 
 				<!-- エラーメッセージ -->
 				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerFurigana}"></div>

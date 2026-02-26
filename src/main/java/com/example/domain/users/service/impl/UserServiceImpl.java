@@ -43,15 +43,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public PageInfo<MUser> findAllSorted(String search, String sort, int page){
 		
+		// 削除済み以外のユーザー情報を従業員番号の昇順で取得する.
 		if (search == null) {
 			return this.getUsers(page);
 
-			// 検索ボタン,商品番号の昇順・降順ボタンを押したときのsearchには,検索フォームに何も入っていなければ空白が入るのでnullではないためこちらに分岐する.
+			// 検索ボタン,従業員番号の昇順・降順ボタンを押したときのsearchには,検索フォームに何も入っていなければ空白が入るのでnullではないためこちらに分岐する.
 		} else if (sort.equals("asc") || sort.equals("desc")) {
 			return this.getSearchUsers(search, sort, page);
 
 			/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
-			 * 削除済み以外の取得する. */
+			 * 削除済み以外のユーザー一覧を従業員番号の昇順で取得する. */
 		} else {
 			return this.getUsers(page);
 
