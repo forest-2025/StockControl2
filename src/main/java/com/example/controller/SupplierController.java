@@ -43,8 +43,8 @@ public class SupplierController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param search 入荷先を検索するときの検索語句.
-	 * @param sortItem 入荷先を並び替えるときの並び替え項目(IDまたはふりがな)
-	 * @param sort 入荷先を並び替えるときの並び替え順序(昇順または降順)
+	 * @param sortItem 入荷先を並び替えるときの並び替え項目(IDまたはふりがな).
+	 * @param sort 入荷先を並び替えるときの並び替え順序(昇順または降順).
 	 * @param page 取得するページ番号.
 	 * @return 入荷先一覧画面のビュー名.
 	 */

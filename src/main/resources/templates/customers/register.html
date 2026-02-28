@@ -2,6 +2,8 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/form/register.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -10,43 +12,45 @@
 	<div layout:fragment="content">
 
 		<!-- メッセージ -->
-		<div class="m-5 fs-4 fw-bold text-center">
-			<span th:text="#{customerRegisterMessage}"></span>
+		<div class="fs-4 fw-bold text-center m-5">
+			<div class="message-underline" th:text="#{customerRegisterMessage}"></div>
 		</div>
 
-		<form method="post" th:object="${registerForm}" th:action="@{/customers/register}">
+		<div>
+			<form method="post" th:object="${registerForm}" th:action="@{/customers/register}">
 
-			<!-- 出荷先名 -->
-			<div class="mb-4">
-				<label class="mb-1" for="customerName" th:text="#{customerName}"></label>
-				<input class="form-control mb-2 fs-5" type="text" th:field="*{customerName}" th:errorclass="is-invalid" placeholder="例）株式会社サンプル">
+				<!-- 出荷先名 -->
+				<div>
+					<label class="mb-2" for="customerName" th:text="#{customerName}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{customerName}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerName}"></div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{customerName}"></div>
 
-			</div>
+				</div>
 
-			<!-- 出荷先名ふりがな -->
-			<div>
-				<label class="mb-1" for="customerFurigana" th:text="#{customerFurigana}"></label>
-				<input class="form-control mb-2 fs-5" type="text" th:field="*{customerFurigana}"
-					th:errorclass="is-invalid" placeholder="例）かぶしきがいしゃさんぷる">
+				<!-- 出荷先名ふりがな -->
+				<div class="mt-4">
+					<label class="mb-2" for="customerFurigana" th:text="#{customerFurigana}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{customerFurigana}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerFurigana}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback mb-1 fs-6" th:errors="*{customerFurigana}"></div>
+				</div>
 
-			<div class="mt-5">
-				<!-- 登録ボタン -->
-				<button class="btn btn-success btn-lg me-2 mb-5" type="submit" id="customerRegister"
-					name="customerRegister" th:text="#{register}"></button>
+				<div class="mt-5">
+					<!-- 登録ボタン -->
+					<button class="btn btn-success btn-lg me-2 mb-5" type="submit" id="customerRegister"
+						name="customerRegister" th:text="#{register}"></button>
 
-				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-success btn-lg mb-5" th:href="@{/customers/list}" role="button" id="cancel"
-					name="cancel" th:text="#{cancel}"></a>
-			</div>
-		</form>
-
+					<!-- キャンセルボタン -->
+					<a class="btn btn-outline-success btn-lg mb-5" th:href="@{/customers/list}" role="button"
+						id="cancel" name="cancel" th:text="#{cancel}"></a>
+				</div>
+			</form>
+		</div>
 	</div>
 </body>
 

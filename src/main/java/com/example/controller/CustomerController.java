@@ -43,8 +43,8 @@ public class CustomerController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param search 出荷先を検索するときの検索語句.
-	 * @param sortItem 出荷先を並び替えるときの並び替え項目(IDまたはふりがな)
-	 * @param sort 出荷先を並び替えるときの並び替え順序(昇順または降順)
+	 * @param sortItem 出荷先を並び替えるときの並び替え項目(IDまたはふりがな).
+	 * @param sort 出荷先を並び替えるときの並び替え順序(昇順または降順).
 	 * @param page 取得するページ番号.
 	 * @return 出荷先一覧画面のビュー名.
 	 */

@@ -72,4 +72,4 @@ CREATE TABLE IF NOT EXISTS t_transaction_history
    FOREIGN KEY (customer_id) REFERENCES m_customer (id),
    FOREIGN KEY (user_id) REFERENCES m_user (id)
 );
-ALTER TABLE t_transaction_history ALTER COLUMN ID RESTART WITH 1;
+ALTER TABLE t_transaction_history ALTER COLUMN ID RESTART WITH 5;

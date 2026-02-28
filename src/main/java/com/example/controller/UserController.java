@@ -1,9 +1,5 @@
 package com.example.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,6 +26,10 @@ import com.example.form.users.RegisterForm;
 import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 /** 
  * ユーザーの情報に関するコントローラクラス.
  * 
@@ -52,6 +52,7 @@ public class UserController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param search ユーザーを検索するときの検索語句.
+	 * @param sort ユーザー一覧を並び替えるときの並び替え順序(昇順または降順).
 	 * @param page 取得するページ番号.
 	 * @return ユーザー一覧画面のビュー名.
 	 */

@@ -19,7 +19,7 @@
 
 			<!-- 検索フォーム -->
 			<!--/* colで商品登録ボタンとは別要素と判断されて横方向に分割して表示される. */-->
-			<div class="col-lg-6">
+			<div th:classappend="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} ? 'col-lg-6' : ''">
 				<form method="get" th:action="@{/products/info/list}">
 					<div>
 						<!--/* inputタグのw-auto・d-inline-blockはform-controlのwidth:100%,

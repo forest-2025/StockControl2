@@ -57,6 +57,7 @@ public class ProductInfoController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param search 商品を検索するときの検索語句.
+	 * @param sort 商品一覧を並び替えるときの並び替え順序(昇順または降順).
 	 * @param page 取得するページ番号.
 	 * @return 商品一覧画面のビュー名.
 	 */
@@ -65,14 +66,14 @@ public class ProductInfoController {
 			@RequestParam(required = false) String search,
 			@RequestParam(defaultValue = "asc") String sort,
 			@RequestParam(defaultValue = "1") int page) {
-		
+
 		/*@RequestParamのrequired属性をfalseにすることで検索パラメータ（URLの末尾の？に続く変数）の,
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
 		 * パラメータ名searchが無ければ削除されていない全商品の一覧を取得し,あればsearchの値が含まれる商品を検索する. */
-		
-			PageInfo<ProductList> productList = productInfoService.findAllSorted(search,sort,page);
-			model.addAttribute("productList", productList);
-			model.addAttribute("search", search);
+
+		PageInfo<ProductList> productList = productInfoService.findAllSorted(search, sort, page);
+		model.addAttribute("productList", productList);
+		model.addAttribute("search", search);
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setGray("商品一覧");
@@ -198,7 +199,7 @@ public class ProductInfoController {
 
 		// 商品IDから商品情報と入荷先情報を取得する(削除済みは除く.初期値として入荷先名も表示したいためMProductではなくProductWithSupplierを使用している).
 		ProductWithSupplier productWithSupplier = productInfoService.getOneProductWithSupplier(productId);
-		
+
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productWithSupplier == null) {
 			return "/error";
@@ -235,7 +236,6 @@ public class ProductInfoController {
 			@ModelAttribute @Validated(GroupOrder.class) ProductEditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
-		
 
 		/* 商品IDから商品情報を取得する.
 		 * (削除済みは除く.また商品番号が変更されていない場合,商品番号の重複チェックを行う際に元の商品番号と重複していると誤判断することを防ぐために比較対象として取得する.

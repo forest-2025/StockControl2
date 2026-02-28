@@ -2,6 +2,8 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/form/delete.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -9,19 +11,24 @@
 
 	<div layout:fragment="content">
 
-		<div class="mt-5">
+		<!-- メッセージ -->
+		<div class="fs-4 fw-bold text-center m-5">
+			<div class=" message-underline" th:text="#{customerDeleteMessage}"></div>
+		</div>
+
+		<div>
 			<form method="post" th:action="@{/customers/{customerId}/delete(customerId=${customer.customerId})}">
 
 				<!-- 出荷先名 -->
 				<div>
-					<div class="mb-1" for="customerName" th:text="#{customerName}"></div>
-					<div class="ms-3 mb-3 fs-5" type="text" th:text="${customer.customerName}"></div>
+					<div class="mb-2" for="customerName" th:text="#{customerName}"></div>
+					<div class="ms-3 mb-4 fs-5" type="text" th:text="${customer.customerName}"></div>
 				</div>
 
 				<!-- 出荷先名ふりがな -->
 				<div>
-					<div class="mb-1" for="customerFurigana" th:text="#{customerFurigana}"></div>
-					<div class="ms-3 mb-3 fs-5" type="text" th:text="${customer.customerFurigana}"></div>
+					<div class="mb-2" for="customerFurigana" th:text="#{customerFurigana}"></div>
+					<div class="ms-3 fs-5" type="text" th:text="${customer.customerFurigana}"></div>
 				</div>
 
 				<div class="mt-5">
