@@ -67,5 +67,14 @@ public class CustomUserDetails extends User{
 	public Integer getUserId() {
 		return userId;
 	}
+	
+	/**
+	 * 認証済みユーザーの姓と名を取得する.
+	 *
+	 * @return ユーザーの姓と名.
+	 */
+	public String getFullName() {
+		return familyName + firstName;
+	}
 
 }

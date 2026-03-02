@@ -4,6 +4,7 @@
 <head>
 	<!-- 個別CSS読込 -->
 	<link rel="stylesheet" th:href="@{/css/users/register.css}">
+	<link rel="stylesheet" th:href="@{/css/form/register.css}">
 	<!-- 個別JS読込 -->
 	<script th:src="@{/js/popup.js}" defer></script>
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
@@ -14,106 +15,111 @@
 	<div layout:fragment="content">
 
 		<!-- メッセージ -->
-		<div class="alert alert-success mt-5" role="alert">
-			<span th:text="#{userRegisterMessage}"></span>
+		<div class="fs-4 fw-bold text-center m-5">
+			<div class="message-underline" th:text="#{userRegisterMessage}"></div>
 		</div>
 
-		<form method="post" th:object="${registerForm}" th:action="@{/users/register}">
+		<div>
+			<form method="post" th:object="${registerForm}" th:action="@{/users/register}">
 
-			<!-- 従業員番号 -->
-			<div>
-				<label class="mb-1" for="employeeNumber" th:text="#{employeeNumberInputExample}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{employeeNumber}"
-					th:placeholder="#{employeeNumberSample}" th:errorclass="is-invalid">
+				<!-- 従業員番号 -->
+				<div>
+					<label class="mb-2" for="employeeNumber" th:text="#{employeeNumberInputExample}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{employeeNumber}"
+						 th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{employeeNumber}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{employeeNumber}"></div>
+				</div>
 
-			<!-- 姓 -->
-			<div>
-				<label class="mb-1" for="familyName" th:text="#{familyName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{familyName}" th:errorclass="is-invalid">
+				<!-- 姓 -->
+				<div class="mt-4">
+					<label class="mb-2" for="familyName" th:text="#{familyName}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{familyName}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{familyName}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{familyName}"></div>
+				</div>
 
-			<!-- 名 -->
-			<div>
-				<label class="mb-1" for="firstName" th:text="#{firstName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{firstName}" th:errorclass="is-invalid">
+				<!-- 名 -->
+				<div class="mt-4">
+					<label class="mb-2" for="firstName" th:text="#{firstName}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{firstName}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{firstName}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{firstName}"></div>
+				</div>
 
-			<!-- メールアドレス -->
-			<div>
-				<label class="mb-1" for="emailAddress" th:text="#{emailAddress}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{emailAddress}" th:errorclass="is-invalid">
+				<!-- メールアドレス -->
+				<div class="mt-4">
+					<label class="mb-2" for="emailAddress" th:text="#{emailAddress}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{emailAddress}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{emailAddress}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{emailAddress}"></div>
+				</div>
 
-			<!-- パスワード -->
-			<div class="mb-4">
-				<label class="mb-1" for="password" th:text="#{password}"></label>
-				<input class="form-control mb-3 fs-5" type="password" th:field="*{password}" th:errorclass="is-invalid">
+				<!-- パスワード -->
+				<div class="mt-4">
+					<label class="mb-2" for="password" th:text="#{password}"></label>
+					<input class="form-control mb-2 fs-5" type="password" th:field="*{password}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{password}"></div>
-				<!-- 使用できる文字の表示 -->
-				<span class="showCharacter" id="popup-trigger" th:text="#{showAvailableCharacters}"></span>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback mb-2 fs-6" th:errors="*{password}"></div>
+					<!-- 使用できる文字の表示 -->
+					<span class="showCharacter" id="popup-trigger" th:text="#{showAvailableCharacters}"></span>
 
-				<!-- ポップアップ内の表示 -->
-				<div class="popup" id="popup">
-					<div class="popup-content">
-						<!--/* アルファベットの羅列は長い文字列として認識されるため小さい画面だと折り返されないためtext-breakをつけてコンテナの幅を超えてレイアウトが崩れるのを防ぐ. */-->
-						<p class="text-break" th:text="#{availableCharacters}"></p>
-						<p class="text-break" th:text="#{symbols}"></p>
-						<p class="text-break" th:text="#{numbers}"></p>
-						<p class="text-break" th:text="#{uppercaseAlphabet}"></p>
-						<p class="text-break" th:text="#{lowercaseAlphabet}"></p>
-						<!--/* type="button"にしないとここを開くたびにパスワード修正の確定ボタンを押した挙動になるので注意する. */-->
-						<button class="btn btn-primary btn-lg" id="close" type="button" th:text="#{close}"></button>
+					<!-- ポップアップ内の表示 -->
+					<div class="popup" id="popup">
+						<div class="popup-content">
+							<!--/* アルファベットの羅列は長い文字列として認識されるため小さい画面だと折り返されないためtext-breakをつけてコンテナの幅を超えてレイアウトが崩れるのを防ぐ. */-->
+							<p class="text-break" th:text="#{availableCharacters}"></p>
+							<p class="text-break" th:text="#{symbols}"></p>
+							<p class="text-break" th:text="#{numbers}"></p>
+							<p class="text-break" th:text="#{uppercaseAlphabet}"></p>
+							<p class="text-break" th:text="#{lowercaseAlphabet}"></p>
+							<!--/* type="button"にしないとここを開くたびにパスワード修正の確定ボタンを押した挙動になるので注意する. */-->
+							<button class="btn btn-primary btn-lg" id="close" type="button" th:text="#{close}"></button>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div>
 				<!-- パスワード再入力 -->
-				<label class="mb-1" for="reEnterPassword" th:text="#{reEnterPassword}"></label>
-				<input class="form-control mb-3 fs-5" type="password" th:field="*{reEnterPassword}">
-			</div>
+				<div class="mt-4">
+					<label class="mb-2" for="reEnterPassword" th:text="#{reEnterPassword}"></label>
+					<input class="form-control mb-2 fs-5" type="password" th:field="*{reEnterPassword}">
+				</div>
 
-			<!-- 管理者権限 -->
-			<div>
-				<label class="mt-4 mb-1" for="isAdmin" th:text="#{isAdmin}"></label>
-				<select class="form-select mb-3 fs-5" th:field="*{isAdmin}" th:errorclass="is-invalid">
-					<option value="" th:text="#{select}"></option>
-					<div>
-						<option th:value="#{generalNumber}" th:label="#{general}"></option>
-						<option th:value="#{adminNumber}" th:label="#{admin}"></option>
-					</div>
-				</select>
+				<!-- 管理者権限 -->
+				<div class="mt-4">
+					<label class="mb-2" for="isAdmin" th:text="#{isAdmin}"></label>
+					<select class="form-select mb-2 fs-5" th:field="*{isAdmin}" th:errorclass="is-invalid">
+						<option value="" th:text="#{select}"></option>
+						<div>
+							<option th:value="#{generalNumber}" th:label="#{general}"></option>
+							<option th:value="#{adminNumber}" th:label="#{admin}"></option>
+						</div>
+					</select>
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{isAdmin}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{isAdmin}"></div>
+				</div>
 
-			<div class="mt-5">
-				<!-- 登録ボタン -->
-				<button class="btn btn-success btn-lg me-2 mb-5" type="submit" id="userRegister" name="userRegister"
-					th:text="#{register}"></button>
+				<div class="mt-5">
+					<!-- 登録ボタン -->
+					<button class="btn btn-success btn-lg me-2 mb-5" type="submit" id="userRegister" name="userRegister"
+						th:text="#{register}"></button>
 
-				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-success btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel"
-					name="cancel" th:text="#{cancel}"></a>
-			</div>
-		</form>
-
+					<!-- キャンセルボタン -->
+					<a class="btn btn-outline-success btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel"
+						name="cancel" th:text="#{cancel}"></a>
+				</div>
+			</form>
+		</div>
 	</div>
 </body>
 

@@ -60,7 +60,7 @@
 			<!-- 担当者 -->
 			<div>
 				<div class="mb-1" th:text="#{fullName}"></div>
-				<div class="ms-3 mb-3" th:text="${fullName}"></div>
+				<div class="ms-3 mb-3" th:text="${#authentication.principal.fullName}"></div>
 
 			</div>
 

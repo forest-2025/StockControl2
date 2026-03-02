@@ -2,6 +2,8 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/form/edit.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -10,79 +12,79 @@
 	<div layout:fragment="content">
 
 		<!-- メッセージ -->
-		<div class="alert alert-primary mt-5" role="alert">
-			<span th:text="#{userEditMessage}"></span>
+		<div class="fs-4 fw-bold text-center m-5">
+			<div class="text-bottome message-underline" th:text="#{userEditMessage}"></div>
 		</div>
 
-		<form method="post" th:object="${editForm}" th:action="@{/users/{userId}/edit(userId=${user.userId})}">
+		<div>
+			<form method="post" th:object="${editForm}" th:action="@{/users/{userId}/edit(userId=${user.userId})}">
 
-			<!-- 従業員番号 -->
-			<div>
-				<label class="mb-1" for="employeeNumber" th:text="#{employeeNumberInputExample}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{employeeNumber}"
-					th:errorclass="is-invalid">
+				<!-- 従業員番号 -->
+				<div>
+					<label class="mb-2" for="employeeNumber" th:text="#{employeeNumberInputExample}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{employeeNumber}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{employeeNumber}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{employeeNumber}"></div>
+				</div>
 
-			<!-- 姓 -->
-			<div>
-				<label class="mb-1" for="familyName" th:text="#{familyName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{familyName}"
-					th:errorclass="is-invalid">
+				<!-- 姓 -->
+				<div class="mt-4">
+					<label class="mb-2" for="familyName" th:text="#{familyName}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{familyName}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{familyName}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{familyName}"></div>
+				</div>
 
-			<!-- 名 -->
-			<div>
-				<label class="mb-1" for="firstName" th:text="#{firstName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{firstName}"
-					th:errorclass="is-invalid">
+				<!-- 名 -->
+				<div class="mt-4">
+					<label class="mb-2" for="firstName" th:text="#{firstName}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{firstName}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{firstName}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{firstName}"></div>
+				</div>
 
-			<!-- メールアドレス -->
-			<div>
-				<label class="mb-1" for="emailAddress" th:text="#{emailAddress}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{emailAddress}"
-					th:errorclass="is-invalid">
+				<!-- メールアドレス -->
+				<div class="mt-4">
+					<label class="mb-2" for="emailAddress" th:text="#{emailAddress}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{emailAddress}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{emailAddress}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{emailAddress}"></div>
+				</div>
 
-			<!-- 管理者権限 -->
-			<div>
-				<label class="mb-1" for="isAdmin" th:text="#{isAdmin}"></label>
-				<select class="form-select mb-3 fs-5" th:field="*{isAdmin}"
-					 th:errorclass="is-invalid">
-					<option value="" th:text="#{select}"></option>
-					<div>
-						<option th:value="#{generalNumber}" th:label="#{general}"></option>
-						<option th:value="#{adminNumber}" th:label="#{admin}"></option>
-					</div>
-				</select>
+				<!-- 管理者権限 -->
+				<div class="mt-4">
+					<label class="mb-2" for="isAdmin" th:text="#{isAdmin}"></label>
+					<select class="form-select mb-2 fs-5" th:field="*{isAdmin}" th:errorclass="is-invalid">
+						<option value="" th:text="#{select}"></option>
+						<div>
+							<option th:value="#{generalNumber}" th:label="#{general}"></option>
+							<option th:value="#{adminNumber}" th:label="#{admin}"></option>
+						</div>
+					</select>
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{isAdmin}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{isAdmin}"></div>
+				</div>
 
-			<div class="mt-5">
-				<!-- 確定ボタン -->
-				<button class="btn btn-primary btn-lg me-2 mb-5" type="submit" id="userEdit" name="userEdit"
-					th:text="#{confirmed}"></button>
+				<div class="mt-5">
+					<!-- 確定ボタン -->
+					<button class="btn btn-primary btn-lg me-2 mb-5" type="submit" id="userEdit" name="userEdit"
+						th:text="#{confirmed}"></button>
 
-				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel"
-					name="cancel" th:text="#{cancel}"></a>
-			</div>
-		</form>
-
+					<!-- キャンセルボタン -->
+					<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel"
+						name="cancel" th:text="#{cancel}"></a>
+				</div>
+			</form>
+		</div>
 	</div>
 </body>
 

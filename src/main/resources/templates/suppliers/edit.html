@@ -2,6 +2,8 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/form/edit.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -10,46 +12,48 @@
 	<div layout:fragment="content">
 
 		<!-- メッセージ -->
-		<div class="alert alert-primary mt-5" role="alert">
-			<span th:text="#{supplierEditMessage}"></span>
+		<div class="fs-4 fw-bold text-center m-5">
+			<div class="text-bottome message-underline" th:text="#{supplierEditMessage}"></div>
 		</div>
 
-		<form method="post" th:object="${editForm}"
-			th:action="@{/suppliers/{supplierId}/edit(supplierId=${supplier.supplierId})}">
+		<div>
 
-			<!-- 入荷先名 -->
-			<div>
-				<label class="mb-1" for="supplierName" th:text="#{supplierName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{supplierName}" 
-					th:errorclass="is-invalid">
+			<form method="post" th:object="${editForm}"
+				th:action="@{/suppliers/{supplierId}/edit(supplierId=${supplier.supplierId})}">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{supplierName}"></div>
+				<!-- 入荷先名 -->
+				<div>
+					<label class="mb-2" for="supplierName" th:text="#{supplierName}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{supplierName}"
+						th:errorclass="is-invalid">
 
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{supplierName}"></div>
 
-			<!-- 入荷先名ふりがな -->
-			<div>
-				<label class="mb-1" for="supplierFurigana" th:text="#{supplierFurigana}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{supplierFurigana}"
-					th:errorclass="is-invalid">
-
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{supplierFurigana}">
 				</div>
-			</div>
 
-			<div class="mt-5">
-				<!-- 確定ボタン -->
-				<button class="btn btn-primary btn-lg me-2 mb-5" type="submit" id="supplierEdit" name="supplierEdit"
-					th:text="#{confirmed}"></button>
+				<!-- 入荷先名ふりがな -->
+				<div class="mt-4">
+					<label class="mb-2" for="supplierFurigana" th:text="#{supplierFurigana}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{supplierFurigana}"
+						th:errorclass="is-invalid">
 
-				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/suppliers/list}" role="button" id="cancel"
-					name="cancel" th:text="#{cancel}"></a>
-			</div>
-		</form>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{supplierFurigana}">
+					</div>
+				</div>
 
+				<div class="mt-5">
+					<!-- 確定ボタン -->
+					<button class="btn btn-primary btn-lg me-2 mb-5" type="submit" id="supplierEdit" name="supplierEdit"
+						th:text="#{confirmed}"></button>
+
+					<!-- キャンセルボタン -->
+					<a class="btn btn-outline-primary btn-lg mb-5" th:href="@{/suppliers/list}" role="button"
+						id="cancel" name="cancel" th:text="#{cancel}"></a>
+				</div>
+			</form>
+		</div>
 	</div>
 </body>
 
