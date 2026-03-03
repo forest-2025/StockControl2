@@ -4,6 +4,7 @@
 <head>
 	<!-- 個別CSS読込 -->
 	<link rel="stylesheet" th:href="@{/css/products/info/register.css}">
+	<link rel="stylesheet" th:href="@{/css/form/register.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -11,75 +12,78 @@
 
 	<div layout:fragment="content">
 
+
+
 		<!-- メッセージ -->
-		<div class="alert alert-success mt-5" role="alert">
-			<span th:text="#{productInfoRegisterMessage}"></span>
+		<div class="fs-4 fw-bold text-center m-5">
+			<div class="message-underline" th:text="#{productInfoRegisterMessage}"></div>
 		</div>
 
-		<form method="post" th:object="${registerForm}" th:action="@{/products/info/register}"
-			enctype="multipart/form-data">
+		<div>
 
-			<!-- 商品番号 -->
-			<div>
-				<label class="mb-1" for="productNumber" th:text="#{productNumber}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{productNumber}"
-					th:errorclass="is-invalid">
+			<form method="post" th:object="${registerForm}" th:action="@{/products/info/register}"
+				enctype="multipart/form-data">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{productNumber}"></div>
-			</div>
+				<!-- 商品番号 -->
+				<div>
+					<label class="mb-2" for="productNumber" th:text="#{productNumber}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{productNumber}"
+						th:errorclass="is-invalid">
 
-
-			<!-- 商品名 -->
-			<div>
-				<label class="mb-1" for="productName" th:text="#{productName}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{productName}"
-					th:errorclass="is-invalid">
-
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{productName}"></div>
-			</div>
-
-			<!-- 入荷先名 -->
-			<div>
-				<label class="mb-1" for="supplierId" th:text="#{supplierName}"></label>
-				<select class="form-select mb-3 fs-5" th:field="*{supplierId}"
-					th:errorclass="is-invalid">
-					<option value="" th:text="#{select}"></option>
-					<div th:each="item:${supplierList}">
-						<option th:value="${item.supplierId}" th:label="${item.supplierName}"></option>
-					</div>
-				</select>
-
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{supplierId}"></div>
-			</div>
-
-			<!-- 画像 -->
-			<div>
-				<label class="mb-1" for="productFile" th:text="#{image}"></label>
-				<input type="file" class="form-control mb-3 responsive-text" th:field="*{productFile}"
-					th:aria-label="#{image}" accept="image/jpeg"
-					th:classappend="${errors != null and !errors.isEmpty()} ? ' is-invalid' : ''">
-
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback fs-6" th:if="${errors != null}" th:each="error : ${errors}"
-					th:text="${error}">
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{productNumber}"></div>
 				</div>
-			</div>
 
-			<div class="mt-5">
-				<!-- 登録ボタン -->
-				<label for="productRegister"></label>
-				<button class="btn btn-success btn-lg me-2 mb-5" type="submit" id="productRegister"
-					name="productRegister" th:text="#{register}"></button>
 
-				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-success btn-lg mb-5" th:href="@{/products/info/list}" role="button"
-					id="cancel" name="cancel" th:text="#{cancel}"></a>
-			</div>
-		</form>
+				<!-- 商品名 -->
+				<div class="mt-4">
+					<label class="mb-2" for="productName" th:text="#{productName}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{productName}"
+						th:errorclass="is-invalid">
 
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{productName}"></div>
+				</div>
+
+				<!-- 入荷先名 -->
+				<div class="mt-4">
+					<label class="mb-2" for="supplierId" th:text="#{supplierName}"></label>
+					<select class="form-select mb-2 fs-5" th:field="*{supplierId}" th:errorclass="is-invalid">
+						<option value="" th:text="#{select}"></option>
+						<div th:each="item:${supplierList}">
+							<option th:value="${item.supplierId}" th:label="${item.supplierName}"></option>
+						</div>
+					</select>
+
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{supplierId}"></div>
+				</div>
+
+				<!-- 画像 -->
+				<div class="mt-4">
+					<label class="mb-2" for="productFile" th:text="#{image}"></label>
+					<input type="file" class="form-control mb-2 responsive-text" th:field="*{productFile}"
+						th:aria-label="#{image}" accept="image/jpeg"
+						th:classappend="${errors != null and !errors.isEmpty()} ? ' is-invalid' : ''">
+
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:if="${errors != null}" th:each="error : ${errors}"
+						th:text="${error}">
+					</div>
+				</div>
+
+				<div class="mt-5">
+					<!-- 登録ボタン -->
+					<label for="productRegister"></label>
+					<button class="btn btn-success btn-lg me-2 mb-5" type="submit" id="productRegister"
+						name="productRegister" th:text="#{register}"></button>
+
+					<!-- キャンセルボタン -->
+					<a class="btn btn-outline-success btn-lg mb-5" th:href="@{/products/info/list}" role="button"
+						id="cancel" name="cancel" th:text="#{cancel}"></a>
+				</div>
+			</form>
+		</div>
 	</div>
 </body>
 

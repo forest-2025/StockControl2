@@ -2,6 +2,8 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/products/count/ship.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -10,81 +12,81 @@
 	<div layout:fragment="content">
 
 		<!-- メッセージ -->
-		<div class="alert alert-primary mt-5 " role="alert">
-			<span th:text="#{productShipMessage}"></span>
+		<div class="fs-4 fw-bold text-center m-5">
+			<div class="message-underline" th:text="#{productShipMessage}"></div>
 		</div>
 
-		<form method="post" th:object="${shipForm}"
-			th:action="@{/products/{productId}/count/ship(productId=${product.productId})}">
+		<div>
 
-			<!-- 商品番号 -->
-			<div>
-				<div class="mb-1" th:text="#{productNumber}"></div>
-				<div class="ms-3 mb-3" th:text="${product.productNumber}"></div>
-			</div>
+			<form method="post" th:object="${shipForm}"
+				th:action="@{/products/{productId}/count/ship(productId=${product.productId})}">
+
+				<!-- 商品番号 -->
+				<div>
+					<div class="mb-2" th:text="#{productNumber}"></div>
+					<div class="ms-3 mb-2" th:text="${product.productNumber}"></div>
+				</div>
 
 
-			<!-- 商品名 -->
-			<div>
-				<div class="mb-1" th:text="#{productName}"></div>
-				<div class="ms-3 mb-3" th:text="${product.productName}"></div>
+				<!-- 商品名 -->
+				<div class="mt-4">
+					<div class="mb-2" th:text="#{productName}"></div>
+					<div class="ms-3 mb-2" th:text="${product.productName}"></div>
 
-			</div>
+				</div>
 
-			<!--/* form-selectをclass属性に付与することで下矢印がつく */-->
-			<!-- 出荷先名 -->
-			<div>
-				<label class="mb-1" for="customerId" th:text="#{customerName}"></label>
-				<select class="form-select mb-3 fs-5" th:field="*{customerId}"
-					th:errorclass="is-invalid">
-					<option value="" th:text="#{select}"></option>
-					<div th:each="item:${customerList}">
-						<option th:value="${item.customerId}" th:label="${item.customerName}"></option>
-					</div>
-				</select>
+				<!--/* form-selectをclass属性に付与することで下矢印がつく */-->
+				<!-- 出荷先名 -->
+				<div class="mt-4">
+					<label class="mb-2" for="customerId" th:text="#{customerName}"></label>
+					<select class="form-select mb-2 fs-5" th:field="*{customerId}" th:errorclass="is-invalid">
+						<option value="" th:text="#{select}"></option>
+						<div th:each="item:${customerList}">
+							<option th:value="${item.customerId}" th:label="${item.customerName}"></option>
+						</div>
+					</select>
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{customerId}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{customerId}"></div>
+				</div>
 
-			<!-- 出荷数 -->
-			<div>
-				<label class="mb-1" for="amountOfChange" th:text="#{decreaseNumber}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{amountOfChange}"
-					th:errorclass="is-invalid">
+				<!-- 出荷数 -->
+				<div class="mt-4">
+					<label class="mb-2" for="amountOfChange" th:text="#{decreaseNumber}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{amountOfChange}"
+						th:errorclass="is-invalid">
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{amountOfChange}"></div>
-			</div>
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{amountOfChange}"></div>
+				</div>
 
-			<!-- 担当者 -->
-			<div>
-				<div class="mb-1" th:text="#{fullName}"></div>
-				<div class="ms-3 mb-3" th:text="${#authentication.principal.fullName}"></div>
+				<!-- 担当者 -->
+				<div class="mt-4">
+					<div class="mb-2" th:text="#{fullName}"></div>
+					<div class="ms-3 mb-2" th:text="${#authentication.principal.fullName}"></div>
+				</div>
 
-			</div>
+				<!-- 備考 -->
+				<div class="mt-4">
+					<label class="mb-2" for="remarks" th:text="#{remarks}"></label>
+					<input class="form-control mb-2 fs-5" type="text" th:field="*{remarks}" th:errorclass="is-invalid">
 
-			<!-- 備考 -->
-			<div>
-				<label class="mb-1" for="remarks" th:text="#{remarks}"></label>
-				<input class="form-control mb-3 fs-5" type="text" th:field="*{remarks}"
-					th:errorclass="is-invalid">
+					<!-- エラーメッセージ -->
+					<div class="invalid-feedback fs-6" th:errors="*{remarks}"></div>
+				</div>
 
-				<!-- エラーメッセージ -->
-				<div class="invalid-feedback mb-4 fs-6" th:errors="*{remarks}"></div>
-			</div>
+				<div class="mt-5">
+					<!-- 確定ボタン -->
+					<button class="btn btn-dark btn-lg me-2 mb-5" type="submit" id="confirmed" name="confirmed"
+						th:text="#{confirmed}"></button>
 
-			<div class="mt-5">
-				<!-- 確定ボタン -->
-				<button class="btn btn-dark btn-lg me-2 mb-5" type="submit" id="confirmed" name="confirmed"
-					th:text="#{confirmed}"></button>
-
-				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-dark btn-lg mb-5" th:href="@{/products/info/list}" role="button" id="cancel"
-					name="cancel" th:text="#{cancel}"></a>
-			</div>
-		</form>
-
+					<!-- キャンセルボタン -->
+					<a class="btn btn-outline-dark btn-lg mb-5" th:href="@{/products/info/list}" role="button"
+						id="cancel" name="cancel" th:text="#{cancel}"></a>
+				</div>
+				
+			</form>
+		</div>
 	</div>
 </body>
 
