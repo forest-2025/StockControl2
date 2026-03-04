@@ -2,8 +2,6 @@
 <html lang="ja" layout:decorate="~{layout/main-layout}">
 
 <head>
-	<!-- 個別JS読込 -->
-	<script th:src="@{/js/image.js}" defer></script>
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -11,115 +9,69 @@
 
 	<div layout:fragment="content">
 
-		<dl class="row align-items-stretch border-bottom border-top mt-5">
+		<div>
+			<dl class="row align-items-stretch mt-5 col-md-10 offset-md-1">
 
-			<!-- 画像（左側） -->
-			<div class="col-3 d-flex align-items-center justify-content-center border-end">
-				<img class="rounded mx-auto d-block img-fluid d-none" id="resultImage" title="#{productImage}">
-			</div>
-
-
-			<!-- 右側 -->
-			<div class="col-9">
-
-				<div class="row">
-
-					<!-- 1 -->
-					<div class="col-6 p-0 border-bottom">
-						<dt class="bg-light fw-bold border-bottom ps-2" th:text="#{productNumber}"></dt>
-						<dd class="ps-2" th:text="${oneItem.productNumber}"></dd>
-						
-					</div>
-
-					<!-- 2 -->
-					<div class="col-6 p-0 border-bottom">
-						<dt class="bg-light fw-bold border-bottom ps-2" th:text="#{productName}"></dt>
-						<dd class="ps-2" th:text="${oneItem.productName}"></dd>
-					</div>
-
-					<!-- 3 -->
-					<div class="col-6 p-0">
-						<dt class="bg-light fw-bold border-bottom ps-2" th:text="#{supplierName}"></dt>
-						<dd class="ps-2" th:text="${oneItem.supplierName}"></dd>
-					</div>
-
-					<!-- 4 -->
-					<div class="col-6 p-0">
-						<dt class="bg-light fw-bold border-bottom ps-2" th:text="#{stockQuantity}"
-						 ></dt>
-						<dd class="ps-2" th:text="${oneItem.stockQuantity}" th:classappend="${oneItem.stockQuantity} < 10 ? 'bg-warning' : ''"></dd>
-					</div>
-
+				<!-- 画像 -->
+				<div class="col-12 col-sm-5 d-flex align-items-center justify-content-center">
+					<img class="rounded mx-auto d-block img-fluid"
+						th:src="@{/image/{productId}(productId=${oneItem.productId})}" id="resultImage"
+						title="#{productImage}">
 				</div>
 
-			</div>
 
-		</dl>
-		<!-- 商品情報表示 -->
-		<!--/* ヘッダーの下ギリギリに配置しているのでmt-5で余白をつくる */-->
-		<div class="col table-responsive mt-5">
+				<!-- 詳細情報 -->
+				<div class="col-12 col-sm-7 mt-4">
 
-			<tr>
-				<th scope="col" th:text="#{productNumber}"></th>
-				<th scope="col" th:text="#{productName}"></th>
-				<th scope="col" th:text="#{supplierName}"></th>
-				<th scope="col" th:text="#{stockQuantity}"></th>
-				<!--/* 在庫修正ボタンは管理者権限がある人だけ表示するので管理者権限のない人がログインしたときは表示しないようにしないとテーブルの下線が短くなる(対応するthが少なくなるため) */-->
-				<th scope="col" sec:authorize="hasAuthority('ROLE_ADMIN')"></th>
-			</tr>
-			</thead>
+					<div class="row d-flex align-items-center justify-content-center text-center">
 
-			<tbody>
-				<!--/* 在庫数が10未満のときに背景色が黄色になるように設定する */-->
-				<tr th:classappend="${oneItem.stockQuantity} < 10 ? 'table-warning' : ''">
-					<td th:text="${oneItem.productNumber}"></td>
-					<td th:text="${oneItem.productName}"></td>
-					<td th:text="${oneItem.supplierName}"></td>
-					<td th:text="${oneItem.stockQuantity}"></td>
-					<!-- 在庫修正ボタン -->
-					<td sec:authorize="hasAuthority('ROLE_ADMIN')">
-						<a class="btn btn-info btn-lg" th:href="@{'/products/' + ${oneItem.productId} + '/count/edit'}"
-							role="button" th:text="#{editStockQuantity}"></a>
-					</td>
-				</tr>
+						<!-- 商品番号 -->
+						<div class="col-12 col-sm-7">
+							<dt class="bg-secondary-subtle fw-bold" th:text="#{productNumber}"></dt>
+							<dd th:text="${oneItem.productNumber}"></dd>
+
+						</div>
+
+						<!-- 商品名 -->
+						<div class="col-12 col-sm-7">
+							<dt class="bg-secondary-subtle fw-bold" th:text="#{productName}"></dt>
+							<dd th:text="${oneItem.productName}"></dd>
+						</div>
+
+						<!-- 入荷先名 -->
+						<div class="col-12 col-sm-7">
+							<dt class="bg-secondary-subtle fw-bold" th:text="#{supplierName}"></dt>
+							<dd th:text="${oneItem.supplierName}"></dd>
+						</div>
+
+						<!-- 在庫数 -->
+						<div class="col-12 col-sm-7">
+							<dt class="bg-secondary-subtle fw-bold" th:text="#{stockQuantity}"></dt>
+							<dd th:text="${oneItem.stockQuantity}"
+								th:classappend="${oneItem.stockQuantity} < 10 ? 'bg-danger-subtle' : ''"></dd>
+						</div>
+
+					</div>
+				</div>
+			</dl>
 		</div>
 
-		<div class="col text-center mt-5">
+		<div class="col text-center mt-5" sec:authorize="hasAuthority('ROLE_ADMIN')">
 
 			<!--/* 小さい画面でもボタンの位置がズレないようにme-3 mb-3で調整している */-->
+			<!-- 在庫修正ボタン -->
+			<a class="btn btn-info btn-lg me-3 mb-3" th:href="@{'/products/' + ${oneItem.productId} + '/count/edit'}"
+				role="button" th:text="#{editStockQuantity}"></a>
 			<!-- 商品情報修正ボタン -->
-			<a class="btn btn-primary btn-lg me-3 mb-3" sec:authorize="hasAuthority('ROLE_ADMIN')"
-				th:href="@{'/products/' + ${oneItem.productId} + '/info/edit'}" role="button"
-				th:text="#{productInformationEdit}"></a>
+			<a class="btn btn-primary btn-lg me-3 mb-3" th:href="@{'/products/' + ${oneItem.productId} + '/info/edit'}"
+				role="button" th:text="#{productInformationEdit}"></a>
 			<!-- 画像修正ボタン -->
-			<a class="btn btn-secondary btn-lg me-3 mb-3" sec:authorize="hasAuthority('ROLE_ADMIN')"
+			<a class="btn btn-secondary btn-lg me-3 mb-3"
 				th:href="@{'/products/' + ${oneItem.productId} + '/info/imageEdit'}" role="button"
 				th:text="#{productImageEdit}"></a>
 			<!-- 商品情報削除ボタン -->
-			<a class="btn btn-danger btn-lg me-3 mb-3" sec:authorize="hasAuthority('ROLE_ADMIN')"
-				th:href="@{'/products/' + ${oneItem.productId} + '/info/delete'}" role="button"
-				th:text="#{productInformationDelete}"></a>
-		</div>
-
-		<!--/* 商品情報修正・削除ボタンと位置がズレないようにme-3 mb-3で調整している */-->
-		<!-- 画像表示ボタン -->
-		<div class="col text-center mt-5" th:if="${oneItem.productImage != null}">
-			<button class="btn btn-success btn-lg me-3 mb-3" id="showImageBtn" th:data-product-id="${oneItem.productId}"
-				th:text="#{showImage}">
-			</button>
-		</div>
-
-		<!-- 画像表示 -->
-		<!--/* 小さい画面で画像と×ボタンが被らないように画像外の右上に×ボタンを配置するように設定する
-			d-flexでflexコンテナにしてflex-columnで縦並びにして,align-items-startで子要素の横方向の位置を左端に揃える */-->
-		<div class="mt-4 d-flex flex-column align-items-start">
-			<!-- ×ボタン -->
-			<!--/* align-self-endでこのボタンだけFlexboxの右端に寄せる */-->
-			<button type="button" class="btn-close align-self-end pe-4 m-3 d-none" aria-label="Close"
-				id="closeImageBtn"></button>
-
-			<!-- 画像 -->
-			<img class="rounded mx-auto d-block img-fluid d-none" id="resultImage" title="#{productImage}">
+			<a class="btn btn-danger btn-lg me-3 mb-3" th:href="@{'/products/' + ${oneItem.productId} + '/info/delete'}"
+				role="button" th:text="#{productInformationDelete}"></a>
 		</div>
 
 		<!-- 入出荷・修正履歴 -->
@@ -151,13 +103,18 @@
 						<td th:text="${#temporals.format(item.historyRegisterDateTime, 'yyyy-MM-dd HH:mm')}"></td>
 
 						<!--/* 入荷・出荷・増加修正・減少修正のいずれかを在庫の変化数や入荷先・出荷先の有無から判断できるように設定する */-->
-						<td th:if="${item.amountOfChange > 0 and item.supplierId != null}" } th:text="#{arrival}"></td>
-						<td th:if="${item.amountOfChange > 0 and item.supplierId == null}" } th:text="#{increase}"></td>
-						<td th:if="${item.amountOfChange < 0 and item.customerId != null}" } th:text="#{shipping}"></td>
-						<td th:if="${item.amountOfChange < 0 and item.customerId == null}" } th:text="#{decrease}"></td>
+						<td th:if="${item.amountOfChange > 0 and item.supplierId != null}" } th:text="#{arrival}">
+						</td>
+						<td th:if="${item.amountOfChange > 0 and item.supplierId == null}" } th:text="#{increase}">
+						</td>
+						<td th:if="${item.amountOfChange < 0 and item.customerId != null}" } th:text="#{shipping}">
+						</td>
+						<td th:if="${item.amountOfChange < 0 and item.customerId == null}" } th:text="#{decrease}">
+						</td>
 
 						<!--/* 在庫の変化数が負の数のときに正の数で表示するようにしている */-->
-						<td th:text="${item.amountOfChange < 0 ? -(item.amountOfChange) : item.amountOfChange}"></td>
+						<td th:text="${item.amountOfChange < 0 ? -(item.amountOfChange) : item.amountOfChange}">
+						</td>
 
 						<!--/* 出荷のときだけ出荷先名を表示する */-->
 						<td th:text="${item.customerId == null } ? '' : ${item.customerName}"></td>
