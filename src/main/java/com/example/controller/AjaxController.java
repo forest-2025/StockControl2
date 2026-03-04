@@ -49,11 +49,10 @@ public class AjaxController {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		ProductList oneItem = productInfoService.getOneItemInTheList(productId);
-		String fileName = oneItem.getProductImage();
 
 		/* 取得した商品情報が存在するか,DBのimageに画像ファイル名が存在するか(nullじゃないか),空じゃないかを確認し存在しなければ404エラーを設定する.
 		 * (画像ファイルはnullでもいいがそもそもnullのときは画像表示のボタンが表示されないし,空のときもないと思うが念のため). */
-		if (oneItem == null || fileName == null || fileName.isEmpty()) {
+		if (oneItem == null) {
 
 			/* ResponseEntityはBuilderパターン(複雑なオブジェクトを段階的に組み立てるための設計方法)でつくられていて,
 			 * .status(404)はレスポンスのHTTPステータスコードを「404」に設定するメソッドで,URLは正しいがその場所に見つかるべきファイルやコンテンツがないことを示す.
@@ -66,6 +65,19 @@ public class AjaxController {
 		MediaType mediaType = MediaType.parseMediaType(strMimeType);
 
 		try {
+			
+			String fileName = oneItem.getProductImage();
+			
+			if(fileName == null) {
+				Path path = Path.of(uploadDir, altImage);
+				mediaType = MediaType.parseMediaType(strMimeType);
+				InputStreamResource resource = new InputStreamResource(Files.newInputStream(path));
+				return ResponseEntity.ok()
+						.contentType(mediaType)
+						.body(resource);
+
+			}
+			
 			/* ディレクトリパスとDBに保存されているファイル名を結合した結合したパスを表すPathインスタンスを作成する.
 			 * Pathクラスはファイルシステム上のファイルやディレクトリのパス（経路）をオブジェクトとして表現し,
 			 * そのパス情報（ファイル名、親ディレクトリなど）の取得・結合・比較といったパス自体の操作を行うためのクラス.
