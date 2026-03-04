@@ -2,6 +2,8 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/form/delete.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -10,53 +12,56 @@
 	<div layout:fragment="content">
 
 		<!-- メッセージ -->
-		<div class="alert alert-danger mt-5" role="alert">
-			<span th:text="#{userDeleteMessage}"></span>
+		<div class="fs-4 fw-bold text-center m-5">
+			<div class="message-underline" th:text="#{userDeleteMessage}"></div>
 		</div>
 
-		<form method="post" th:action="@{/users/{userId}/delete(userId=${user.userId})}">
+		<div>
 
-			<!-- 従業員番号 -->
-			<div>
-				<div class="mb-1" for="employeeNumber" th:text="#{employeeNumber}"></div>
-				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.employeeNumber}"></div>
-			</div>
+			<form method="post" th:action="@{/users/{userId}/delete(userId=${user.userId})}">
 
-			<!-- 姓 -->
-			<div>
-				<div class="mb-1" for="familyName" th:text="#{familyName}"></div>
-				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.familyName}"></div>
-			</div>
+				<!-- 従業員番号 -->
+				<div>
+					<div class="mb-2" for="employeeNumber" th:text="#{employeeNumber}"></div>
+					<div class="ms-3 mb-2 fs-5" type="text" th:text="${user.employeeNumber}"></div>
+				</div>
 
-			<!-- 名 -->
-			<div>
-				<div class="mb-1" for="firstName" th:text="#{firstName}"></div>
-				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.firstName}"></div>
-			</div>
+				<!-- 姓 -->
+				<div class="mt-4">
+					<div class="mb-2" for="familyName" th:text="#{familyName}"></div>
+					<div class="ms-3 mb-2 fs-5" type="text" th:text="${user.familyName}"></div>
+				</div>
 
-			<!-- メールアドレス -->
-			<div>
-				<div class="mb-1" for="emailAddress" th:text="#{emailAddress}"></div>
-				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.emailAddress}"></div>
-			</div>
+				<!-- 名 -->
+				<div class="mt-4">
+					<div class="mb-2" for="firstName" th:text="#{firstName}"></div>
+					<div class="ms-3 mb-2 fs-5" type="text" th:text="${user.firstName}"></div>
+				</div>
 
-			<!-- 管理者権限 -->
-			<div>
-				<div class="mb-1" for="isAdmin" th:text="#{isAdmin}"></div>
-				<div class="ms-3 mb-3 fs-5" type="text" th:text="${user.isAdmin == 1} ? #{admin} : #{general}"></div>
-			</div>
+				<!-- メールアドレス -->
+				<div class="mt-4">
+					<div class="mb-2" for="emailAddress" th:text="#{emailAddress}"></div>
+					<div class="ms-3 mb-2 fs-5" type="text" th:text="${user.emailAddress}"></div>
+				</div>
 
-			<div class="mt-5">
-				<!-- 削除ボタン -->
-				<button class="btn btn-danger btn-lg me-2 mb-5" type="submit" id="userDelete" name="userDelete"
-					th:text="#{delete}"></button>
+				<!-- 管理者権限 -->
+				<div class="mt-4">
+					<div class="mb-2" for="isAdmin" th:text="#{isAdmin}"></div>
+					<div class="ms-3 mb-2 fs-5" type="text" th:text="${user.isAdmin == 1} ? #{admin} : #{general}">
+					</div>
+				</div>
 
-				<!-- キャンセルボタン -->
-				<a class="btn btn-outline-danger btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel" name="cancel"
-					th:text="#{cancel}"></a>
-			</div>
-		</form>
+				<div class="mt-5">
+					<!-- 削除ボタン -->
+					<button class="btn btn-danger btn-lg me-2 mb-5" type="submit" id="userDelete" name="userDelete"
+						th:text="#{delete}"></button>
 
+					<!-- キャンセルボタン -->
+					<a class="btn btn-outline-danger btn-lg mb-5" th:href="@{/users/list}" role="button" id="cancel"
+						name="cancel" th:text="#{cancel}"></a>
+				</div>
+			</form>
+		</div>
 	</div>
 </body>
 

@@ -153,5 +153,5 @@ public interface ProductInfoService {
 	 * @throws RuntimeException 画像ファイルの削除処理で例外が発生した場合. 
 	 */
 	public void updateProductImage(MProduct product, MProduct productImageEdit);
-
+	
 }

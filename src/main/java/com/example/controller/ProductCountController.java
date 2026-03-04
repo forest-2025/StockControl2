@@ -5,7 +5,6 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -55,14 +54,12 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param productId 入荷する商品のID.
-	 * @param customUserDetails ログイン中のユーザーのフルネーム(姓 + 名)とユーザーID.
 	 * @param form 入荷フォーム.
 	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
 	 * 			正常に完了した場合,入荷フォーム画面のビュー名.
 	 */
 	@GetMapping("/{productId}/count/arrive")
-	public String getArrive(Model model, @PathVariable Integer productId,
-			@AuthenticationPrincipal CustomUserDetails customUserDetails, @ModelAttribute ArriveForm form) {
+	public String getArrive(Model model, @PathVariable Integer productId, @ModelAttribute ArriveForm form) {
 		// @PathVariableの引数のname属性は省略している.
 
 		// 商品IDから商品情報と入荷先情報を取得する(削除済みは除く).
@@ -73,9 +70,9 @@ public class ProductCountController {
 			return "/error";
 		}
 
-		/* productWithSupplierをmodelに格納する処理・ログイン中のユーザーのフルネームを取得しmodelに格納する処理・
-		ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-		this.goToArrive(model, productWithSupplier, customUserDetails);
+		/* productWithSupplierをmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
+		 * (下のほうでprivateメソッドとして設定している). */
+		this.goToArrive(model, productWithSupplier);
 
 		return "/products/count/arrive";
 	}
@@ -86,8 +83,7 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param productId 入荷する商品のID.
-	 * @param customUserDetails ログイン中のユーザーのフルネーム(姓 + 名)とユーザーID.
-	 * @param userDetails ログイン中のユーザーの情報.
+	 * @param customUserDetails ログイン中のユーザーの情報.
 	 * @param form 入荷フォーム.
 	 * @param bindingResult バリデーションエラー.
 	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
@@ -97,7 +93,6 @@ public class ProductCountController {
 	@PostMapping("/{productId}/count/arrive")
 	public String postArrive(Model model, @PathVariable Integer productId,
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
-			@AuthenticationPrincipal UserDetails userDetails,
 			@ModelAttribute @Validated(GroupOrder.class) ArriveForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
@@ -112,9 +107,9 @@ public class ProductCountController {
 
 		// バリデーションエラーがあれば入荷フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
-			/* productWithSupplierをmodelに格納する処理・ログイン中のユーザーのフルネームを取得しmodelに格納する処理・
-			ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-			this.goToArrive(model, productWithSupplier, customUserDetails);
+			/* productWithSupplierをmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
+			 * (下のほうでprivateメソッドとして設定している). */
+			this.goToArrive(model, productWithSupplier);
 
 			return "/products/count/arrive";
 		}
@@ -123,12 +118,9 @@ public class ProductCountController {
 		TTransactionHistory transactionHistory = new TTransactionHistory();
 		transactionHistory = modelMapper.map(form, TTransactionHistory.class);
 
-		// 入荷履歴を更新するため、担当者（ログイン中のユーザーの姓と名）からm_userテーブルのIDを取得する(削除済みは除く).
-		Integer userId = productCountService.getUserId(userDetails);
-
 		// 商品IDとユーザーIDを設定する.
 		transactionHistory.setProductId(productId);
-		transactionHistory.setUserId(userId);
+		transactionHistory.setUserId(customUserDetails.getUserId());
 
 		// ProductWithSupplierクラスのMSupplier型フィールドに格納されているインスタンスのsupplierIdフィールドの値を取得する.
 		Integer supplierId = productWithSupplier.getSupplier().getSupplierId();
@@ -152,15 +144,12 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param productId 出荷する商品のID.
-	 * @param customUserDetails ログイン中のユーザーのフルネーム(姓 + 名)とユーザー名.
 	 * @param form 出荷フォーム.
 	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
 	 * 			正常に完了した場合,出荷フォーム画面のビュー名.
 	 */
 	@GetMapping("/{productId}/count/ship")
-	public String getShip(Model model, @PathVariable Integer productId,
-			@AuthenticationPrincipal CustomUserDetails customUserDetails,
-			@ModelAttribute ShipForm form) {
+	public String getShip(Model model, @PathVariable Integer productId, @ModelAttribute ShipForm form) {
 		// @PathVariableの引数のname属性は省略している.
 
 		// 商品IDから商品情報を取得する(削除済みは除く,また入荷先名は必要なし).
@@ -171,9 +160,9 @@ public class ProductCountController {
 			return "/error";
 		}
 
-		/* productをmodelに格納する処理・ログイン中のユーザーのフルネームを取得しmodelに格納する処理・出荷先名を取得しmodelに格納する処理・
-		ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-		this.goToShip(model, product, customUserDetails);
+		/* productをmodelに格納する処理・出荷先名を取得しmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
+		 * (下のほうでprivateメソッドとして設定している). */
+		this.goToShip(model, product);
 
 		return "/products/count/ship";
 	}
@@ -184,8 +173,7 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param productId 出荷する商品のID.
-	 * @param customUserDetails ログイン中のユーザーのフルネーム(姓 + 名)とユーザーID.
-	 * @param userDetails ログイン中のユーザーの情報.
+	 * @param customUserDetails ログイン中のユーザーの情報.
 	 * @param form 出荷フォーム.
 	 * @param bindingResult バリデーションエラー.
 	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
@@ -195,14 +183,13 @@ public class ProductCountController {
 	@PostMapping("/{productId}/count/ship")
 	public String postShip(Model model, @PathVariable Integer productId,
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
-			@AuthenticationPrincipal UserDetails userDetails,
 			@ModelAttribute @Validated(GroupOrder.class) ShipForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct product = productCountService.getOneProduct(productId);
-		
+
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (product == null) {
 			return "/error";
@@ -211,9 +198,9 @@ public class ProductCountController {
 		// バリデーションエラーがあれば出荷フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
-			/* productをmodelに格納する処理・ログイン中のユーザーのフルネームを取得しmodelに格納する処理・出荷先名を取得しmodelに格納する処理・
-			ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-			this.goToShip(model, product, customUserDetails);
+			/* productをmodelに格納する処理・出荷先名を取得しmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
+			 * (下のほうでprivateメソッドとして設定している). */
+			this.goToShip(model, product);
 
 			return "/products/count/ship";
 		}
@@ -222,12 +209,9 @@ public class ProductCountController {
 		TTransactionHistory transactionHistory = new TTransactionHistory();
 		transactionHistory = modelMapper.map(form, TTransactionHistory.class);
 
-		// 出荷履歴を更新するため、担当者（ログイン中のユーザーの姓と名）からm_userテーブルのIDを取得する(削除済みは除く).
-		Integer userId = productCountService.getUserId(userDetails);
-
 		// 商品IDとユーザーIDを設定する.
 		transactionHistory.setProductId(productId);
-		transactionHistory.setUserId(userId);
+		transactionHistory.setUserId(customUserDetails.getUserId());
 
 		// 出荷処理を行う.(商品の在庫を減少させて履歴を更新する).
 		productCountService.processShip(transactionHistory);
@@ -245,14 +229,12 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param productId 在庫修正する商品のID.
-	 * @param customUserDetails ログイン中のユーザーのフルネーム(姓 + 名)とユーザーID.
 	 * @param form 在庫修正フォーム.
 	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
 	 * 			正常に完了した場合,在庫修正フォーム画面のビュー名.
 	 */
 	@GetMapping("/{productId}/count/edit")
-	public String getEdit(Model model, @PathVariable Integer productId,
-			@AuthenticationPrincipal CustomUserDetails customUserDetails, @ModelAttribute StockEditForm form) {
+	public String getEdit(Model model, @PathVariable Integer productId, @ModelAttribute StockEditForm form) {
 		// @PathVariableの引数のname属性は省略している.
 
 		// 商品IDから商品情報を取得する(削除済みは除く,また入荷先情報は必要ない → 在庫の増加理由をsupplierIdに情報が入っていれば入荷、nullなら増加修正と判断できるようにするため).
@@ -263,9 +245,9 @@ public class ProductCountController {
 			return "/error";
 		}
 
-		/* productをmodelに格納する処理・ログイン中のユーザーのフルネームを取得しmodelに格納する処理・
-		ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-		this.goToEdit(model, product, customUserDetails);
+		/* productをmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
+		 * (下のほうでprivateメソッドとして設定している). */
+		this.goToEdit(model, product);
 
 		return "/products/count/edit";
 
@@ -277,8 +259,7 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param productId 在庫修正する商品のID.
-	 * @param customUserDetails ログイン中のユーザーのフルネーム(姓 + 名)とユーザーID.
-	 * @param userDetails ログイン中のユーザーの情報.
+	 * @param customUserDetails ログイン中のユーザーの情報.
 	 * @param form 在庫修正フォーム.
 	 * @param bindingResult バリデーションエラー.
 	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
@@ -288,7 +269,6 @@ public class ProductCountController {
 	@PostMapping("/{productId}/count/edit")
 	public String postEdit(Model model, @PathVariable Integer productId,
 			@AuthenticationPrincipal CustomUserDetails customUserDetails,
-			@AuthenticationPrincipal UserDetails userDetails,
 			@ModelAttribute @Validated(GroupOrder.class) StockEditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
@@ -303,9 +283,9 @@ public class ProductCountController {
 
 		// バリデーションエラーがあれば在庫修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
-			/* productをmodelに格納する処理・ログイン中のユーザーのフルネームを取得しmodelに格納する処理・
-			ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
-			this.goToEdit(model, product, customUserDetails);
+			/* productをmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
+			 * (下のほうでprivateメソッドとして設定している). */
+			this.goToEdit(model, product);
 
 			return "/products/count/edit";
 		}
@@ -314,12 +294,9 @@ public class ProductCountController {
 		TTransactionHistory transactionHistory = new TTransactionHistory();
 		transactionHistory = modelMapper.map(form, TTransactionHistory.class);
 
-		// 修正履歴を更新するため、担当者（ログイン中のユーザーの姓と名）からm_userテーブルのIDを取得する(削除済みは除く).
-		Integer userId = productCountService.getUserId(userDetails);
-
 		// 商品の在庫数を取得する.
 		Integer stockQuantity = productCountService.getOneStockQuantity(productId);
-		
+
 		/* 実在庫数と商品の在庫数との差をamountOfChange(在庫の増減数)に設定する.
 		 * 実在庫数より商品の在庫数が少なければ在庫が増えたということなので正の数がamountOfChangeに格納され,
 		 * 実在庫数より商品の在庫数が多ければ在庫が減ったということなので負の数が格納される. */
@@ -327,7 +304,7 @@ public class ProductCountController {
 
 		// 商品ID・ユーザーID・在庫の増減数をを設定する.
 		transactionHistory.setProductId(productId);
-		transactionHistory.setUserId(userId);
+		transactionHistory.setUserId(customUserDetails.getUserId());
 		transactionHistory.setAmountOfChange(amountOfChange);
 
 		// 修正処理を行う.(商品の在庫を調整して履歴を更新する).
@@ -346,17 +323,11 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param productWithSupplier 入荷する商品の情報.
-	 * @param customUserDetails ログイン中のユーザーのフルネーム(姓 + 名)とユーザーID.
 	 */
-	private void goToArrive(Model model, ProductWithSupplier productWithSupplier,
-			CustomUserDetails customUserDetails) {
+	private void goToArrive(Model model, ProductWithSupplier productWithSupplier) {
 
 		// 取得した商品情報のうちただ表示するためだけの情報(商品番号・商品名・入荷先)と遷移先として渡すための情報(商品ID)を入荷画面に渡すためmodelに格納する.
 		model.addAttribute("productWithSupplier", productWithSupplier);
-
-		// 担当者（ログイン中のユーザー）を入荷画面に渡すため、ログイン情報からFamilyNameとFirstNameを取得しmodelに格納する.
-		String fullName = customUserDetails.getFamilyName() + customUserDetails.getFirstName();
-		model.addAttribute("fullName", fullName);
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setRed("入荷");
@@ -370,16 +341,11 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param product 出荷する商品の情報.
-	 * @param customUserDetails ログイン中のユーザーのフルネーム(姓 + 名)とユーザーID.
 	 */
-	private void goToShip(Model model, MProduct product, CustomUserDetails customUserDetails) {
+	private void goToShip(Model model, MProduct product) {
 
 		// 商品情報をmodelに格納する.
 		model.addAttribute("product", product);
-
-		// 担当者（ログイン中のユーザー）を入荷画面に渡すため、ログイン情報からFamilyNameとFirstNameを取得しmodelに格納する.
-		String fullName = customUserDetails.getFamilyName() + customUserDetails.getFirstName();
-		model.addAttribute("fullName", fullName);
 
 		// 出荷画面に渡すため出荷先名を取得しmodelに格納する.
 		List<MCustomer> customerList = productCountService.getCustomerList();
@@ -397,16 +363,11 @@ public class ProductCountController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param product 在庫修正する商品の情報.
-	 * @param customUserDetails ログイン中のユーザーのフルネーム(姓 + 名)とユーザーID.
 	 */
-	private void goToEdit(Model model, MProduct product, CustomUserDetails customUserDetails) {
+	private void goToEdit(Model model, MProduct product) {
 
 		// 商品情報をmodelに格納する.
 		model.addAttribute("product", product);
-
-		// 担当者（ログイン中のユーザー）を入荷画面に渡すため、ログイン情報からFamilyNameとFirstNameを取得しmodelに格納する.
-		String fullName = customUserDetails.getFamilyName() + customUserDetails.getFirstName();
-		model.addAttribute("fullName", fullName);
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setGray("在庫修正");

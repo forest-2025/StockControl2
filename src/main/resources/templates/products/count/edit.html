@@ -2,6 +2,8 @@
 <html lang="ja" layout:decorate="~{layout/form-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/products/count/edit.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -11,7 +13,7 @@
 
 		<!-- メッセージ -->
 		<div class="fs-4 fw-bold text-center m-5">
-			<div th:text="#{actualProductCountMessage}"></div>
+			<div class="message-underline" th:text="#{actualProductCountMessage}"></div>
 		</div>
 		
 		<div>
@@ -19,7 +21,7 @@
 				th:action="@{/products/{productId}/count/edit(productId=${product.productId})}">
 
 				<!-- 商品番号 -->
-				<div class="mb-4">
+				<div>
 					<div class="mb-2" th:text="#{productNumber}"></div>
 					<div class="ms-3 mb-2" th:text="${product.productNumber}"></div>
 				</div>
@@ -40,13 +42,13 @@
 						th:errorclass="is-invalid">
 
 					<!-- エラーメッセージ -->
-					<div class="invalid-feedback mb-4 fs-6" th:errors="*{actualProductCount}"></div>
+					<div class="invalid-feedback fs-6" th:errors="*{actualProductCount}"></div>
 				</div>
 
 				<!-- 担当者 -->
 				<div class="mb-4">
 					<div class="mb-2" th:text="#{fullName}"></div>
-					<div class="ms-3 mb-2" th:text="${fullName}"></div>
+					<div class="ms-3 mb-2" th:text="${#authentication.principal.fullName}"></div>
 
 				</div>
 
@@ -56,7 +58,7 @@
 					<input class="form-control mb-2 fs-5" type="text" th:field="*{remarks}" th:errorclass="is-invalid">
 
 					<!-- エラーメッセージ -->
-					<div class="invalid-feedback mb-4 fs-6" th:errors="*{remarks}"></div>
+					<div class="invalid-feedback fs-6" th:errors="*{remarks}"></div>
 				</div>
 
 				<div class="mt-5">

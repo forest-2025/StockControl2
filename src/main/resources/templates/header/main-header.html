@@ -99,7 +99,7 @@
 								aria-expanded="false"(画面幅が狭い場合に隠されているメニューボタンに設定し、クリックでメニューが開くようにする)*/-->
 								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
 									data-bs-toggle="dropdown" aria-expanded="false"
-									th:text="'ようこそ ' + ${#authentication.principal.familyName} + ${#authentication.principal.firstName} + 'さん' ">
+									th:text="'ようこそ ' + ${#authentication.principal.fullName} + 'さん' ">
 								</a>
 								<!--/* data-bs-theme="light"(ドロップダウン内の背景を白にして、文字色を黒にしてマウスカーソルを合わせた時の色をグレーにしている) */-->
 								<ul class="dropdown-menu" data-bs-theme="light">
