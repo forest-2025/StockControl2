@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.example.domain.products.service.ProductInfoService;
 import com.example.dto.products.ProductList;
@@ -18,12 +18,12 @@ import com.example.dto.products.ProductList;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Ajax通信で画像を表示するためのコントローラクラス.
+ * 画像を表示するためのコントローラクラス.
  * 
  */
-@RestController // REST API用のコントローラーで戻り値はHTMLではなくそのままHTTPレスポンスのBodyになる(@Controller + @ResponseBody).
+@Controller 
 @Slf4j
-public class AjaxController {
+public class ImageController {
 
 	@Autowired
 	private ProductInfoService productInfoService;
@@ -86,7 +86,7 @@ public class AjaxController {
 			Path path = Path.of(uploadDir, fileName);
 
 			/* pathの場所が存在しないか確認する(存在するならやることはないため).
-			 * (DBのimageとおなじファイル名がuploadになければtrueになる). */
+			 * (DBのimageとおなじファイル名がuploadsになければtrueになる). */
 			if (!Files.exists(path)) {
 				// pathの場所がないときは代替画像を表示する.
 				path = Path.of(uploadDir, altImage);
@@ -110,7 +110,7 @@ public class AjaxController {
 			 * (InputStreamResourceの場合,getInputStream()を呼ぶと「元のストリームそのもの」を返すため,
 			 * コンバーターが読み取った時点でストリームは消費され,その後は二度と読み取ることができなくなる).
 			 * コピーが完了した後,ResourceHttpMessageConverterは取得したInputStreamをクローズする.
-			 * コンバーターが処理を終えると,Springのフレームワーク側でHTTPレスポンスのOutputStreamもflush()
+			 * コンバーターが処理を終えると,DispatcherServlet とサーブレットコンテナが協力してHTTPレスポンスを送信し,OutputStreamもflush()
 			 * （フラッシュ.バッファリングされていたすべての出力バイトを強制的に書き込む(小さいバッファ分だけ読み込んですぐに出力するが,
 			 * その小さいバッファ分に満たずに終了したとき送り残しがでるので,それをふせぐために行う)).
 			 * クライアントへの送信が完了する. */

@@ -79,9 +79,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	private static final String[] ALLOWED_EXTENSIONS = { "jpg", "jpeg" };
 
-	private static final int MAX_WIDTH = 800;
+	private static final int MAX_WIDTH = 1200;
 
-	private static final int MAX_HEIGHT = 600;
+	private static final int MAX_HEIGHT = 1200;
 
 	private final Tika tika = new Tika();
 
@@ -260,6 +260,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	}
 
 	// 商品画像をバリデーションチェックし,ローカルファイルストレージ(プロジェクト直下)に保存する. 
+	@Override
 	public UploadResult validateAndUpload(MultipartFile file, UploadResult result) {
 		// バリデーションエラーがあった時のメッセージを格納するListを宣言する(tryの外でも使用するためここで宣言).
 		List<String> errors = new ArrayList<>();
@@ -292,8 +293,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				String errorMessage = messageSource.getMessage("InvalidFileName", null, Locale.JAPAN);
 				errors.add(errorMessage);
 			} else {
-				// 下にあるprivateメソッドgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している(this.は省略).
-				String extension = getExtension(originalFileName).toLowerCase();
+				// 下にあるprivateメソッドgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している.
+				String extension = this.getExtension(originalFileName).toLowerCase();
 
 				// 拡張子がJPEG(.jpg, .jpeg)か確認する.
 				boolean allowed = false;
@@ -333,7 +334,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			 * 大きいサイズは一時ファイルに保存する.
 			 * この画像ファイルに直接アクセスすることはできず、MultipartFile オブジェクトを通してのみ扱える.
 			 * 小さい・大きいの判定はspring.servlet.multipart.file-size-thresholdで決まり,
-			 * デフォルトは0Bのため0Bより大きいファイルはすべて一時ファイルに保存される.
+			 * デフォルトは0Bのため0Bより大きいファイルはすべて一時ファイルに保存される(今回は1MBで設定している).
 			 * transferTo()で先ほど作成した一時ファイルにファイルを移すが,このときサーブレットコンテナが保存した保存形態によって挙動が変わる.
 			 * 一時ファイルの場合は,可能であればrename（move）によって指定先へ移動され,元の一時ファイルは消える.
 			 * そのため2回目のアクセスはできない.メモリ上の場合は、ヒープ領域上(newキーワードで生成されるオブジェクトの実体（インスタンスデータや配列）が格納される)
@@ -417,8 +418,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				Files.createDirectories(uploadPath);
 			}
 
-			/* savedUuidに一意のファイル名を作成し代入する.
-			 * UUID.randomUUID()の戻り値はUUIDのオブジェクトだが文字列を連結すると
+			/* 一意のファイル名を作成し代入する.
+			 * UUID.randomUUID()の戻り値はUUIDのオブジェクトだが文字列を連結すると,
 			 * UUID.randomUUID().toString();が内部でよばれてString型に自動で変換してくれる. */
 			fileName = UUID.randomUUID() + ".jpg";
 
@@ -426,12 +427,12 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			Path targetFile = Path.of(uploadDir, fileName);
 
 			/* Thumbnails.ofでThumbnails.Builder<File>オブジェクト(Builderオブジェクト)を生成する.
-			 * (Path型は受け取れないのでFile型に変換してる).
+			 * (Path型は受け取れないのでtoFile()でFile型に変換してる).
 			 * .sizeはBuilderオブジェクトのメソッドで,これでリサイズできる.
 			 * (Builder内部にサイズ設定を追加,戻り値が.ofで作成されたオブジェクトにサイズ設定を追加されたBuilderオブジェクト).
 			 * .outputFormat("jpg")で強制的にJPEGに変換している(念のため).
-			 * .toFile(targetFile.toFile())でファイルを作成している.
-			 * (引数ををFile型に変換したtargetFileにすることで一意の名前に変換されてファイル名でファイルが作成される). */
+			 * .toFile(targetFile.toFile())でファイルを作成,保存している.
+			 * (引数をFile型に変換したtargetFileにすることで一意の名前に変換されたファイル名でファイルが作成される). */
 			Thumbnails.of(tempFile.toFile())
 					.size(MAX_WIDTH, MAX_HEIGHT)
 					.outputFormat("jpg")

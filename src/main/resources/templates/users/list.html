@@ -17,7 +17,7 @@
 			<!--/* パソコン用(992px以上)ならユーザー登録ボタンと検索フォームが横並びになるようにしている.
 			pb-4は小さい画面でユーザー登録ボタンと検索フォームが二段になっているときに余白をつけるためのもの. */-->
 			<div class="col-lg-6 pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
-				<a class="btn btn-dark btn-lg" th:href="@{/users/register}" role="button" th:text="#{userRegister}"></a>
+				<a class="btn btn-success btn-lg" th:href="@{/users/register}" role="button" th:text="#{userRegister}"></a>
 			</div>
 
 			<!-- 検索フォーム -->

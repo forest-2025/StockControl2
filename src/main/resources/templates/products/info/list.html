@@ -13,7 +13,7 @@
 			<!--/* パソコン用(992px以上)なら商品登録ボタンと検索フォームが横並びになるようにしている.
 			pb-4は小さい画面で商品登録ボタンと検索フォームが二段になっているときに余白をつけるためのもの. */-->
 			<div class="col-lg-6 pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
-				<a class="btn btn-dark btn-lg" th:href="@{/products/info/register}" role="button"
+				<a class="btn btn-success btn-lg" th:href="@{/products/info/register}" role="button"
 					th:text="#{productRegister}"></a>
 			</div>
 
@@ -83,7 +83,7 @@
 									th:href="@{'/products/' + ${item.productId} + '/count/ship'}" role="button"
 									th:text="#{shipping}"></a>
 								<!-- 詳細ボタン -->
-								<a class="btn btn-success btn-lg me-3 mb-2"
+								<a class="btn btn-warning btn-lg me-3 mb-2"
 									th:href="@{'/products/' + ${item.productId} + '/info/display-details'}"
 									role="button" th:text="#{details}"></a>
 							</td>
