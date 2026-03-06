@@ -74,7 +74,7 @@ public class CustomerController {
 		customHeader.setBlue("出荷先一覧");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/customers/list";
+		return "customers/list";
 
 	}
 
@@ -92,7 +92,7 @@ public class CustomerController {
 		// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
 		this.goToRegister(model);
 
-		return "/customers/register";
+		return "customers/register";
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class CustomerController {
 			// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
 			this.goToRegister(model);
 
-			return "/customers/register";
+			return "customers/register";
 		}
 
 		// formクラスをエンティティクラスに変換する.
@@ -145,7 +145,7 @@ public class CustomerController {
 
 		// 取得した出荷先情報が存在するか確認する(存在しなければエラー画面へ).
 		if (customer == null) {
-			return "/error";
+			return "error";
 		}
 
 		// エンティティクラスをformクラスに変換し,modelに格納する.
@@ -156,7 +156,7 @@ public class CustomerController {
 		 * (下のほうでprivateメソッドとして設定している). */
 		this.goToEdit(model, customer);
 
-		return "/customers/edit";
+		return "customers/edit";
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class CustomerController {
 
 		// 取得した出荷先情報が存在するか確認する(存在しなければエラー画面へ).
 		if (customer == null) {
-			return "/error";
+			return "error";
 		}
 
 		// バリデーションエラーがあれば出荷先情報修正フォーム画面へ戻る.
@@ -192,7 +192,7 @@ public class CustomerController {
 			 * (下のほうでprivateメソッドとして設定している). */
 			this.goToEdit(model, customer);
 
-			return "/customers/edit";
+			return "customers/edit";
 		}
 
 		// formクラスをエンティティクラスに変換する.
@@ -225,7 +225,7 @@ public class CustomerController {
 
 		// 取得した出荷先情報が存在するか確認する(存在しなければエラー画面へ).
 		if (customer == null) {
-			return "/error";
+			return "error";
 		}
 
 		// 取得した出荷先情報を出荷先情報削除フォーム画面に渡すためmodelに格納する(customerIdを渡すため).
@@ -235,7 +235,7 @@ public class CustomerController {
 		customHeader.setBlue("出荷先削除");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/customers/delete";
+		return "customers/delete";
 	}
 
 	/**
@@ -256,7 +256,7 @@ public class CustomerController {
 
 		// 取得した出荷先情報が存在するか確認する(存在しなければエラー画面へ).
 		if (customer == null) {
-			return "/error";
+			return "error";
 		}
 
 		// 出荷先の削除フラグを削除済みに変更する.

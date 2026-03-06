@@ -67,14 +67,14 @@ public class ProductCountController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productWithSupplier == null) {
-			return "/error";
+			return "error";
 		}
 
 		/* productWithSupplierをmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
 		 * (下のほうでprivateメソッドとして設定している). */
 		this.goToArrive(model, productWithSupplier);
 
-		return "/products/count/arrive";
+		return "products/count/arrive";
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class ProductCountController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productWithSupplier == null) {
-			return "/error";
+			return "error";
 		}
 
 		// バリデーションエラーがあれば入荷フォーム画面へ戻る.
@@ -111,7 +111,7 @@ public class ProductCountController {
 			 * (下のほうでprivateメソッドとして設定している). */
 			this.goToArrive(model, productWithSupplier);
 
-			return "/products/count/arrive";
+			return "products/count/arrive";
 		}
 
 		//form（商品ID・入荷数・日付・備考）をTTransactionHistory型に変換する.
@@ -157,14 +157,14 @@ public class ProductCountController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (product == null) {
-			return "/error";
+			return "error";
 		}
 
 		/* productをmodelに格納する処理・出荷先名を取得しmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
 		 * (下のほうでprivateメソッドとして設定している). */
 		this.goToShip(model, product);
 
-		return "/products/count/ship";
+		return "products/count/ship";
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class ProductCountController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (product == null) {
-			return "/error";
+			return "error";
 		}
 
 		// バリデーションエラーがあれば出荷フォーム画面へ戻る.
@@ -202,7 +202,7 @@ public class ProductCountController {
 			 * (下のほうでprivateメソッドとして設定している). */
 			this.goToShip(model, product);
 
-			return "/products/count/ship";
+			return "products/count/ship";
 		}
 
 		// form（出荷先ID・出荷数・備考）をTTransactionHistory型に変換する.
@@ -242,14 +242,14 @@ public class ProductCountController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (product == null) {
-			return "/error";
+			return "error";
 		}
 
 		/* productをmodelに格納する処理・ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
 		 * (下のほうでprivateメソッドとして設定している). */
 		this.goToEdit(model, product);
 
-		return "/products/count/edit";
+		return "products/count/edit";
 
 	}
 
@@ -278,7 +278,7 @@ public class ProductCountController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (product == null) {
-			return "/error";
+			return "error";
 		}
 
 		// バリデーションエラーがあれば在庫修正フォーム画面へ戻る.
@@ -287,7 +287,7 @@ public class ProductCountController {
 			 * (下のほうでprivateメソッドとして設定している). */
 			this.goToEdit(model, product);
 
-			return "/products/count/edit";
+			return "products/count/edit";
 		}
 
 		// form（実在庫数・備考）をTTransactionHistory型に変換する.

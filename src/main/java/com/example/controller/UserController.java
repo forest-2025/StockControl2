@@ -76,7 +76,7 @@ public class UserController {
 		customHeader.setYellow("ユーザー一覧");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/users/list";
+		return "users/list";
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class UserController {
 		// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
 		this.goToRegister(model);
 
-		return "/users/register";
+		return "users/register";
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class UserController {
 			// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
 			this.goToRegister(model);
 
-			return "/users/register";
+			return "users/register";
 		}
 
 		// formクラスをエンティティクラスに変換する.
@@ -146,7 +146,7 @@ public class UserController {
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
 		if (user == null) {
-			return "/error";
+			return "error";
 		}
 
 		// エンティティクラスをformクラスに変換し,modelに格納する.
@@ -157,7 +157,7 @@ public class UserController {
 		 * (下のほうでprivateメソッドとして設定している). */
 		this.goToEdit(model, user);
 
-		return "/users/edit";
+		return "users/edit";
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class UserController {
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
 		if (user == null) {
-			return "/error";
+			return "error";
 		}
 
 		// バリデーションエラーがあればユーザー情報修正フォーム画面へ戻る.
@@ -202,7 +202,7 @@ public class UserController {
 			 * (下のほうでprivateメソッドとして設定している). */
 			this.goToEdit(model, user);
 
-			return "/users/edit";
+			return "users/edit";
 		}
 
 		// formクラスをエンティティクラスに変換する.
@@ -269,14 +269,14 @@ public class UserController {
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
 		if (user == null) {
-			return "/error";
+			return "error";
 		}
 
 		/* ユーザーIDを渡すためにユーザー情報をmodelに格納する処理,ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
 		 * (下のほうでprivateメソッドとして設定している). */
 		this.goToPasswordEdit(model, user);
 
-		return "/users/password-edit";
+		return "users/password-edit";
 	}
 
 	/**
@@ -302,7 +302,7 @@ public class UserController {
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
 		if (user == null) {
-			return "/error";
+			return "error";
 		}
 
 		// バリデーションエラーがあればパスワード修正フォーム画面へ戻る.
@@ -312,7 +312,7 @@ public class UserController {
 			 * (下のほうでprivateメソッドとして設定している). */
 			this.goToEdit(model, user);
 
-			return "/users/password-edit";
+			return "users/password-edit";
 		}
 
 		// formクラスをエンティティクラスに変換する.
@@ -344,7 +344,7 @@ public class UserController {
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
 		if (user == null) {
-			return "/error";
+			return "error";
 		}
 
 		// 取得したユーザー情報をユーザー情報修正画面に渡すためmodelに格納する(userIdを渡すため).
@@ -354,7 +354,7 @@ public class UserController {
 		customHeader.setYellow("ユーザー削除");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/users/delete";
+		return "users/delete";
 	}
 
 	/**
@@ -384,7 +384,7 @@ public class UserController {
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
 		if (user == null) {
-			return "/error";
+			return "error";
 		}
 
 		// ユーザーの削除フラグを削除済みに変更する.

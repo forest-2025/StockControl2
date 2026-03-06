@@ -79,7 +79,7 @@ public class ProductInfoController {
 		customHeader.setGray("商品一覧");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/products/info/list";
+		return "products/info/list";
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class ProductInfoController {
 		/* 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
 		this.goToRegister(model);
 
-		return "/products/info/register";
+		return "products/info/register";
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class ProductInfoController {
 			// 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している).
 			this.goToRegister(model);
 
-			return "/products/info/register";
+			return "products/info/register";
 		}
 
 		// formクラスをエンティティクラスに変換する.
@@ -167,7 +167,7 @@ public class ProductInfoController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (oneItem == null) {
-			return "/error";
+			return "error";
 		}
 
 		// modelに格納する.
@@ -181,7 +181,7 @@ public class ProductInfoController {
 		customHeader.setGray("詳細情報");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/products/info/display-details";
+		return "products/info/display-details";
 	}
 
 	/**
@@ -202,7 +202,7 @@ public class ProductInfoController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productWithSupplier == null) {
-			return "/error";
+			return "error";
 		}
 
 		/* ModelMapperによる自動マッピングだとformクラスのフィールドproductIdがマッピングされず,エラーになるため一つずつ設定している.
@@ -216,7 +216,7 @@ public class ProductInfoController {
 		 * ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
 		this.goToEdit(model, productWithSupplier);
 
-		return "/products/info/edit";
+		return "products/info/edit";
 	}
 
 	/**
@@ -244,7 +244,7 @@ public class ProductInfoController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productWithSupplier == null) {
-			return "/error";
+			return "error";
 		}
 
 		// バリデーションエラーがあれば商品情報修正フォーム画面へ戻る.
@@ -254,7 +254,7 @@ public class ProductInfoController {
 			 * ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). */
 			this.goToEdit(model, productWithSupplier);
 
-			return "/products/info/edit";
+			return "products/info/edit";
 		}
 
 		// formクラスをエンティティクラスに変換する.
@@ -287,7 +287,7 @@ public class ProductInfoController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (product == null) {
-			return "/error";
+			return "error";
 		}
 
 		// modelに格納する.
@@ -298,7 +298,7 @@ public class ProductInfoController {
 		customHeader.setGray("画像修正");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/products/info/image-edit";
+		return "products/info/image-edit";
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class ProductInfoController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (product == null) {
-			return "/error";
+			return "error";
 		}
 
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
@@ -347,7 +347,7 @@ public class ProductInfoController {
 			customHeader.setGray("画像修正");
 			model.addAttribute("customHeader", customHeader);
 
-			return "/products/info/image-edit";
+			return "products/info/image-edit";
 		}
 
 		// 画像情報をオブジェクトに設定する.
@@ -379,7 +379,7 @@ public class ProductInfoController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productWithSupplier == null) {
-			return "/error";
+			return "error";
 		}
 
 		// 取得した商品情報を商品情報削除フォーム画面に渡すためmodelに格納する(値を表示するだけで変更しないのでそのまま渡す).
@@ -389,7 +389,7 @@ public class ProductInfoController {
 		customHeader.setGray("商品削除");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/products/info/delete";
+		return "products/info/delete";
 	}
 
 	/**
@@ -409,7 +409,7 @@ public class ProductInfoController {
 
 		// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
 		if (productOne == null) {
-			return "/error";
+			return "error";
 		}
 
 		// 商品情報(削除フラグ)を更新する.

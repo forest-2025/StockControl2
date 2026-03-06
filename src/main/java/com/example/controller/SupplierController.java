@@ -71,7 +71,7 @@ public class SupplierController {
 		customHeader.setRed("入荷先一覧");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/suppliers/list";
+		return "suppliers/list";
 
 	}
 
@@ -89,7 +89,7 @@ public class SupplierController {
 		// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
 		this.goToRegister(model);
 
-		return "/suppliers/register";
+		return "suppliers/register";
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class SupplierController {
 			// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している).
 			this.goToRegister(model);
 
-			return "/suppliers/register";
+			return "suppliers/register";
 		}
 
 		// formクラスをエンティティクラスに変換する.
@@ -142,7 +142,7 @@ public class SupplierController {
 
 		// 取得した入荷先情報が存在するか確認する(存在しなければエラー画面へ).
 		if (supplier == null) {
-			return "/error";
+			return "error";
 		}
 
 		// エンティティクラスをformクラスに変換し,modelに格納する.
@@ -153,7 +153,7 @@ public class SupplierController {
 		 * (下のほうでprivateメソッドとして設定している). */
 		this.goToEdit(model, supplier);
 
-		return "/suppliers/edit";
+		return "suppliers/edit";
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class SupplierController {
 
 		// 取得した入荷先情報が存在するか確認する(存在しなければエラー画面へ).
 		if (supplier == null) {
-			return "/error";
+			return "error";
 		}
 
 		// バリデーションエラーがあれば入荷先情報修正フォーム画面へ戻る.
@@ -189,7 +189,7 @@ public class SupplierController {
 			 * (下のほうでprivateメソッドとして設定している). */
 			this.goToEdit(model, supplier);
 
-			return "/suppliers/edit";
+			return "suppliers/edit";
 		}
 
 		// formクラスをエンティティクラスに変換する.
@@ -222,7 +222,7 @@ public class SupplierController {
 
 		// 取得した入荷先情報が存在するか確認する(存在しなければエラー画面へ).
 		if (supplier == null) {
-			return "/error";
+			return "error";
 		}
 
 		// 取得した入荷先情報を入荷先情報削除フォーム画面に渡すためmodelに格納する(supplierIdを渡すため).
@@ -232,7 +232,7 @@ public class SupplierController {
 		customHeader.setRed("入荷先削除");
 		model.addAttribute("customHeader", customHeader);
 
-		return "/suppliers/delete";
+		return "suppliers/delete";
 	}
 
 	/**
@@ -253,7 +253,7 @@ public class SupplierController {
 
 		// 取得した入荷先情報が存在するか確認する(存在しなければエラー画面へ).
 		if (supplier == null) {
-			return "/error";
+			return "error";
 		}
 
 		// 入荷先の削除フラグを削除済みに変更する.
