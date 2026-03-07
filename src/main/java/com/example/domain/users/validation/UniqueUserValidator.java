@@ -1,5 +1,6 @@
 package com.example.domain.users.validation;
 
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +64,9 @@ public class UniqueUserValidator implements ConstraintValidator<UniqueUser, Obje
 				return true;
 			}
 
-			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value); // フォームで入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップする.
-			Object userIdValue = beanWrapperImpl.getPropertyValue(userIdField); // 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
-			Object checkItemValue = beanWrapperImpl.getPropertyValue(checkField);
+			BeanWrapper beanWrapper = new BeanWrapperImpl(value); // フォームで入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップする.
+			Object userIdValue = beanWrapper.getPropertyValue(userIdField); // 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
+			Object checkItemValue = beanWrapper.getPropertyValue(checkField);
 
 			// userIdValueは登録時はnullになるためnullチェックは行わない.
 			if (checkItemValue == null) {

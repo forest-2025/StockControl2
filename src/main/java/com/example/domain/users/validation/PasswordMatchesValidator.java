@@ -1,5 +1,6 @@
 package com.example.domain.users.validation;
 
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 
@@ -52,9 +53,9 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 		        return true;
 		    }
 			
-			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value);
-			Object firstPassword = beanWrapperImpl.getPropertyValue(password);
-			Object secondPassword = beanWrapperImpl.getPropertyValue(reEnterPassword);
+			BeanWrapper beanWrapper = new BeanWrapperImpl(value);
+			Object firstPassword = beanWrapper.getPropertyValue(password);
+			Object secondPassword = beanWrapper.getPropertyValue(reEnterPassword);
 
 			if (firstPassword == null || secondPassword == null) {
 				
@@ -87,6 +88,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
         }
 	}
 }
+
 /*コントローラーなどで引数に@Validが付いたオブジェクトが渡される						バリデーションエンジン（Hibernate Validator）が起動
  * 					↓
  *				スキャンする										オブジェクトの中を上から順に見ていきアノテーションが付いている場所（クラスやフィールド）を見つける.
@@ -100,7 +102,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
  *				(ここのクラスのこと)									プロキシインスタンスの値をこのValidatorクラスのフィールドに代入できる.
  *					↓										
  * ConstraintValidatorContextのオブジェクトを作成する					ConstraintValidatorContextはバリデーション失敗時の報告書をカスタマイズ(書き直し)するインタフェース.
- * 															実装クラスはConstraintValidatorContextImplクラス).
+ * 															実装クラスはConstraintValidatorContextImplクラス.
  * 					↓
  * 			isValid()メソッドを呼び出す								バリデーションエラーがないか確認する.バリデーションが失敗ならConstraintValidatorContextを書き直す.
  * 					↓
@@ -109,7 +111,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
  * 
  * implements ConstraintValidator<PasswordMatches, Object>　は第一引数でこのクラスがバリデーションする型(どのアノテーションか)を指定し,第二引数でチェック対象となるデータの型を指定している.
  * この第二引数は,アノテーションがフィールドについていたらそのフィールドの型を,クラスについていたらそのクラスの型を指定する.しかし今回のパスワードと確認用パスワードが一致するか確認するバリデーションでは,ユーザー登録フォームとパスワード修正フォームで使用したい.
- * このように複数で使用したい時は引数にObjectを指定している.
+ * このように複数で使用したい時(特定の型でないとき)は引数にObjectを指定する.
  * 
  * isValid()メソッドの第一引数のObject valueは入力されたformクラスのオブジェクトが格納されていて,そのオブジェクトをもとにBeanWrapperImplをnewすることで中身がどんな型であろうが,指定されたフィールドの値を取り出してくれる.
  * (BeanWrapperImplオブジェクトは指定されたプロパティ名から自身のgetterを探して値を渡してくれる).

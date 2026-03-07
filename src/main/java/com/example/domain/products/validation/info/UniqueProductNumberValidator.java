@@ -1,14 +1,14 @@
 package com.example.domain.products.validation.info;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.domain.products.service.ProductInfoService;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -59,9 +59,9 @@ public class UniqueProductNumberValidator implements ConstraintValidator<UniqueP
 				return true;
 			}
 
-			BeanWrapperImpl beanWrapperImpl = new BeanWrapperImpl(value); // フォームで入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップする.
-			Object productIdValue = beanWrapperImpl.getPropertyValue(productId);	// 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
-			Object productNumberValue = beanWrapperImpl.getPropertyValue(productNumber);
+			BeanWrapper beanWrapper = new BeanWrapperImpl(value); // フォームで入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップする.
+			Object productIdValue = beanWrapper.getPropertyValue(productId);	// 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
+			Object productNumberValue = beanWrapper.getPropertyValue(productNumber);
 
 			if (productNumberValue == null) {
 

@@ -51,4 +51,4 @@ public class SafeHiraganaValidator implements ConstraintValidator<SafeHiragana, 
  * $ 正規表現の末尾を意味する. 
  * 
  * Apple社製品がNFD形式を採用していて,ゔは「う + "(\u3099)」と判断されるがIsHiraganaでは"(\u3099)が対象外である.
- * "(\u3099)と゚  （\u309A）だけ追加するよりNFC形式への変換するほうが安全なためこちらを作成している. */
+ * "(\u3099)と゚  （\u309A）だけ追加するよりNFC形式へ変換するほうが安全なためこちらを作成している. */
