@@ -1,9 +1,8 @@
 package com.example.exception.handler;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -12,18 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
-import org.springframework.web.servlet.HandlerMapping;
 
-import com.example.component.CustomHeader;
-import com.example.domain.products.model.MProduct;
 import com.example.domain.products.service.ProductInfoService;
-import com.example.domain.suppliers.model.MSupplier;
-import com.example.dto.products.UploadResult;
 import com.example.exception.types.ImageProcessingException;
 import com.example.exception.types.TempFileDeleteException;
-import com.example.form.products.info.RegisterForm;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -102,69 +94,69 @@ public class GlobalExceptionHandler {
 	public String handleException(MaxUploadSizeExceededException ex, HttpServletRequest request, Model model) {
 
 		log.error("画像サイズが20MBを越えています", ex);
-		List<String> errors = new ArrayList<>();
 		String errorMessage = messageSource.getMessage("OverSize", null, Locale.JAPAN);
-		errors.add(errorMessage);
-
-		UploadResult result = new UploadResult();
-		result.setErrors(errors);
-		System.out.println(result);
-		model.addAttribute("errors", result.getErrors());
-		System.out.println(result.getErrors());
-
-		// ヘッダーの色と項目を設定する.
-		CustomHeader customHeader = new CustomHeader();
-
-		// 削除済み以外の入荷先名を取得し、modelに格納して画面に渡す.
-		List<MSupplier> supplierList = productInfoService.getAllSupplier();
-		model.addAttribute("supplierList", supplierList);
-
-		String pattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-		
-		 // 2. パス変数の Map を取得
-	    @SuppressWarnings("unchecked")
-	    Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-		if ("/products/info/register".equals(pattern)) {
-
-			customHeader.setGray("商品登録");
-			model.addAttribute("customHeader", customHeader);
-			RegisterForm registerForm = new RegisterForm();
-			model.addAttribute("registerForm", registerForm);
-			return "products/info/register";
-			
-		} else if ("/products/{productId}/info/imageEdit".equals(pattern)) {
-			Integer productId = Integer.parseInt(pathVariables.get("productId"));
-			// 商品IDから商品情報を取得する(削除済みは除く).
-			MProduct product = productInfoService.getOneProduct(productId);
+		model.addAttribute("errorMessage",errorMessage);
+//		String errorMessage = messageSource.getMessage("OverSize", null, Locale.JAPAN);
+//
+//		model.addAttribute("errors", errorMessage);
+//
+//		// ヘッダーの色と項目を設定する.
+//		CustomHeader customHeader = new CustomHeader();
+//
+//		// 削除済み以外の入荷先名を取得し、modelに格納して画面に渡す.
+//		List<MSupplier> supplierList = productInfoService.getAllSupplier();
+//		model.addAttribute("supplierList", supplierList);
+//
+//		String uri = request.getRequestURI(); // 例: /users/123/upload
+//
+//		System.out.println(uri);
+//		if ("/products/info/register".equals(uri)) {
+//
+//			customHeader.setGray("商品登録");
+//			model.addAttribute("customHeader", customHeader);
+//			RegisterForm registerForm = new RegisterForm();
+//			model.addAttribute("registerForm", registerForm);
+//			return "products/info/register";
+//
+//		}
+//
+//		String pattern = "/products/{productId}/info/imageEdit"; // 判定したいパターン
+//
+//		AntPathMatcher matcher = new AntPathMatcher();
+//
+//		if (matcher.match(pattern, uri)) {
+//			// パス変数部分を Map として抽出
+//			Map<String, String> variables = matcher.extractUriTemplateVariables(pattern, uri);
+//			String productId = variables.get("productId"); // "123" が取得できる
+//
 //			try {
-//	            // String から Integer へ変換
-//	            Integer userId = Integer.parseInt(pathVariables.get("userId"));
+//				// String から Integer へ変換
+//				Integer productIntegerId = Integer.parseInt(productId);
 //
-//	            // 数値（ID）に応じた個別のハンドリング
-//	            if (userId < 1000) {
-//	                return ResponseEntity.status(413).body("特別ユーザー様: ファイルが大きすぎます");
-//	            }
-//	        } catch (NumberFormatException e) {
-//	            // IDが数値でなかった場合のフォールバック（通常は起こりにくい）
-//	        }
-//	    }
+//				// 商品IDから商品情報を取得する(削除済みは除く).
+//				MProduct product = productInfoService.getOneProduct(productIntegerId);
+//				// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
+//				if (product == null) {
+//					return "error";
+//				}
 //
-//			// 取得した商品情報が存在するか確認する(存在しなければエラー画面へ).
-//			if (product == null) {
+//				model.addAttribute("product", product);
+//
+//				// ヘッダーの色と項目を設定する.
+//				customHeader.setGray("画像修正");
+//				model.addAttribute("customHeader", customHeader);
+//
+//				return "products/info/image-edit";
+//
+//			} catch (NumberFormatException e) {
+//				// IDが数値でなかった場合のフォールバック（通常は起こりにくい）
+//				log.error("商品IDが数値ではありません: {}", e.getMessage(), e);
 //				return "error";
 //			}
-//			model.addAttribute("product", product);
-//			model.addAttribute("errors", result.getErrors());
-//
-//			// ヘッダーの色と項目を設定する.
-//			customHeader.setGray("画像修正");
-//			model.addAttribute("customHeader", customHeader);
-//
-//			return "products/info/image-edit";
 //		}
-		return null;
-		
-		
+//		System.out.println("ここかな？");
+		return "error";
+
 	}
 
 }
