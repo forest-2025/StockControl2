@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -108,11 +109,14 @@ public class ProductInfoController {
 	 * @param bindingResult バリデーションエラー.
 	 * @return 	バリデーションエラーがあれば商品登録フォーム画面のビュー名.
 	 * 			正常に完了した場合,商品一覧画面のビュー名(リダイレクト).
+	 * @throws IOException 
 	 */
 	@PostMapping("/info/register")
 	public String postRegister(Model model,
 			@ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
-			BindingResult bindingResult) {
+			BindingResult bindingResult) throws IOException {
+		
+		
 
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
@@ -312,10 +316,11 @@ public class ProductInfoController {
 	 * @return 	パスパラメータの商品IDがDBに存在しなければエラー画面のビュー名.
 	 * 			バリデーションエラーがあれば画像修正フォーム画面のビュー名.
 	 * 			正常に完了した場合,画像を修正した商品の詳細画面のビュー名(リダイレクト).
+	 * @throws IOException 
 	 */
 	@PostMapping("/{productId}/info/imageEdit")
 	public String postImageEdit(Model model, @PathVariable Integer productId,
-			@ModelAttribute @Validated(GroupOrder.class) ImageEditForm form, BindingResult bindingResult) {
+			@ModelAttribute @Validated(GroupOrder.class) ImageEditForm form, BindingResult bindingResult) throws IOException {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct product = productInfoService.getOneProduct(productId);

@@ -21,6 +21,14 @@ public class UploadResult {
 	public UploadResult() {
 
 	}
+	
+	/**
+	 * エラーのリストとファイル名のオブジェクトを作成するコンストラクタ.
+	 * 
+	 */
+	public UploadResult(List<String> errors, String fileName) {
+
+	}
 
 	/**
 	 * バリデーションエラーメッセージのリストが存在しているか,また空でないか確認する.

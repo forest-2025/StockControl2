@@ -1,5 +1,6 @@
 package com.example.domain.products.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -142,7 +143,7 @@ public interface ProductInfoService {
 	*             	(引数 result に結果を設定して返す).
 	 * @throws RuntimeException 画像ファイルの処理で例外が発生した場合. 
 	 */
-	public UploadResult validateAndUpload(MultipartFile file, UploadResult result);
+	public UploadResult validateAndUpload(MultipartFile file, UploadResult result) throws IOException ;
 
 	/** 
 	 * 商品の画像情報を更新する.
