@@ -117,7 +117,6 @@ public class ProductInfoController {
 			BindingResult bindingResult) throws IOException {
 		
 		
-
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
