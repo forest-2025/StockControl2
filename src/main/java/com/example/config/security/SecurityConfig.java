@@ -33,7 +33,14 @@ public class SecurityConfig {
 		http.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()// 静的リソースのファイルパスにログインなしでアクセスOK.
 				.requestMatchers(PathRequest.toH2Console()).permitAll() // H2DBコンソールを使用できるよう設定している.
-				.anyRequest().authenticated()) // それ以外は直リンク禁止する.
+				.requestMatchers("/login").permitAll()
+				.requestMatchers("/logout").permitAll()
+				.requestMatchers("/image/**").authenticated() 
+				.requestMatchers("/products/info/list").authenticated()
+				.requestMatchers("/products/*/count/arrive").authenticated()
+				.requestMatchers("/products/*/count/ship").authenticated()
+				.requestMatchers("/products/*/info/display-details").authenticated()
+				.anyRequest().hasRole("ADMIN"))// それ以外は直リンク禁止する.
 
 				// ログインに関する設定.
 				.formLogin(login -> login

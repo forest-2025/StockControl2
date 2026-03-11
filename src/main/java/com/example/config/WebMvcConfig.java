@@ -42,6 +42,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
  * これにより受付できるURLとファイル置き場が紐づいたResourceHandlerRegistration オブジェクトが完成し,
  * それをResourceHandlerRegistryオブジェクトが保持することで独自のリソース置き場にアクセスできるようになる.
  * 
- * "/image/**" は http://localhost:8080/image/~ というURLのアクセスを受け付けるという意味になる.
+ * "/image/**" は http://localhost:8080/image/~ というURLのアクセスを受け付けるという意味になる(image以下すべての階層を指し,*なら直下のファイルだけ).
  * "file:" はアプリ(jarファイル(読み取り専用,書き込めないため動的な画像の保存はできない))の外側,外部フォルダ(ローカルのファイルシステム)であることを表すプレフィックス.
  */

@@ -5,6 +5,8 @@
 	<!-- 個別CSS読込 -->
 	<link rel="stylesheet" th:href="@{/css/products/info/register.css}">
 	<link rel="stylesheet" th:href="@{/css/form/register.css}">
+	<!-- 個別JS読込 -->
+	<script th:src="@{/js/image.js}" defer></script>
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -20,7 +22,7 @@
 		<div>
 
 			<form method="post" th:object="${registerForm}" th:action="@{/products/info/register}"
-				enctype="multipart/form-data">
+				enctype="multipart/form-data" id="uploadForm">
 
 				<!-- 商品番号 -->
 				<div>
@@ -64,6 +66,9 @@
 						th:aria-label="#{image}" accept="image/jpeg"
 						th:classappend="${errors != null and !errors.isEmpty()} ? ' is-invalid' : ''">
 
+					<div id="jsFileError" class="invalid-feedback">
+						ファイルサイズが大きすぎます。
+					</div>
 					<!-- エラーメッセージ -->
 					<div class="invalid-feedback fs-6" th:if="${errors != null}" th:each="error : ${errors}"
 						th:text="${error}">
