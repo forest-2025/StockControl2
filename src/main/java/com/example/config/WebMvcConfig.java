@@ -18,13 +18,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	private String uploadDir;
 
 	/**
-     * 静的リソース（画像、CSS、JSなど）の場所を定義するメソッド.
+     * 静的リソース（画像・CSS・JSなど）の場所を定義するメソッド.
      * 
      * @param registry リソースの「URLパス」と「実際の場所」を登録するための台帳オブジェクト.
      */
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/image/**").addResourceLocations("file:" + uploadDir);
+		registry.addResourceHandler("/upload/**").addResourceLocations("file:" + uploadDir);
 	}
 
 }

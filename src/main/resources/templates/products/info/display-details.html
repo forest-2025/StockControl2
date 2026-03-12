@@ -15,7 +15,7 @@
 				<!-- 画像 -->
 				<div class="col-12 col-sm-5 d-flex align-items-center justify-content-center">
 					<img class="rounded mx-auto d-block img-fluid"
-						th:src="${oneItem.productImage == null ? @{/image/no_image.jpg} : @{/image/${oneItem.productImage}}" id="resultImage"
+						th:src="${oneItem.productImage == null ?  '/images/no_image.jpg' : '/upload/' + oneItem.productImage}" id="resultImage"
 						th:title="#{productImage}">
 				</div>
 
