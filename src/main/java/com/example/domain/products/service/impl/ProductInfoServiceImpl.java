@@ -376,7 +376,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	//			 * のような名前のファイルが作成される. */
 	//			tempFile = Files.createTempFile("upload-", ".jpg");
 	//
-	//			/* .transferTo(Path)のほうのメソッド(Fileよりこちらのほうが推奨されている).
+	//			/* .transferTo(Path)のほうのメソッド(.transferTo(File)よりこちらのほうが推奨されている).
 	//			 * 画像ファイルはアップロードされるとサーブレットコンテナが "自動的" に小さいサイズはメモリ（バイト配列）に,
 	//			 * 大きいサイズは一時ファイルに保存する.
 	//			 * この画像ファイルに直接アクセスすることはできず、MultipartFile オブジェクトを通してのみ扱える.

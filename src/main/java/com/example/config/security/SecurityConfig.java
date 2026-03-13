@@ -54,7 +54,7 @@ public class SecurityConfig {
 		 * 
 		 * @ControllerAdvice は、リクエストが 3番（DispatcherServlet）以降に進まないと発動しない. */
 		// ).exceptionHandling(exception -> exception	// 管理者権限のない人が管理者のページに行こうとしたときに独自のエラー画面に遷移するときに設定する(403エラー)
-		//		.accessDeniedPage("/access-denied") // ← ここでパスを指定してそのパスのコントローラを作ってそこにとばして独自のエラー画面に遷移できる.これを設定しないとブラウザのエラー画面がでる
+		//		.accessDeniedPage("/error/403") // ← ここでパスを指定してそのパスのコントローラを作ってそこにとばして独自のエラー画面に遷移できる.これを設定しないとブラウザのエラー画面がでる
 
 		// ログインに関する設定.
 		).formLogin(login -> login
