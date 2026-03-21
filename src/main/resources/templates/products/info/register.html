@@ -66,10 +66,8 @@
 						th:aria-label="#{image}" accept="image/jpeg"
 						th:classappend="${errors != null and !errors.isEmpty()} ? ' is-invalid' : ''">
 
-					<div id="jsFileError" class="invalid-feedback">
-						ファイルサイズが大きすぎます。
-					</div>
 					<!-- エラーメッセージ -->
+					<div id="jsFileError" class="invalid-feedback" th:text="#{OverSize}"></div>
 					<div class="invalid-feedback fs-6" th:if="${errors != null}" th:each="error : ${errors}"
 						th:text="${error}">
 					</div>
