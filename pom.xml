@@ -121,18 +121,6 @@
 			<artifactId>popper.js</artifactId>
 			<version>2.9.2</version>
 		</dependency>
-		<!-- Thumbnailator(サムネイレイター 画像のリサイズ用) -->
-		<dependency>
-			<groupId>net.coobird</groupId>
-			<artifactId>thumbnailator</artifactId>
-			<version>0.4.21</version>
-		</dependency>
-		<!-- apache.tika/tika-core(画像ファイルのMIMEタイプの確認用) -->
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
-			<version>3.2.3</version>
-		</dependency>
 		<!-- PageHelper (ページネーション用) -->
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>

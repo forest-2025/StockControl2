@@ -66,8 +66,12 @@
 						th:aria-label="#{image}" accept="image/jpeg"
 						th:classappend="${errors != null and !errors.isEmpty()} ? ' is-invalid' : ''">
 
+<<<<<<< HEAD
 					<div id="jsFileError" class="invalid-feedback" th:text="#{OverSize}"></div>
+=======
+>>>>>>> branch 'master' of https://github.com/forest-2025/StockControl2.git
 					<!-- エラーメッセージ -->
+					<div id="jsFileError" class="invalid-feedback" th:text="#{OverSize}"></div>
 					<div class="invalid-feedback fs-6" th:if="${errors != null}" th:each="error : ${errors}"
 						th:text="${error}">
 					</div>

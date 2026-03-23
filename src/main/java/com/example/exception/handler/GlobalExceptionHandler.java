@@ -1,15 +1,10 @@
 package com.example.exception.handler;
 
-import java.util.Locale;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.example.exception.types.ImageProcessingException;
 import com.example.exception.types.TempFileDeleteException;
@@ -85,11 +80,11 @@ public class GlobalExceptionHandler {
 	 *
 	 * @param ex 発生した例外オブジェクト.
 	 */
-	 @ExceptionHandler(MaxUploadSizeExceededException.class)
-	    public ResponseEntity<String> handleSize(MaxUploadSizeExceededException e) {
-		 String errorMessage = messageSource.getMessage("OverSize", null, Locale.JAPAN);
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-	                             .body(errorMessage);
-	    }
+//	 @ExceptionHandler(MaxUploadSizeExceededException.class)
+//	    public ResponseEntity<String> handleSize(MaxUploadSizeExceededException e) {
+//		 String errorMessage = messageSource.getMessage("OverSize", null, Locale.JAPAN);
+//	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//	                             .body(errorMessage);
+//	    }
 
 }

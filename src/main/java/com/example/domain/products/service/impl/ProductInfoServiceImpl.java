@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -69,16 +68,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 
-	// staticなのでクラスで一つの値を持つ.
-	private static final long MAX_SIZE = 20 * 1024 * 1024; // 20MB
-
 	private static final String[] ALLOWED_EXTENSIONS = { "jpg", "jpeg" };
-
-	private static final int MAX_WIDTH = 1200;
-
-	private static final int MAX_HEIGHT = 1200;
-
-	private final Tika tika = new Tika();
 
 	// 1ページで表示する商品数・入出荷履歴数を10に設定する.
 	private static final int SHOW_SIZE = 10;

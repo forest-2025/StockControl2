@@ -4,6 +4,8 @@
 <head>
 	<!-- 個別CSS読込 -->
 	<link rel="stylesheet" th:href="@{/css/products/info/image-edit.css}">
+	<!-- 個別JS読込 -->
+	<script th:src="@{/js/image.js}" defer></script>
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -15,15 +17,16 @@
 		<div class="fs-4 fw-bold text-center mt-5 ms-5 me-5 mb-4">
 			<div class="message-underline" th:text="#{imageEdit}"></div>
 		</div>
-		
+
 		<div>
 			<div class="text-danger fw-bold text-center" th:text="#{imageEditAlert}"></div>
 		</div>
-		
+
 		<div>
 
 			<form method="post" th:object="${imageEditForm}"
-				th:action="@{'/products/' + ${product.productId} + '/info/imageEdit'}" enctype="multipart/form-data">
+				th:action="@{'/products/' + ${product.productId} + '/info/imageEdit'}" 
+				enctype="multipart/form-data" id="uploadForm">
 
 				<!-- 商品番号 -->
 				<div class="mt-4">
@@ -49,6 +52,7 @@
 						th:classappend="${errors != null and !errors.isEmpty()} ? ' is-invalid' : ''">
 
 					<!-- エラーメッセージ -->
+					<div id="jsFileError" class="invalid-feedback" th:text="#{OverSize}"></div>
 					<div class="invalid-feedback fs-6" th:if="${errors != null}" th:each="error : ${errors}"
 						th:text="${error}">
 					</div>
