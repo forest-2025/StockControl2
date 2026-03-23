@@ -3,6 +3,7 @@ package com.example.config.security;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
@@ -15,6 +16,34 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+	
+	/**
+	 * H2Datebaseのセキュリティ設定を行う SecurityFilterChain を Bean として定義する.
+	 *
+	 * securityFilterChain メソッドより優先される.
+	 *
+	 * @param http HttpSecurity オブジェクト.セキュリティ設定の操作対象.
+	 * @return セキュリティ設定が適用された SecurityFilterChain.
+	 * @throws Exception 設定時にエラーが発生した場合.
+	 * 
+	 */
+	@Bean
+	@Order(1)
+    SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
+		http
+			.securityMatcher(PathRequest.toH2Console())		// securityMatcherはこのフィルターが特定のURLだけを対象にするときに使用するメソッドであることを意味する.spring.h2.console.path
+			.authorizeHttpRequests(authorize -> authorize
+				.anyRequest().permitAll()
+			)
+			.headers(headers -> headers
+				.frameOptions(FrameOptionsConfig::sameOrigin)
+			)
+			.csrf(csrf -> csrf
+				.ignoringRequestMatchers(PathRequest.toH2Console())
+			);
+		return http.build();
+	}
+
 
 	/**
 	 * アプリケーション全体のセキュリティ設定を行う SecurityFilterChain を Bean として定義する.
@@ -27,6 +56,7 @@ public class SecurityConfig {
 	 * 
 	 */
 	@Bean
+	@Order(2)
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 		// リクエストの制御(直リンクの禁止).
@@ -73,15 +103,7 @@ public class SecurityConfig {
 				.invalidateHttpSession(true) // サーバー側のHTTPセッションを破棄(デフォルトで有効だが明示的に記載している).
 				.clearAuthentication(true) // 現在の ThreadLocal の SecurityContext に入っている Authentication をクリア(デフォルトで有効だが明示的に記載している).
 				.deleteCookies("JSESSIONID") // ブラウザ側のクッキーを削除する.
-				.permitAll() // 独自のログアウト成功エンドポイントを指定したので、未ログインユーザーでもアクセスできるようにする.
-
-		// X-Flame-Optionsを無効にする設定（H2DBコンソールを使用できるよう設定している）.
-		).headers(headers -> headers
-				.frameOptions(FrameOptionsConfig::disable)
-
-		// CSRF 対策を無効に設定(H2DBコンソールを使用できるよう設定している).
-		).csrf(csrf -> csrf
-				.ignoringRequestMatchers(PathRequest.toH2Console()));
+				.permitAll()); // 独自のログアウト成功エンドポイントを指定したので、未ログインユーザーでもアクセスできるようにする.
 
 		return http.build();
 	}
