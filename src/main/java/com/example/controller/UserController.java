@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import java.security.Principal;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -183,6 +185,7 @@ public class UserController {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			Authentication authentication,
+			Principal principal,
 			@ModelAttribute @Validated(GroupOrder.class) EditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
@@ -213,7 +216,13 @@ public class UserController {
 
 		// ユーザー情報を更新する.
 		userService.updateExceptPassword(mUser);
+		
 
+//		String P = principal.getName();
+//		System.out.println(P);
+//		String P = authentication.getName();
+//		System.out.println(P);
+		
 		// ログインユーザーが自身の管理者権限を管理者から一般に変更した場合はリダイレクト先のユーザー情報一覧について閲覧権限がなくなるためログアウトさせる.
 		if (userDetails.getUsername().equals(user.getEmailAddress()) && user.getIsAdmin() == 1
 				&& mUser.getIsAdmin() == 0) {

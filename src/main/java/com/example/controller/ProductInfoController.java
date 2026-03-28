@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -25,7 +26,6 @@ import com.example.domain.suppliers.model.MSupplier;
 import com.example.dto.products.HistoryDetails;
 import com.example.dto.products.ProductList;
 import com.example.dto.products.ProductWithSupplier;
-import com.example.dto.products.UploadResult;
 import com.example.form.products.info.ImageEditForm;
 import com.example.form.products.info.ProductEditForm;
 import com.example.form.products.info.RegisterForm;
@@ -115,33 +115,38 @@ public class ProductInfoController {
 	public String postRegister(Model model,
 			@ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) throws IOException {
-		
+
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
-
-		UploadResult result = new UploadResult();
+		List<String> errors = new ArrayList<>();
 
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う(画像選択していなければnullではないがfile.isEmpty()がTrueになる).
 		if (file != null && !file.isEmpty()) {
-			result = productInfoService.validateAndUpload(file, result);
+			errors = productInfoService.validateAndUpload(file, errors);
 		}
 
 		/* バリデーションエラーがあれば商品登録フォーム画面へ戻る.
 		 * 画像がなければresultのfileName ・ errorsは両方ともnullでhasErrors()はfalseになる. */
-		if (bindingResult.hasErrors() || result.hasErrors()) {
-			model.addAttribute("errors", result.getErrors());
+		if (bindingResult.hasErrors() || !errors.isEmpty()) {
+			model.addAttribute("errors", errors);
 			// 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している).
 			this.goToRegister(model);
 
 			return "products/info/register";
 		}
 
+		String fileName = null;
+
+		if (file != null && !file.isEmpty()) {
+			fileName = productInfoService.uploadImage(file);
+		}
+
 		// formクラスをエンティティクラスに変換する.
 		MProduct product = modelMapper.map(form, MProduct.class);
 
 		// 画像ファイルを設定する(画像ファイルがなければnullがはいってる).
-		product.setProductImage(result.getFileName());
+		product.setProductImage(fileName);
 
 		// 商品登録を行う.
 		productInfoService.registerProduct(product);
@@ -318,7 +323,8 @@ public class ProductInfoController {
 	 */
 	@PostMapping("/{productId}/info/imageEdit")
 	public String postImageEdit(Model model, @PathVariable Integer productId,
-			@ModelAttribute @Validated(GroupOrder.class) ImageEditForm form, BindingResult bindingResult) throws IOException {
+			@ModelAttribute @Validated(GroupOrder.class) ImageEditForm form, BindingResult bindingResult)
+			throws IOException {
 
 		// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct product = productInfoService.getOneProduct(productId);
@@ -331,20 +337,21 @@ public class ProductInfoController {
 		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
 		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
 		MultipartFile file = form.getProductFile();
+		List<String> errors = new ArrayList<>();
 
-		UploadResult result = new UploadResult();
+		//UploadResult result = new UploadResult();
 
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
-			result = productInfoService.validateAndUpload(file, result);
+			errors = productInfoService.validateAndUpload(file, errors);
 		}
 
 		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
-		if (result.hasErrors()) {
+		if (!errors.isEmpty()) {
 
 			// modelに格納する.
 			model.addAttribute("product", product);
-			model.addAttribute("errors", result.getErrors());
+			model.addAttribute("errors", errors);
 
 			// ヘッダーの色と項目を設定する.
 			customHeader.setGray("画像修正");
@@ -353,10 +360,16 @@ public class ProductInfoController {
 			return "products/info/image-edit";
 		}
 
+		String fileName = null;
+
+		if (file != null && !file.isEmpty()) {
+			fileName = productInfoService.uploadImage(file);
+		}
+
 		// 画像情報をオブジェクトに設定する.
 		MProduct productImageEdit = new MProduct();
 		productImageEdit.setProductId(productId);
-		productImageEdit.setProductImage(result.getFileName());
+		productImageEdit.setProductImage(fileName);
 
 		// 画像情報を更新する.
 		productInfoService.updateProductImage(product, productImageEdit);
@@ -405,7 +418,7 @@ public class ProductInfoController {
 	 * 			正常に完了した場合,商品一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/{productId}/info/delete")
-	public String postDelete(Model model, @PathVariable Integer productId) {
+	public String postDelete(Model model, @PathVariable Integer productId) throws IOException{
 
 		/// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct productOne = productInfoService.getOneProduct(productId);

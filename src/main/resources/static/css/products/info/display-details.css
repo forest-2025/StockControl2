@@ -1,0 +1,8 @@
+@charset "UTF-8";
+
+/* 画面サイズが992px以上のときは商品一覧にもどるリンクは表示しないようにする. */
+@media (min-width: 992px) {
+    .none {
+        display: none;
+    }
+}

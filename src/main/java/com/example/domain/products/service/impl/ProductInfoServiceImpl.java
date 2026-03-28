@@ -1,9 +1,9 @@
 package com.example.domain.products.service.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -22,9 +22,6 @@ import com.example.dto.products.HistoryDetails;
 import com.example.dto.products.ProductList;
 import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TStock;
-import com.example.dto.products.UploadResult;
-import com.example.exception.types.ImageDeleteException;
-import com.example.exception.types.ImageUpdateException;
 import com.example.repository.ProductListMapper;
 import com.example.repository.ProductMapper;
 import com.example.repository.ProductWithSupplierMapper;
@@ -34,15 +31,12 @@ import com.example.repository.TransactionHistoryMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * ProductInfoService の実装クラス.
  * 
  */
 @Service
 @Transactional
-@Slf4j
 public class ProductInfoServiceImpl implements ProductInfoService {
 	@Autowired
 	private ProductMapper productMapper;
@@ -166,7 +160,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	// 商品情報を登録する.
 	@Override
 	public void registerProduct(MProduct product) {
-
+		
 		// 商品を登録する.
 		productMapper.insertOne(product);
 
@@ -198,12 +192,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	// 削除フラグを更新する.
 	@Override
-	public void updateIsDeleted(MProduct product) {
+	public void updateIsDeleted(MProduct product) throws IOException{
 
 		// 商品情報の削除は物理削除ではなく論理削除のため,削除フラグ(is_deleted)を削除済みの1に変更する.
 		product.setProductIsDeleted(1);
 
-		try {
 			// 画像は削除する(メモリを圧迫するため).
 			if (product.getProductImage() != null) {
 				Path oldFile = Path.of(uploadDir, product.getProductImage());
@@ -218,10 +211,6 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 			// 削除フラグを更新する.
 			productMapper.updateIsDeleted(product);
-
-		} catch (IOException e) {
-			throw new ImageDeleteException("画像の削除処理に失敗しました", e);
-		}
 
 	}
 
@@ -245,8 +234,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	}
 
 	@Override
-	public UploadResult validateAndUpload(MultipartFile file, UploadResult result) throws IOException {
-		List<String> errors = new ArrayList<>();
+	public List<String> validateAndUpload(MultipartFile file,List<String> errors) {
+		
 		// ファイルの拡張子を取得
 		String originalFileName = file.getOriginalFilename();
 
@@ -270,37 +259,29 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				errors.add(errorMessage);
 			}
 		}
-
-		//この時点でバリデーションエラーがあるときは一旦フォーム画面でエラーを表示する.
-		if (!errors.isEmpty()) {
-			result.setErrors(errors);
-			result.setFileName(null);
-			return result;
-		}
-
-		// アップロードファイルはUUIDを使って重複しない名前に変更する
-		String fileName = UUID.randomUUID().toString() + ".jpg";
-		// 画像保存先
-		Path targetFile = Path.of(uploadDir, fileName);
-
-		// 保存先ディレクトリがなければ作成する
-		Files.createDirectories(targetFile.getParent());
-		// アップロードしたファイルを保存
-		Files.write(targetFile, file.getBytes());
-		
-		result.setErrors(errors);
-		result.setFileName(fileName);
-
-		return result;
+			return errors;
 
 	}
 	
+	public String uploadImage (MultipartFile file) throws IOException {
+		
+		String fileName = UUID.randomUUID().toString() + ".jpg";
+		
+		Path targetFile = Path.of(uploadDir, fileName);
+
+		Files.createDirectories(targetFile.getParent());
+		try(InputStream is = file.getInputStream()){
+			Files.copy(is, targetFile);
+			
+		}
+		return fileName;
+		
+	}
 
 	// 商品の画像情報を更新する.
 	@Override
-	public void updateProductImage(MProduct product, MProduct productImageEdit) {
+	public void updateProductImage(MProduct product, MProduct productImageEdit) throws IOException {
 
-		try {
 			// 既存画像を削除する.
 			if (product.getProductImage() != null) {
 				Path oldFile = Path.of(uploadDir, product.getProductImage());
@@ -312,9 +293,6 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			// 商品の画像情報を更新する.
 			productMapper.updateProductImage(productImageEdit);
 
-		} catch (IOException e) {
-			throw new ImageUpdateException("画像の更新処理に失敗しました", e);
-		}
 	}
 
 	// ==========================================

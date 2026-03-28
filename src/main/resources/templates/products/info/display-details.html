@@ -2,12 +2,20 @@
 <html lang="ja" layout:decorate="~{layout/main-layout}">
 
 <head>
+	<!-- 個別CSS読込 -->
+	<link rel="stylesheet" th:href="@{/css/products/info/display-details.css}">
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
 <body>
 
 	<div layout:fragment="content">
+		<!-- 商品一覧に戻るリンク -->
+		<!-- 画面サイズが991以下のときのみ表示する -->
+		<div class="d-flex align-items-center justify-content-center mt-5">
+			<a class="font-monospace fs-4 none link-primary link-offset-3 link-underline-opacity-25 link-underline-opacity-100-hover fw-bold"
+				th:href="@{'/products/info/list'}" th:text="#{backToTheList}"></a>
+		</div>
 
 		<div>
 			<dl class="row align-items-stretch mt-5 col-md-10 offset-md-1">
@@ -15,8 +23,8 @@
 				<!-- 画像 -->
 				<div class="col-12 col-sm-5 d-flex align-items-center justify-content-center">
 					<img class="rounded mx-auto d-block img-fluid"
-						th:src="${oneItem.productImage == null ?  '/images/no_image.jpg' : '/upload/' + oneItem.productImage}" id="resultImage"
-						th:title="#{productImage}">
+						th:src="${oneItem.productImage == null ?  '/images/no_image.jpg' : '/upload/' + oneItem.productImage}"
+						id="resultImage" th:title="#{productImage}">
 				</div>
 
 
@@ -29,7 +37,6 @@
 						<div class="col-12 col-sm-7">
 							<dt class="bg-secondary-subtle fw-bold" th:text="#{productNumber}"></dt>
 							<dd th:text="${oneItem.productNumber}"></dd>
-
 						</div>
 
 						<!-- 商品名 -->

@@ -65,27 +65,16 @@ public class SecurityConfig {
 				.requestMatchers(PathRequest.toH2Console()).permitAll() // H2DBコンソールを使用できるよう設定している.
 				.requestMatchers("/login").permitAll()
 				.requestMatchers("/logout").permitAll()
+				 .requestMatchers("/error/**").permitAll()
 				.requestMatchers("/upload/**").authenticated() // 外部フォルダを設定する.
 				.requestMatchers("/products/info/list").authenticated()
 				.requestMatchers("/products/*/count/arrive").authenticated()
 				.requestMatchers("/products/*/count/ship").authenticated()
 				.requestMatchers("/products/*/info/display-details").authenticated()
 				.anyRequest().hasRole("ADMIN")// それ以外は直リンク禁止する.
-
-		/* 1.ブラウザからのリクエスト
-		 * 			↓
-		 * 2.Spring Security Filter ← ここで「権限なし！」と判定・遮断されてエラーへ
-		 * 			↓
-		 * 3.DispatcherServlet（Spring MVCの入り口）
-		 * 			↓
-		 * 4.@ControllerAdvice / @ExceptionHandler ← ここまでリクエストが届かない
-		 * 			↓
-		 * 5.Controller
-		 * 
-		 * @ControllerAdvice は、リクエストが 3番（DispatcherServlet）以降に進まないと発動しない. */
-		 ).exceptionHandling(exception -> exception	// 管理者権限のない人が管理者のページに行こうとしたときに独自のエラー画面に遷移するときに設定する(403エラー)
-				.accessDeniedPage("/error/403") // ← ここでパスを指定してそのパスのコントローラを作ってそこにとばして独自のエラー画面に遷移できる.これを設定しないとブラウザのエラー画面がでる
-
+				).exceptionHandling(exception -> exception	 //管理者権限のない人が管理者のページに行こうとしたときに独自のエラー画面に遷移するときに設定する(403エラー)
+							.accessDeniedPage("/error/403")
+				
 		// ログインに関する設定.
 		).formLogin(login -> login
 				.loginPage("/login") // 自作ログインページのためURLパスを指定する(GETリクエスト).
@@ -137,4 +126,20 @@ public class SecurityConfig {
  * 		↓
  * リクエストが来れば FilterChainProxy が適切な SecurityFilterChain を選択してチェーン内のフィルター順に実行する.
  * 		↓
- * 問題なければ Controller に到達する. */
+ * 問題なければ Controller に到達する. 
+ * 
+ * 
+ *  1.ブラウザからのリクエスト
+ *			↓
+ *	2.Spring Security Filter ← ここで「権限なし！」と判定・遮断されてエラーへ
+ *			↓
+ *	3.DispatcherServlet（Spring MVCの入り口）
+ *			↓
+ *	4.@ControllerAdvice / @ExceptionHandler ← ここまでリクエストが届かない
+ *			↓
+ *	5.Controller
+ *	
+ *	 @ControllerAdvice は、リクエストが 3番（DispatcherServlet）以降に進まないと発動しない.
+ *		 ).exceptionHandling(exception -> exception	 管理者権限のない人が管理者のページに行こうとしたときに独自のエラー画面に遷移するときに設定する(403エラー)
+ *				.accessDeniedPage("/error/403")	 ← ここでパスを指定してそのパスのコントローラを作ってそこにとばして独自のエラー画面に遷移できる.これを設定しないとブラウザのエラー画面がでる
+ */

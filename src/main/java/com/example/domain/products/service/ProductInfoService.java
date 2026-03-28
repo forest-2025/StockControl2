@@ -10,7 +10,6 @@ import com.example.domain.suppliers.model.MSupplier;
 import com.example.dto.products.HistoryDetails;
 import com.example.dto.products.ProductList;
 import com.example.dto.products.ProductWithSupplier;
-import com.example.dto.products.UploadResult;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -112,7 +111,7 @@ public interface ProductInfoService {
 	 * 
 	 * @param product 更新する商品情報.
 	 */
-	public void updateIsDeleted(MProduct product);
+	public void updateIsDeleted(MProduct product) throws IOException;
 
 	/** 
 	 * 商品IDから商品情報を商品番号の昇順で取得する(削除済みは除く). 
@@ -143,7 +142,7 @@ public interface ProductInfoService {
 	*             	(引数 result に結果を設定して返す).
 	 * @throws RuntimeException 画像ファイルの処理で例外が発生した場合. 
 	 */
-	public UploadResult validateAndUpload(MultipartFile file, UploadResult result) throws IOException ;
+	public List<String> validateAndUpload(MultipartFile file,List<String> errors) throws IOException;
 
 	/** 
 	 * 商品の画像情報を更新する.
@@ -153,6 +152,7 @@ public interface ProductInfoService {
 	 * @param productImageEdit 更新する商品情報.
 	 * @throws RuntimeException 画像ファイルの削除処理で例外が発生した場合. 
 	 */
-	public void updateProductImage(MProduct product, MProduct productImageEdit);
+	public void updateProductImage(MProduct product, MProduct productImageEdit) throws IOException;
 	
+	public String uploadImage(MultipartFile file) throws IOException;
 }

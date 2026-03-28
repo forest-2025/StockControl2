@@ -12,8 +12,8 @@
 		<div class="text-center">
 			<h3 class="error-message text-danger" th:text="#{errorMessage}"></h3>
 
-			<h4 th:if="${error == 404}">
-				お探しのページは移動または削除された可能性があります。ヘッダーのメニューから移動してください。
+			<h4 th:if="${error == 403}">
+				このページを表示する権限がありません。ヘッダーのメニューから移動してください。
 			</h4>
 
 		</div>
