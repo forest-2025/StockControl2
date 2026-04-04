@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
- * t_transaction_history テーブルに,出荷先名と処理の担当者加えたクラス.
- * 商品の入出荷・在庫の修正履歴を表示するため,出荷先名と処理の担当者が追加されている.
+ * t_transaction_history テーブルに,出荷先名と処理の担当者の姓と名を加えたクラス.
+ * 商品の入出荷・在庫の修正履歴を表示するため,出荷先名と処理の担当者の姓名を追加している.
  * 
  */
 @Data
@@ -21,6 +21,7 @@ public class HistoryDetails {
 	 private String remarks;								// 備考.
 	 private LocalDateTime historyRegisterDateTime;			// 登録日.
 	 private String customerName;							// 出荷先名
-	 private String fullName;								// 担当者.
+	 private  String familyName;							// 担当者の姓.
+	 private  String firstName;								// 担当者の名.
 
 }

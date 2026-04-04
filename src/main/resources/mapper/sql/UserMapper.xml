@@ -14,11 +14,10 @@
 			family_name,
 			first_name,
 			employee_number,
-			is_admin,
+			role,
 			is_deleted as userIsDeleted,
 			register_date_time as userRegisterDateTime,
-			update_date_time as userUpdateDateTime,
-			concat(family_name,first_name) as fullName
+			update_date_time as userUpdateDateTime
 		from
 			m_user
 		where
@@ -36,7 +35,7 @@
 			family_name,
 			first_name,
 			employee_number,
-			is_admin,
+			role,
 			is_deleted as userIsDeleted,
 			register_date_time as userRegisterDateTime,
 			update_date_time as userUpdateDateTime
@@ -58,7 +57,7 @@
 			family_name,
 			first_name,
 			employee_number,
-			is_admin,
+			role,
 			is_deleted as userIsDeleted,
 			register_date_time as userRegisterDateTime,
 			update_date_time as userUpdateDateTime
@@ -73,10 +72,10 @@
 			or
 			employee_number like '%' || #{search} || '%'
 			<if test="search == '管理者'">
-            	or is_admin = '1'
+            	or role = 'ROLE_ADMIN'
             </if>
         	<if test="search == '一般'">
-            	or is_admin = '0'
+            	or role = 'ROLE_GENERAL'
        		</if>
   			 )
 		order by
@@ -92,7 +91,7 @@
 			family_name,
 			first_name,
 			employee_number,
-			is_admin,
+			role,
 			is_deleted as userIsDeleted,
 			register_date_time as userRegisterDateTime,
 			update_date_time as userUpdateDateTime
@@ -111,14 +110,14 @@
 			family_name,
 			first_name,
 			employee_number,
-			is_admin
+			role
 		) values (
 			#{emailAddress},
 			#{password},
 			#{familyName},
 			#{firstName},
 			#{employeeNumber},
-			#{isAdmin}
+			#{role}
 		)
 	</insert>
 	
@@ -131,7 +130,7 @@
 			family_name,
 			first_name,
 			employee_number,
-			is_admin,
+			role,
 			is_deleted as userIsDeleted,
 			register_date_time as userRegisterDateTime,
 			update_date_time as userUpdateDateTime
@@ -152,7 +151,7 @@
 			family_name = #{familyName},
 			first_name = #{firstName},
 			employee_number = #{employeeNumber},
-			is_admin = #{isAdmin}
+			role = #{role}
 			
 		where
 			id  = #{userId}

@@ -18,10 +18,9 @@ public class MUser {
 	private String familyName;							// ユーザー姓.
 	private String firstName;							// ユーザー名.
 	private String employeeNumber;						// 従業員番号.
-	private Integer isAdmin;							// 管理者権限.
+	private String role;								// 管理者権限.
 	private Integer userIsDeleted;						// 削除フラグ.
 	private LocalDateTime userRegisterDateTime; 		// 登録日.
 	private LocalDateTime userUpdateDateTime;			// 更新日.
-	private String fullName;							// familyNameとfirstNameを連結した姓名.
 
 }

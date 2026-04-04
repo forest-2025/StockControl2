@@ -46,8 +46,8 @@
 
 				<!-- 管理者権限 -->
 				<div class="mt-4">
-					<div class="mb-2" for="isAdmin" th:text="#{isAdmin}"></div>
-					<div class="ms-3 mb-2 fs-5" type="text" th:text="${user.isAdmin == 1} ? #{admin} : #{general}">
+					<div class="mb-2" for="role" th:text="#{role}"></div>
+					<div class="ms-3 mb-2 fs-5" type="text" th:text="${user.role == 'ROLE_ADMIN'} ? #{admin} : #{general}">
 					</div>
 				</div>
 

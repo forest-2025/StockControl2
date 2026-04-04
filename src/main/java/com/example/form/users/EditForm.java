@@ -1,7 +1,5 @@
 package com.example.form.users;
 
-import org.hibernate.validator.constraints.Range;
-
 import com.example.domain.users.validation.UniqueUser;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
@@ -43,7 +41,7 @@ public class EditForm {
 	private String emailAddress; // メールアドレス.
 
 	@NotNull(groups = ValidGroup1.class)
-	@Range(min = 0, max = 1, groups = ValidGroup2.class)
-	private Integer isAdmin; // 管理者権限.
+	//@Range(min = 0, max = 1, groups = ValidGroup2.class)
+	private Boolean role; // 管理者権限.
 
 }

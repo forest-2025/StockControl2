@@ -1,11 +1,6 @@
 package com.example.domain.users.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,31 +40,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new UsernameNotFoundException("ユーザーが見つかりません");
 		}
 
-		// ユーザーの管理者権限を取得する(0または1).
-		Integer userAuthorityNo = loginUser.getIsAdmin();
-
-		// 権限リストを作成する(リストなのはユーザーが複数権限を持つ可能性があるから).
-		List<GrantedAuthority> authorities = new ArrayList<>();
-
-		/* isAdmin が0なら管理者権限なし(GENERAL).
-		 * 1なら管理者権限あり(ROLE_ADMIN)を設定. */
-		if (userAuthorityNo == 0) {
-
-			// 権限の文字列を保持したSimpleGrantedAuthorityオブジェクトをキャストすることで﻿権限情報を設定する.
-			GrantedAuthority authority = new SimpleGrantedAuthority("GENERAL");
-			// 権限リストに追加する.
-			authorities.add(authority);
-		} else  {
-			GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_ADMIN");
-			// 権限リストに追加する.
-			authorities.add(authority);
-		}
-
 		/* ユーザーがログインしている間はユーザーの姓と名に"さん"をつけた名前をヘッダーに表示しておく.
 		 * それには情報が消えないようにセッションに登録する必要があるため,UserクラスをカスタマイズしたCustomUserDetailsクラスを使い登録する.
 		 * また,ヘッダーにパスワード修正画面へのリンクをつけるためユーザーIDも登録している. */
-		CustomUserDetails customUserDetails = new CustomUserDetails(loginUser.getEmailAddress(), loginUser.getPassword(),
-				authorities, loginUser.getFamilyName(), loginUser.getFirstName(),loginUser.getUserId());
+		CustomUserDetails customUserDetails = new CustomUserDetails(loginUser);
 
 		// UserDetailsを生成する.
 		UserDetails userDetails = (UserDetails) customUserDetails;
@@ -82,15 +56,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
  * UserDetails(このクラスの loadUserByUsername()メソッドで作成された DB から取得した情報をもつ UserDetails オブジェクト)
  * 等を保持する Authentication オブジェクト.
  * @AuthenticationPrincipal UserDetails userDetails
- * @AuthenticationPrincipal FullNameUser fullNameUser
+ * @AuthenticationPrincipal CustomUserDetails customUserDetails
  * で渡されるオブジェクトは同じオブジェクトだが,受け取る型が違う(インタフェースか実装クラスか).
  * 
- * UserDetails は実際は FullNameUser オブジェクトが入っているが,型が UserDetails のため UserDetails のメソッドしか扱えず,
- * FullNameUser のフィールドにアクセスするには instanceof を使用して型チェックをしないといけない.
+ * UserDetails は実際は CustomUserDetails オブジェクトが入っているが,型が UserDetails のため UserDetails のメソッドしか扱えず,
+ * CustomUserDetails のフィールドにアクセスするには instanceof を使用して型チェックをしないといけない.
  * (別のが入っていたら ClassCastException になる).
  * 
- * FullNameUser はそのまま自身のフィールドやメソッドを使用できる.
- * しかし, Authentication オブジェクトのなかの principal が FullNameUser でなければ ClassCastException になる.
+ * CustomUserDetails はそのまま自身のフィールドやメソッドを使用できる.
+ * しかし, Authentication オブジェクトのなかの principal が CustomUserDetails でなければ ClassCastException になる.
  * 
  * Authentication の principal はフィールドではなくプロパティ(インタフェースなのでフィールド自体がないが getPrincipal()メソッドがある).
  * これは principal という属性が“取得できること”を実装クラスに強制している.

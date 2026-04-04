@@ -63,7 +63,8 @@
 						fs-5(フォントサイズを大きくしている))
 						 */-->
 						<!-- メニュー -->
-						<ul class="navbar-nav justify-content-center flex-grow-1 fs-5">
+						<ul class="navbar-nav justify-content-center flex-grow-1 fs-5"
+							th:with="isAdmin=${#authorization.expression('hasRole(''ADMIN'')')}">
 							<!-- 商品一覧 -->
 							<!--/* nav-item(ナビゲーションバーの項目につけることで適切な配置にしてくれる) */-->
 							<li class="nav-item">
@@ -72,17 +73,17 @@
 									th:classappend="${customHeader.headerItem} == #{productList} ? 'active' : '' "></a>
 							</li>
 							<!-- ユーザー一覧 -->
-							<li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+							<li class="nav-item" th:if="${isAdmin}">
 								<a class="nav-link" th:href="@{/users/list}" th:text="#{userList}"
 									th:classappend="${customHeader.headerItem} == #{userList} ? 'active' : '' "></a>
 							</li>
 							<!-- 入荷先一覧 -->
-							<li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+							<li class="nav-item" th:if="${isAdmin}">
 								<a class="nav-link" th:href="@{/suppliers/list}" th:text="#{supplierList}"
 									th:classappend="${customHeader.headerItem} == #{supplierList} ? 'active' : '' "></a>
 							</li>
 							<!-- 出荷先一覧 -->
-							<li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+							<li class="nav-item" th:if="${isAdmin}">
 								<a class="nav-link" th:href="@{/customers/list}" th:text="#{customerList}"
 									th:classappend="${customHeader.headerItem} == #{customerList} ? 'active' : '' "></a>
 							</li>

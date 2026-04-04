@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-	
+
 	/**
 	 * H2Datebaseのセキュリティ設定を行う SecurityFilterChain を Bean として定義する.
 	 *
@@ -29,21 +29,17 @@ public class SecurityConfig {
 	 */
 	@Bean
 	@Order(1)
-    SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.securityMatcher(PathRequest.toH2Console())		// securityMatcherはこのフィルターが特定のURLだけを対象にするときに使用するメソッドであることを意味する.spring.h2.console.path
-			.authorizeHttpRequests(authorize -> authorize
-				.anyRequest().permitAll()
-			)
-			.headers(headers -> headers
-				.frameOptions(FrameOptionsConfig::sameOrigin)
-			)
-			.csrf(csrf -> csrf
-				.ignoringRequestMatchers(PathRequest.toH2Console())
-			);
+				.securityMatcher(PathRequest.toH2Console()) // securityMatcherはこのフィルターが特定のURLだけを対象にするときに使用するメソッドであることを意味する.spring.h2.console.path
+				.authorizeHttpRequests(authorize -> authorize
+						.anyRequest().permitAll())
+				.headers(headers -> headers
+						.frameOptions(FrameOptionsConfig::sameOrigin))
+				.csrf(csrf -> csrf
+						.ignoringRequestMatchers(PathRequest.toH2Console()));
 		return http.build();
 	}
-
 
 	/**
 	 * アプリケーション全体のセキュリティ設定を行う SecurityFilterChain を Bean として定義する.
@@ -65,16 +61,18 @@ public class SecurityConfig {
 				.requestMatchers(PathRequest.toH2Console()).permitAll() // H2DBコンソールを使用できるよう設定している.
 				.requestMatchers("/login").permitAll()
 				.requestMatchers("/logout").permitAll()
-				 .requestMatchers("/error/**").permitAll()
+				.requestMatchers("/error/**").permitAll()
 				.requestMatchers("/upload/**").authenticated() // 外部フォルダを設定する.
 				.requestMatchers("/products/info/list").authenticated()
 				.requestMatchers("/products/*/count/arrive").authenticated()
 				.requestMatchers("/products/*/count/ship").authenticated()
 				.requestMatchers("/products/*/info/display-details").authenticated()
+				.requestMatchers("/users/*/passwordEdit").authenticated()
 				.anyRequest().hasRole("ADMIN")// それ以外は直リンク禁止する.
-				).exceptionHandling(exception -> exception	 //管理者権限のない人が管理者のページに行こうとしたときに独自のエラー画面に遷移するときに設定する(403エラー)
-							.accessDeniedPage("/error/403")
-				
+
+		).exceptionHandling(exception -> exception //管理者権限のない人が管理者のページに行こうとしたときに独自のエラー画面に遷移するときに設定する(403エラー)
+				.accessDeniedPage("/error/403")
+
 		// ログインに関する設定.
 		).formLogin(login -> login
 				.loginPage("/login") // 自作ログインページのためURLパスを指定する(GETリクエスト).

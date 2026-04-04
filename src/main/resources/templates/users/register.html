@@ -95,18 +95,14 @@
 				</div>
 
 				<!-- 管理者権限 -->
-				<div class="mt-4">
-					<label class="mb-2" for="isAdmin" th:text="#{isAdmin}"></label>
-					<select class="form-select mb-2 fs-5" th:field="*{isAdmin}" th:errorclass="is-invalid">
-						<option value="" th:text="#{select}"></option>
-						<div>
-							<option th:value="#{generalNumber}" th:label="#{general}"></option>
-							<option th:value="#{adminNumber}" th:label="#{admin}"></option>
-						</div>
-					</select>
+				<div class="form-check mt-4">
+					<label class="form-check-label mb-2">
+						<input class="form-check-input mb-2 fs-5" type="checkbox" th:field="*{role}" th:errorclass="is-invalid">
+						<span th:text="#{role}"></span>
+					</label>
 
 					<!-- エラーメッセージ -->
-					<div class="invalid-feedback fs-6" th:errors="*{isAdmin}"></div>
+					<div class="invalid-feedback fs-6" th:errors="*{role}"></div>
 				</div>
 
 				<div class="mt-5">

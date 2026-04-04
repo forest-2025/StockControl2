@@ -16,7 +16,7 @@
 			<!-- ユーザー登録ボタン -->
 			<!--/* パソコン用(992px以上)ならユーザー登録ボタンと検索フォームが横並びになるようにしている.
 			pb-4は小さい画面でユーザー登録ボタンと検索フォームが二段になっているときに余白をつけるためのもの. */-->
-			<div class="col-lg-6 pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
+			<div class="col-lg-6 pb-4">
 				<a class="btn btn-success btn-lg" th:href="@{/users/register}" role="button" th:text="#{userRegister}"></a>
 			</div>
 
@@ -68,7 +68,7 @@
 							<th scope="col" th:text="#{familyName}"></th>
 							<th scope="col" th:text="#{firstName}"></th>
 							<th scope="col" th:text="#{emailAddress}"></th>
-							<th scope="col" th:text="#{isAdmin}"></th>
+							<th scope="col" th:text="#{role}"></th>
 							<th scope="col"></th>
 						</tr>
 					</thead>
@@ -82,7 +82,7 @@
 							<td th:text="${item.familyName}"></td>
 							<td th:text="${item.firstName}"></td>
 							<td th:text="${item.emailAddress}"></td>
-							<td th:text="${item.isAdmin} == 1 ? #{admin} : #{general}"></td>
+							<td th:text="${item.role} == 'ROLE_ADMIN' ? #{admin} : #{general}"></td>
 							<td>
 								<!-- 修正ボタン -->
 								<a class="btn btn-primary btn-lg me-3 mb-2"

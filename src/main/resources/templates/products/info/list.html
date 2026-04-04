@@ -8,17 +8,17 @@
 
 <body>
 	<div layout:fragment="content">
-		<div class="row text-center mt-5 mb-5">
+		<div class="row text-center mt-5 mb-5" th:with="isAdmin=${#authorization.expression('hasRole(''ADMIN'')')}">
 			<!-- 商品登録ボタン -->
 			<!--/* パソコン用(992px以上)なら商品登録ボタンと検索フォームが横並びになるようにしている.
 			pb-4は小さい画面で商品登録ボタンと検索フォームが二段になっているときに余白をつけるためのもの. */-->
-			<div class="col-lg-6 pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
+			<div class="col-lg-6 pb-4" th:if="${isAdmin}">
 				<a class="btn btn-success btn-lg" th:href="@{/products/info/register}" role="button"
 					th:text="#{productRegister}"></a>
 			</div>
 
 			<!-- 検索フォーム -->
-			<div th:classappend="${#authorization.expression('hasRole(''ADMIN'')')} ? 'col-lg-6' : ''">
+			<div th:classappend="${isAdmin} ? 'col-lg-6' : ''">
 				<form method="get" th:action="@{/products/info/list}">
 					<div>
 						<!--/* inputタグのw-auto・d-inline-blockはform-controlのwidth:100%,

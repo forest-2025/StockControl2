@@ -1,0 +1,128 @@
+!DOCTYPE html>
+<html lang="ja" layout:decorate="~{layout/error-layout}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="errorHeader">
+
+		<!--/* navbar-expand-lg(画面幅が992px未満のときはナビゲーションバーは折りたたまれてハンバーガーメニューに表示され、それ以上のサイズなら横に広がる),
+	 	fixed-top(ヘッダーを固定する), p-4(内側の余白(ヘッダーの幅)),data-bs-theme="dark"(ダークモード(全体の配色を白背景から黒や濃い背景に切り替える機能にすることで文字を白色にしている))
+	 	th:classappend="${headerClass}"(ヘッダーの背景色を設定している) */-->
+		<nav class="navbar navbar-expand-lg fixed-top p-4 bg-secondary" data-bs-theme="dark">
+
+			<!--/* container-lg(画面幅が992px未満のときは画面幅がフルに広がり,それ以上のサイズになると固定幅に自動調整してくれる) */-->
+			<div class="container-lg header-height">
+				<div class="navbar-brand">
+					<h2 th:text="#{errorPage}"></h2>
+				</div>
+
+				<th:block sec:authorize="isAuthenticated()">
+					<!--/* navbar-toggler(画面幅が狭くなったときにナビゲーションバーのメニューを折りたたんで表示するためのトグルボタンを生成するために使用),
+						data-bs-toggle="offcanvas"(ボタンなどの要素をクリックしたときに画面の端からスライドして表示されるオフキャンバスメニューを起動するための属性),
+						data-bs-target="#offcanvasNavbar"(どの要素を操作するかの対象を指定するための属性でid属性を同じにすることで紐づく.BootstrapのJavaScriptに、どの要素を操作するべきかを伝えるための属性で,この場合クリックイベントが発生したときに、
+						id属性がoffcanvasNavbarの要素（オフキャンバス）を開閉するように指示している),
+						aria-controls="offcanvasNavbar"(buttonタグにつけることでオフキャンバスメニューの開閉を制御するトリガー要素が設定され,同じ名前を持つidにもつタグが制御対象になる
+						data-bs-targetと違いアクセシビリティのために使用されるWAI-ARIA属性(W3Cが定めたWebアクセシビリティ向上のための仕様でaria-*形式の属性で追記し、スクリーンリーダーなどの支援技術が正しくコンテンツを解釈できるようにするためのもの)
+						でコントロール要素（ボタンなど）が、どの関連要素を制御しているかをスクリーンリーダーやその他の支援技術に伝える.) 
+						title属性はアイコンにマウスのカーソルをあわせたときにでるコメント(ブラウザでエラーがでたため追加している) */-->
+					<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+						data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" th:title="#{offcanvas}">
+						<!--/* navbar-toggler-iconはナビゲーションバーのハンバーガーメニューアイコンを表示する */-->
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<!--/* offcanvas(画面の上下左右からスライドして表示されるサイドバーコンポーネント)
+						offcanvas-end(画面の右端から表示されるオフキャンバスメニューを実装するためのクラス)
+						tabindex="-1"(Tabキーを押してページ内を移動する際のフォーカス順序に含まないように設定している)
+						aria-labelledby="offcanvasNavbarLabel"(オフキャンバス領域のラベル（名前）は、IDが offcanvasNavbarLabel の要素のテキスト内容ですよと支援技術に教えている
+						これにより、支援が必要な人がオフキャンバスを開いたときにその目的や内容を理解できるようになる
+						th:classappend="${headerClass}"(これによりオフキャンバス内の背景色をヘッダーと一緒にできる)  */-->
+					<div class="offcanvas offcanvas-end bg-secondary" tabindex="-1" id="offcanvasNavbar"
+						aria-labelledby="offcanvasNavbarLabel">
+						<!--/* offcanvas-header(オフキャンバスを開いたときのヘッダー) */-->
+						<div class="offcanvas-header">
+							<!--/* offcanvas-title(オフキャンバスのタイトルであることを表す(つけないと位置が少し変わる) */-->
+							<h5 class="offcanvas-title fs-2 text-white" id="offcanvasNavbarLabel" th:text="#{menu}"></h5>
+							<!-- オフキャンバスを消すボタン -->
+							<!--/* class="btn-close"(要素を閉じるための、×印のアイコンを持つボタンを作成するクラス)
+						data-bs-dismiss="offcanvas"(HTMLの消したい要素に追加する属性で,属性値に消したいコンポーネントの種類を指定している(ここではoffcanvas))
+						aria-label="Close"(ボタンなどの要素が閉じられることを読み上げ機能に伝えるための属性) */-->
+							<button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+								aria-label="Close"></button>
+						</div>
+						<!-- オフキャンバスのコンテンツ -->
+						<!--/* class="offcanvas-body"(オフキャンバスの実際の項目を表す.ないと左に寄るのでつけたほうがデザイン的にもよい) */-->
+						<div class="offcanvas-body">
+						<!--/* navbar-nav(ナビゲーションバー内にあるナビゲーションリンクのリストを作成するためのクラス.<ul>要素（または<div>）にnavbar-navクラスを適用することで、ナビゲーション項目が並ぶようにスタイル付けされる
+							またdisplay:flex(d-flex)が設定してあり,これにより最初のulタグ内の3項目がタテ並びから横並びになる)
+							justify-content-center(中央配置にしている.navbar-navでdisplay:flexが設定してあるため適用されている)
+							flex-grow-1で親要素の余白を均等に分配している(きれいに分配しているのではなく子要素の内容の多さで初期幅がそれぞれ決まり、そのあまりを均等配分している)
+							fs-5(フォントサイズを大きくしている)) */-->
+							
+							<!-- メニュー -->
+							<ul class="navbar-nav justify-content-center flex-grow-1 fs-5"
+								th:with="isAdmin=${#authorization.expression('hasRole(''ADMIN'')')}">
+								<!-- 商品一覧 -->
+								<!--/* nav-item(ナビゲーションバーの項目につけることで適切な配置にしてくれる) */-->
+								<li class="nav-item">
+									<!--/* nav-link(<a>タグに適用することで、ナビゲーションバーやタブなどのメニュー項目を視覚的にデザインする.) */-->
+									<a class="nav-link" th:href="@{/products/info/list}" th:text="#{productList}"></a>
+								</li>
+								<!-- ユーザー一覧 -->
+								<li class="nav-item" th:if="${isAdmin}">
+									<a class="nav-link" th:href="@{/users/list}" th:text="#{userList}"></a>
+								</li>
+								<!-- 入荷先一覧 -->
+								<li class="nav-item" th:if="${isAdmin}">
+									<a class="nav-link" th:href="@{/suppliers/list}" th:text="#{supplierList}"></a>
+								</li>
+								<!-- 出荷先一覧 -->
+								<li class="nav-item" th:if="${isAdmin}">
+									<a class="nav-link" th:href="@{/customers/list}" th:text="#{customerList}"></a>
+								</li>
+							</ul>
+							<!-- ログアウト -->
+							<!--/* 上と一緒.justify-content-end(右配置にしている.navbar-navでdisplay:flexが設定してあるため適用されている) */-->
+							<ul class="navbar-nav justify-content-end flex-grow-1 fs-5">
+								<!--/* dropdown(ドロップダウンメニューを作成するためのコンポーネントクラス
+							(ボタン、アラート、ナビゲーションバーといったウェブサイトの部品を、事前に用意されたCSSクラスをHTMLに適用することで、簡単にデザインを適用・実装するための仕組みのこと)) */-->
+								<li class="nav-item dropdown">
+									<!--/* dropdown-toggle(ドロップダウンメニューを開閉するためのボタンやリンクに適用されるクラス.このクラスとdata-bs-toggle="dropdown"属性を組み合わせることで,
+								クリック時に定義済みの選択肢リスト（ドロップダウンメニュー）を表示させることができる
+								data-bs-toggle="dropdown"(ドロップダウンの機能を有効にする)  
+								aria-expanded="false"(画面幅が狭い場合に隠されているメニューボタンに設定し、クリックでメニューが開くようにする)*/-->
+									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+										data-bs-toggle="dropdown" aria-expanded="false"
+										th:text="'ようこそ ' + ${#authentication.principal.fullName} + 'さん' ">
+									</a>
+									<!--/* data-bs-theme="light"(ドロップダウン内の背景を白にして、文字色を黒にしてマウスカーソルを合わせた時の色をグレーにしている) */-->
+									<ul class="dropdown-menu" data-bs-theme="light">
+										<!--/* 水平線 */-->
+										<li>
+											<!--/* hrタグはHTMLで水平線を引くためのタグ(Horizontal Ruleの略)で文章の区切りなどで使う.閉じタグは不要な空タグ.
+										dropdown-divider(ドロップダウンメニュー内の項目を区切るための薄い水平線（分割線）を表示するクラス.このクラスをドロップダウンメニューの項目（<li>要素など）に追加することで視覚的にメニューをグループ化できる) */-->
+											<hr class="dropdown-divider">
+										</li>
+										<!--/* パスワード修正ボタン */-->
+										<!-- パスワード修正ボタン -->
+										<a class="dropdown-item fs-5"
+											th:href="@{'/users/' + ${#authentication.principal.userId}+ '/passwordEdit'}"
+											role="button" th:text="#{editPassword}"></a>
+										<!--/* ログアウトボタン */-->
+										<form method="post" th:action="@{/logout}">
+											<button class="dropdown-item fs-5" type="submit"
+												th:text="#{logout}"></button>
+										</form>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</nav>
+	</div>
+</body>
+
+</html>

@@ -1,12 +1,11 @@
 package com.example.controller;
 
-import java.security.Principal;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,6 +47,9 @@ public class UserController {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	/**
 	 * ユーザー一覧画面に遷移する.
@@ -111,7 +113,8 @@ public class UserController {
 	@PostMapping("/register")
 	public String postRegister(Model model, @ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
-
+		System.out.println(form.getRole());
+		
 		// バリデーションエラーがあればユーザー登録フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
@@ -120,9 +123,28 @@ public class UserController {
 
 			return "users/register";
 		}
+		
+		MUser user = new MUser();
+		user.setEmailAddress(form.getEmailAddress());
+		user.setPassword(passwordEncoder.encode(form.getPassword()));
+		user.setFamilyName(form.getFamilyName());
+		user.setFirstName(form.getFirstName());
+		user.setEmployeeNumber(form.getEmployeeNumber());
+		if(form.getRole()) {
+			user.setRole("ROLE_ADMIN");
+		} else {
+			user.setRole("ROLE_GENERAL");
+		}
+		
+		System.out.println(user);
+		
 
-		// formクラスをエンティティクラスに変換する.
-		MUser user = modelMapper.map(form, MUser.class);
+//		// formクラスをエンティティクラスに変換する.
+//		MUser user = modelMapper.map(form, MUser.class);
+//		System.out.println(user);
+//		if(user.getRole()) {
+//			form.setRole("ROLE_ADMIN");
+//		}
 
 		// ユーザーを登録する.
 		userService.registerOne(user);
@@ -150,9 +172,20 @@ public class UserController {
 		if (user == null) {
 			return "error";
 		}
+		
+		form.setUserId(userId);
+		form.setEmailAddress(user.getEmailAddress());
+		form.setEmployeeNumber(user.getEmployeeNumber());
+		form.setFamilyName(user.getFamilyName());
+		form.setFirstName(user.getFirstName());
+		if(user.getRole().equals("ROLE_ADMIN")) {
+			form.setRole(true);
+		} else {
+			form.setRole(false);
+		}
 
 		// エンティティクラスをformクラスに変換し,modelに格納する.
-		form = modelMapper.map(user, EditForm.class);
+		//form = modelMapper.map(user, EditForm.class);
 		model.addAttribute("editForm", form);
 
 		/* ユーザーIDを渡すためにユーザー情報をmodelに格納する処理,ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
@@ -181,11 +214,6 @@ public class UserController {
 	 */
 	@PostMapping("/{userId}/edit")
 	public String postEdit(Model model, @PathVariable Integer userId,
-			@AuthenticationPrincipal UserDetails userDetails,
-			HttpServletRequest request,
-			HttpServletResponse response,
-			Authentication authentication,
-			Principal principal,
 			@ModelAttribute @Validated(GroupOrder.class) EditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
@@ -209,52 +237,25 @@ public class UserController {
 		}
 
 		// formクラスをエンティティクラスに変換する.
-		MUser mUser = modelMapper.map(form, MUser.class);
+		//MUser mUser = modelMapper.map(form, MUser.class);
 
 		// ユーザーIDを設定する.
+		
+		MUser mUser = new MUser();
 		mUser.setUserId(userId);
-
+		mUser.setEmailAddress(form.getEmailAddress());
+		mUser.setFamilyName(form.getFamilyName());
+		mUser.setFirstName(form.getFirstName());
+		mUser.setEmployeeNumber(form.getEmployeeNumber());
+		if(form.getRole()) {
+			mUser.setRole("ROLE_ADMIN");
+		} else {
+			mUser.setRole("ROLE_GENERAL");
+		}
+		
 		// ユーザー情報を更新する.
 		userService.updateExceptPassword(mUser);
 		
-
-//		String P = principal.getName();
-//		System.out.println(P);
-//		String P = authentication.getName();
-//		System.out.println(P);
-		
-		// ログインユーザーが自身の管理者権限を管理者から一般に変更した場合はリダイレクト先のユーザー情報一覧について閲覧権限がなくなるためログアウトさせる.
-		if (userDetails.getUsername().equals(user.getEmailAddress()) && user.getIsAdmin() == 1
-				&& mUser.getIsAdmin() == 0) {
-
-			/* SecurityContextLogoutHandlerはSpringSecurityのログアウト用のユーティリティクラス(補助クラス)で,
-			 * ユーザーをログアウトさせる処理を簡単に行える. */
-			SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-
-			/* スレッドはプログラムを実行する作業単位のことで(1リクエスト = 1スレッド,オブジェクトでもある),
-			 * その作業を行う専用の場所がThreadLocal(オブジェクト)でJVMのヒープメモリ上に保存される.
-			 * そのThreadLocalの中にSecurityContextというコンテナがあり(インターフェースなので実際は実装したオブジェクトが入っている),
-			 * そのコンテナの中にAuthenticationというユーザーのユーザー名・権限・認証をもつオブジェクト(インターフェースなので実際は実装したオブジェクトが入っている)
-			 * があり,そのAuthenticationの中のフィールドprincipalがユーザーの詳細情報を保持しているUserDetailsオブジェクト.
-			 * (インターフェースなので実際は実装したオブジェクトが入っている).
-			 * これは現在のリクエスト用で,次回のリクエスト用にHTTPセッションにも同じSecurityContextを保存する.
-			 * (SPRING_SECURITY_CONTEXTというキー名で保存).
-			 * このような関係があり,SecurityContextLogoutHandlerのlogoutメソッドがSecurityContextを取得しクリアすることで,
-			 * その中に保持されていたAuthentication(principal(UserDetails)を含む)への参照がなくなり,
-			 * SpringSecurityから見て「ログインユーザーが存在しない状態」になる.
-			 * logoutメソッドは内部的にsession.invalidate();が実行され,これによりHTTPセッションが破棄される.
-			 * またCookie(JSESSIONID)を削除してくれる.
-			 * 
-			 *  */
-			logoutHandler.logout(request, response, authentication);
-
-			// Cookieを削除する(下にあるprivateメソッド).
-			this.deleteCookie(response, "JSESSIONID"); // 上のlogout()でも削除してくれているが念のため.
-			this.deleteCookie(response, "remember-me");
-
-			return "redirect:/logout";
-		}
-
 		return "redirect:/users/list";
 
 	}
@@ -325,9 +326,11 @@ public class UserController {
 		}
 
 		// formクラスをエンティティクラスに変換する.
-		MUser muser = modelMapper.map(form, MUser.class);
+		//MUser muser = modelMapper.map(form, MUser.class);
 		// ユーザーIDを設定する.
+		MUser muser = new MUser();
 		muser.setUserId(userId);
+		muser.setPassword(passwordEncoder.encode(form.getPassword()));
 
 		// ユーザーのパスワードを更新する.
 		userService.updatePassword(muser);
@@ -406,6 +409,21 @@ public class UserController {
 			 * ユーザーをログアウトさせる処理を簡単に行える. */
 			SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
+			/* スレッドはプログラムを実行する作業単位のことで(1リクエスト = 1スレッド,オブジェクトでもある),
+			 * その作業を行う専用の場所がThreadLocal(オブジェクト)でJVMのヒープメモリ上に保存される.
+			 * そのThreadLocalの中にSecurityContextというコンテナがあり(インターフェースなので実際は実装したオブジェクトが入っている),
+			 * そのコンテナの中にAuthenticationというユーザーのユーザー名・権限・認証をもつオブジェクト(インターフェースなので実際は実装したオブジェクトが入っている)
+			 * があり,そのAuthenticationの中のフィールドprincipalがユーザーの詳細情報を保持しているUserDetailsオブジェクト.
+			 * (インターフェースなので実際は実装したオブジェクトが入っている).
+			 * これは現在のリクエスト用で,次回のリクエスト用にHTTPセッションにも同じSecurityContextを保存する.
+			 * (SPRING_SECURITY_CONTEXTというキー名で保存).
+			 * このような関係があり,SecurityContextLogoutHandlerのlogoutメソッドがSecurityContextを取得しクリアすることで,
+			 * その中に保持されていたAuthentication(principal(UserDetails)を含む)への参照がなくなり,
+			 * SpringSecurityから見て「ログインユーザーが存在しない状態」になる.
+			 * logoutメソッドは内部的にsession.invalidate();が実行され,これによりHTTPセッションが破棄される.
+			 * またCookie(JSESSIONID)を削除してくれる.
+			 * 
+			 *  */
 			// 認証情報のクリア・セッション破棄・Cookieの削除を行い,ユーザーをログアウト状態にする.
 			logoutHandler.logout(request, response, authentication);
 

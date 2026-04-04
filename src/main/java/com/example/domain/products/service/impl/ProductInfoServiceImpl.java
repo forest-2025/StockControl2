@@ -236,9 +236,10 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	@Override
 	public List<String> validateAndUpload(MultipartFile file,List<String> errors) {
 		
-		// ファイルの拡張子を取得
+		// 選択したファイルのファイル名を取得する.
 		String originalFileName = file.getOriginalFilename();
 
+		// ファイル名がnullだったりなかったときはバリデーションエラーにする.
 		if (originalFileName == null || originalFileName.isBlank()) {
 			String errorMessage = messageSource.getMessage("InvalidFileName", null, Locale.JAPAN);
 			errors.add(errorMessage);
@@ -254,6 +255,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 					break;
 				}
 			}
+			// JPEGでなければバリデーションエラーにする.
 			if (!allowed) {
 				String errorMessage = messageSource.getMessage("FileFormatsDiffer", null, Locale.JAPAN);
 				errors.add(errorMessage);
@@ -263,6 +265,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	}
 	
+	// 画像ファイルを登録する.
 	public String uploadImage (MultipartFile file) throws IOException {
 		
 		String fileName = UUID.randomUUID().toString() + ".jpg";
@@ -270,6 +273,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		Path targetFile = Path.of(uploadDir, fileName);
 
 		Files.createDirectories(targetFile.getParent());
+		
 		try(InputStream is = file.getInputStream()){
 			Files.copy(is, targetFile);
 			

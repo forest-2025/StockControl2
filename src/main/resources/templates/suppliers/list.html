@@ -12,7 +12,7 @@
 			<!-- 入荷先登録ボタン -->
 			<!--/* パソコン用(992px以上)なら入荷先登録ボタンと検索フォームが横並びになるようにしている.
 			pb-4は小さい画面で入荷先登録ボタンと検索フォームが二段になっているときに余白をつけるためのもの. */-->
-			<div class="col-lg-6 pb-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
+			<div class="col-lg-6 pb-4">
 				<a class="btn btn-success btn-lg" th:href="@{/suppliers/register}" role="button"
 					th:text="#{supplierRegister}"></a>
 			</div>

@@ -1,7 +1,5 @@
 package com.example.form.users;
 
-import org.hibernate.validator.constraints.Range;
-
 import com.example.domain.users.validation.PasswordMatches;
 import com.example.domain.users.validation.UniqueUser;
 import com.example.validation.ValidGroup1;
@@ -52,8 +50,9 @@ public class RegisterForm {
 	private String reEnterPassword; // パスワード再入力.
 
 	@NotNull(groups = ValidGroup1.class)
-	@Range(min = 0, max = 1, groups = ValidGroup2.class)
-	private Integer isAdmin; // 管理者権限.
+	//@Range(min = 0, max = 1, groups = ValidGroup2.class)
+	//@AssertTrue(groups = ValidGroup1.class)
+	private Boolean role; // 管理者権限.
 
 }
 

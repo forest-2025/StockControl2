@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS m_user
    family_name VARCHAR (100) NOT NULL,
    first_name VARCHAR (100) NOT NULL,
    employee_number char (6) NOT NULL UNIQUE,
-   is_admin tinyint NOT NULL default '0',
+   role VARCHAR (50) NOT NULL default 'ROLE_GENERAL',
    is_deleted tinyint NOT NULL default '0',
    register_date_time datetime NOT NULL default CURRENT_TIMESTAMP,
    update_date_time datetime NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

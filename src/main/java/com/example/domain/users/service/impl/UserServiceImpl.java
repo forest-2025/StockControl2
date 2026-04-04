@@ -3,7 +3,6 @@ package com.example.domain.users.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +23,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserMapper userMapper;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	
 
 	// 1ページで表示するユーザーの人数を10人に設定する.
 	private final int SHOW_SIZE = 10;
@@ -113,10 +111,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void registerOne(MUser user) {
 
-		// パスワードをハッシュ化して設定する.
-		String password = passwordEncoder.encode(user.getPassword());
-		user.setPassword(password);
-
 		// ユーザーを登録する.
 		userMapper.insertOne(user);
 	}
@@ -137,10 +131,6 @@ public class UserServiceImpl implements UserService {
 	// ユーザーのパスワードを更新する. 
 	@Override
 	public void updatePassword(MUser user) {
-
-		// パスワードをハッシュ化して設定する.
-		String password = passwordEncoder.encode(user.getPassword());
-		user.setPassword(password);
 		// パスワードを更新する.
 		userMapper.updatePassword(user);
 	}

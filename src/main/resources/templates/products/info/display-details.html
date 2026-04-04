@@ -63,7 +63,7 @@
 			</dl>
 		</div>
 
-		<div class="col text-center mt-5" sec:authorize="hasAuthority('ROLE_ADMIN')">
+		<div class="col text-center mt-5" sec:authorize="hasRole('ADMIN')">
 
 			<!--/* 小さい画面でもボタンの位置がズレないようにme-3 mb-3で調整している */-->
 			<!-- 在庫修正ボタン -->
@@ -127,7 +127,7 @@
 						<td th:text="${item.customerId == null } ? '' : ${item.customerName}"></td>
 
 						<!--/* 担当者を表示する */-->
-						<td th:text="${item.fullName}"></td>
+						<td th:text="${item.familyName + ' ' + item.firstName}"></td>
 
 						<!--/* 備考を表示する */-->
 						<td th:text="${item.remarks}"></td>
