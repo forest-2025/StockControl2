@@ -1,5 +1,9 @@
 package com.example.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -26,10 +30,6 @@ import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;
 import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /** 
  * ユーザーの情報に関するコントローラクラス.
@@ -240,14 +240,13 @@ public class UserController {
 		//MUser mUser = modelMapper.map(form, MUser.class);
 
 		// ユーザーIDを設定する.
-		
 		MUser mUser = new MUser();
 		mUser.setUserId(userId);
 		mUser.setEmailAddress(form.getEmailAddress());
 		mUser.setFamilyName(form.getFamilyName());
 		mUser.setFirstName(form.getFirstName());
 		mUser.setEmployeeNumber(form.getEmployeeNumber());
-		if(form.getRole()) {
+		if(form.getRole() == null || form.getRole()) {
 			mUser.setRole("ROLE_ADMIN");
 		} else {
 			mUser.setRole("ROLE_GENERAL");
