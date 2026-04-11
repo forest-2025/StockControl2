@@ -26,7 +26,7 @@
 				<div>
 					<label class="mb-2" for="employeeNumber" th:text="#{employeeNumberInputExample}"></label>
 					<input class="form-control mb-2 fs-5" type="text" th:field="*{employeeNumber}"
-						 th:errorclass="is-invalid">
+						th:errorclass="is-invalid">
 
 					<!-- エラーメッセージ -->
 					<div class="invalid-feedback fs-6" th:errors="*{employeeNumber}"></div>
@@ -97,12 +97,12 @@
 				<!-- 管理者権限 -->
 				<div class="form-check mt-4">
 					<label class="form-check-label mb-2">
-						<input class="form-check-input mb-2 fs-5" type="checkbox" th:field="*{role}" th:errorclass="is-invalid">
+						<input class="form-check-input mb-2 fs-5" type="checkbox" th:field="*{role}"
+							th:errorclass="is-invalid">
 						<span th:text="#{role}"></span>
+						<!-- エラーメッセージ -->
+						<div class="invalid-feedback fs-6" th:errors="*{role}"></div>
 					</label>
-
-					<!-- エラーメッセージ -->
-					<div class="invalid-feedback fs-6" th:errors="*{role}"></div>
 				</div>
 
 				<div class="mt-5">

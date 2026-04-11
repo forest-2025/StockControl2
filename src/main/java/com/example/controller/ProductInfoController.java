@@ -72,6 +72,7 @@ public class ProductInfoController {
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
 		 * パラメータ名searchが無ければ削除されていない全商品の一覧を取得し,あればsearchの値が含まれる商品を検索する. */
 
+		int n = 1/0;
 		PageInfo<ProductList> productList = productInfoService.findAllSorted(search, sort, page);
 		model.addAttribute("productList", productList);
 		model.addAttribute("search", search);
@@ -123,7 +124,7 @@ public class ProductInfoController {
 
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う(画像選択していなければnullではないがfile.isEmpty()がTrueになる).
 		if (file != null && !file.isEmpty()) {
-			errors = productInfoService.validateAndUpload(file, errors);
+			errors = productInfoService.validateImage(file, errors);
 		}
 
 		/* バリデーションエラーがあれば商品登録フォーム画面へ戻る.
@@ -339,11 +340,9 @@ public class ProductInfoController {
 		MultipartFile file = form.getProductFile();
 		List<String> errors = new ArrayList<>();
 
-		//UploadResult result = new UploadResult();
-
 		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
 		if (file != null && !file.isEmpty()) {
-			errors = productInfoService.validateAndUpload(file, errors);
+			errors = productInfoService.validateImage(file, errors);
 		}
 
 		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.

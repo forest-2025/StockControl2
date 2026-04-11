@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" layout:decorate="~{layout/common-layout}">
+<html lang="ja" layout:decorate="~{layout/error-layout}">
 
 <head>
 	<!-- 個別CSS読込 -->
@@ -9,13 +9,10 @@
 
 <body>
 	<div layout:fragment="content">
-		<div class="text-center">
+		<div class="text-center mt-5">
 			<h3 class="error-message text-danger" th:text="#{errorMessage}"></h3>
-
-			<h4 th:if="${error == 403}">
-				このページを表示する権限がありません。ヘッダーのメニューから移動してください。
-			</h4>
-
+			<h4 class="mt-5" th:text="#{403ErrorMessage}"></h4>
+			<div class="fs-5 fw-bold mt-4" th:text="#{backToTheHeader}"></div>
 		</div>
 	</div>
 </body>

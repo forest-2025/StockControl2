@@ -1,14 +1,9 @@
 package com.example.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -23,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.component.CustomHeader;
+import com.example.component.CustomUserDetails;
 import com.example.domain.users.model.MUser;
 import com.example.domain.users.service.UserService;
 import com.example.form.users.EditForm;
@@ -30,6 +26,10 @@ import com.example.form.users.PasswordEditForm;
 import com.example.form.users.RegisterForm;
 import com.example.validation.GroupOrder;
 import com.github.pagehelper.PageInfo;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /** 
  * ユーザーの情報に関するコントローラクラス.
@@ -45,9 +45,6 @@ public class UserController {
 	@Autowired
 	private CustomHeader customHeader;
 
-	@Autowired
-	private ModelMapper modelMapper;
-	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -79,7 +76,7 @@ public class UserController {
 		// ヘッダーの色と項目を設定する.
 		customHeader.setYellow("ユーザー一覧");
 		model.addAttribute("customHeader", customHeader);
-
+		
 		return "users/list";
 	}
 
@@ -111,10 +108,10 @@ public class UserController {
 	 * 			正常に完了した場合,ユーザー一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/register")
-	public String postRegister(Model model, @ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
+	public String postRegister(Model model,
+			@ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) {
-		System.out.println(form.getRole());
-		
+
 		// バリデーションエラーがあればユーザー登録フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
@@ -123,28 +120,20 @@ public class UserController {
 
 			return "users/register";
 		}
-		
+
 		MUser user = new MUser();
 		user.setEmailAddress(form.getEmailAddress());
 		user.setPassword(passwordEncoder.encode(form.getPassword()));
 		user.setFamilyName(form.getFamilyName());
 		user.setFirstName(form.getFirstName());
 		user.setEmployeeNumber(form.getEmployeeNumber());
-		if(form.getRole()) {
+
+		// roleはチェックボックスで,チェックが入っている(管理者権限)ならtrue,はいってないならfalseになる.
+		if (form.getRole()) {
 			user.setRole("ROLE_ADMIN");
 		} else {
 			user.setRole("ROLE_GENERAL");
 		}
-		
-		System.out.println(user);
-		
-
-//		// formクラスをエンティティクラスに変換する.
-//		MUser user = modelMapper.map(form, MUser.class);
-//		System.out.println(user);
-//		if(user.getRole()) {
-//			form.setRole("ROLE_ADMIN");
-//		}
 
 		// ユーザーを登録する.
 		userService.registerOne(user);
@@ -158,12 +147,16 @@ public class UserController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param userId ユーザー情報を修正するユーザーのID.
+	 * @param customUserDetails ログイン中のユーザーの情報.
 	 * @param form ユーザー修正フォーム.
 	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
 	 * 			正常に完了した場合,ユーザー情報修正フォーム画面のビュー名.
 	 */
 	@GetMapping("/{userId}/edit")
-	public String getEdit(Model model, @PathVariable Integer userId, @ModelAttribute EditForm form) {
+	public String getEdit(Model model,
+			@PathVariable Integer userId,
+			@AuthenticationPrincipal CustomUserDetails customUserDetails,
+			@ModelAttribute EditForm form) {
 
 		// ユーザーIDから情報を取得する.
 		MUser user = userService.getByUserId(userId);
@@ -172,24 +165,24 @@ public class UserController {
 		if (user == null) {
 			return "error";
 		}
-		
+
+		// formに修正するユーザー情報をセットしていく(roleの型が違うのでModelMapperは使用しない).
 		form.setUserId(userId);
 		form.setEmailAddress(user.getEmailAddress());
 		form.setEmployeeNumber(user.getEmployeeNumber());
 		form.setFamilyName(user.getFamilyName());
 		form.setFirstName(user.getFirstName());
-		if(user.getRole().equals("ROLE_ADMIN")) {
+
+		if (user.getRole().equals("ROLE_ADMIN")) {
 			form.setRole(true);
 		} else {
 			form.setRole(false);
 		}
 
-		// エンティティクラスをformクラスに変換し,modelに格納する.
-		//form = modelMapper.map(user, EditForm.class);
 		model.addAttribute("editForm", form);
 
-		/* ユーザーIDを渡すためにユーザー情報をmodelに格納する処理,ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
-		 * (下のほうでprivateメソッドとして設定している). */
+		/* ユーザーIDを渡すためにユーザー情報をmodelに格納する処理,
+		 * ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している). */
 		this.goToEdit(model, user);
 
 		return "users/edit";
@@ -201,19 +194,16 @@ public class UserController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param userId ユーザー情報を修正するユーザーのID.
-	 * @param userDetails ログイン中のユーザーの情報.
-	 * @param request HTTPリクエストをJavaで扱いやすい形にしたHttpServletRequestインターフェースの実装オブジェクト.
-	 * @param response HTTPレスポンスをJavaで扱いやすい形にしたHttpServletResponseインターフェースの実装オブジェクト.
-	 * @param authentication Authenticationインターフェースを実装したオブジェクトで,認証状態を保持する(ユーザー情報・権限・認証済みか等).
+	 * @param customUserDetails ログイン中のユーザーの情報.
 	 * @param form 入荷フォーム.
 	 * @param bindingResult バリデーションエラー.
 	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
 	 * 			バリデーションエラーがあればユーザー情報修正フォーム画面のビュー名.
-	 * 			ユーザーが自身の管理者権限を管理者から一般に変更した場合,ユーザーに関する情報の閲覧権限を失うためログアウト画面のビュー名(リダイレクト).
 	 * 			正常に完了した場合,ユーザー一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/{userId}/edit")
 	public String postEdit(Model model, @PathVariable Integer userId,
+			@AuthenticationPrincipal CustomUserDetails customUserDetails,
 			@ModelAttribute @Validated(GroupOrder.class) EditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
@@ -236,25 +226,29 @@ public class UserController {
 			return "users/edit";
 		}
 
-		// formクラスをエンティティクラスに変換する.
-		//MUser mUser = modelMapper.map(form, MUser.class);
-
-		// ユーザーIDを設定する.
 		MUser mUser = new MUser();
 		mUser.setUserId(userId);
 		mUser.setEmailAddress(form.getEmailAddress());
 		mUser.setFamilyName(form.getFamilyName());
 		mUser.setFirstName(form.getFirstName());
 		mUser.setEmployeeNumber(form.getEmployeeNumber());
-		if(form.getRole() == null || form.getRole()) {
+
+		/* ログインユーザーと修正するユーザーが一緒の時はDBに登録している管理者権限をそのまま再設定する.
+		 * ちがうときはformのroleがtrueなら管理者,falseなら一般に設定する. */
+		if (userId.equals(customUserDetails.getUserId())) {
+			mUser.setRole(user.getRole());
+
+		} else if (form.getRole()) {
 			mUser.setRole("ROLE_ADMIN");
+
 		} else {
 			mUser.setRole("ROLE_GENERAL");
+			
 		}
-		
+
 		// ユーザー情報を更新する.
 		userService.updateExceptPassword(mUser);
-		
+
 		return "redirect:/users/list";
 
 	}
@@ -269,6 +263,7 @@ public class UserController {
 	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
 	 * 			正常に完了した場合,パスワード修正フォーム画面のビュー名.
 	 */
+	@PreAuthorize("#userId == authentication.principal.userId")
 	@GetMapping("/{userId}/passwordEdit")
 	public String getPasswordEdit(Model model, @PathVariable Integer userId,
 			@ModelAttribute PasswordEditForm form) {
@@ -300,6 +295,7 @@ public class UserController {
 	 * 			バリデーションエラーがあればパスワード修正フォーム画面のビュー名.
 	 * 			正常に完了した場合,ユーザー一覧画面のビュー名(リダイレクト).
 	 */
+	@PreAuthorize("#userId == authentication.principal.userId")
 	@PostMapping("/{userId}/passwordEdit")
 	public String postPasswordEdit(Model model, @PathVariable Integer userId,
 			@ModelAttribute @Validated(GroupOrder.class) PasswordEditForm form,
@@ -319,7 +315,7 @@ public class UserController {
 
 			/* ユーザーIDを渡すためにユーザー情報をmodelに格納する処理,ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
 			 * (下のほうでprivateメソッドとして設定している). */
-			this.goToEdit(model, user);
+			this.goToPasswordEdit(model, user);
 
 			return "users/password-edit";
 		}
@@ -374,7 +370,7 @@ public class UserController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param userId ユーザー情報を削除するユーザーのID.
-	 * @param userDetails ログイン中のユーザーの情報.
+	 * @param customUserDetails ログイン中のユーザーの情報.
 	 * @param request HTTPリクエストをJavaで扱いやすい形にしたHttpServletRequestインターフェースの実装オブジェクト.
 	 * @param response HTTPレスポンスをJavaで扱いやすい形にしたHttpServletResponseインターフェースの実装オブジェクト.
 	 * @param authentication Authenticationインターフェースを実装したオブジェクトで,認証状態を保持する(ユーザー情報・権限・認証済みか等).
@@ -385,7 +381,7 @@ public class UserController {
 
 	@PostMapping("/{userId}/delete")
 	public String postDelete(Model model, @PathVariable Integer userId,
-			@AuthenticationPrincipal UserDetails userDetails,
+			@AuthenticationPrincipal CustomUserDetails customUserDetails,
 			HttpServletRequest request,
 			HttpServletResponse response,
 			Authentication authentication) {
@@ -401,9 +397,11 @@ public class UserController {
 		// ユーザーの削除フラグを削除済みに変更する.
 		userService.updateIsDeleted(user);
 
-		// ログインユーザーが自身のユーザー情報を削除させた場合,アプリを使用する権限を失うためログアウトさせる.
-		if (userDetails.getUsername().equals(user.getEmailAddress())) {
-
+		/* ログインユーザーが自身のユーザー情報を削除する場合,アプリを使用する権限を失うためログアウトさせる.
+		 * ログインしているユーザーのメールアドレスで修正するユーザーかどうかを確認すると,
+		 * メールアドレスを修正したあとに削除したときCustomUserDetailsに設定されているメールアドレスが修正される前のままになるため,
+		 * 削除後もログアウトされない.そのため、ユーザーIDで確認する. */
+		if (customUserDetails.getUserId().equals(user.getUserId())) {
 			/* SecurityContextLogoutHandlerはSpringSecurityのログアウト用のユーティリティクラス(補助クラス)で,
 			 * ユーザーをログアウトさせる処理を簡単に行える. */
 			SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
@@ -459,6 +457,7 @@ public class UserController {
 	 * ユーザー情報修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
+	 * @param userId ユーザー情報を修正するユーザーのID.
 	 * @param user ユーザー情報を修正するユーザーの情報.
 	 */
 	private void goToEdit(Model model, MUser user) {

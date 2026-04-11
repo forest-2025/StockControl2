@@ -60,22 +60,24 @@
 				</div>
 
 				<!-- 管理者権限 -->
-				<!--/* ログインしている本人以外の管理者権限は変更できるようにし,自身の権限は変更できないようにする. */-->
-				<div class="mt-4" th:if="*{emailAddress != #authentication.name}">
+				<!--/* ログインしているユーザー以外の管理者権限は変更できるようにし,自身の権限は変更できないようにする */-->
+				<div class="mt-4">
 					<label class="form-check-label mb-2">
-						<input class="form-check-input mb-2 fs-5" type="checkbox" th:field="*{role}" th:errorclass="is-invalid">
+						<input class="form-check-input mb-2 fs-5" type="checkbox" th:field="*{role}"
+							th:disabled="${#authentication.principal.userId == userId}" th:errorclass="is-invalid">
 						<span th:text="#{role}"></span>
+						<!-- エラーメッセージ -->
+						<div class="invalid-feedback fs-6" th:errors="*{role}"></div>
+							
+						<!--/* disabledは送信しないため,ログインしているユーザーの管理者権限はこちらから送る */-->
+						<div th:if="${#authentication.principal.userId == userId}">
+							<input type="hidden" th:field="*{role}" th:errorclass="is-invalid">
+							<!-- エラーメッセージ -->
+							<div class="invalid-feedback fs-6" th:errors="*{role}"></div>
+						</div>
 					</label>
-					<!-- エラーメッセージ -->
-					<div class="invalid-feedback fs-6" th:errors="*{role}"></div>
 				</div>
 				
-				<div class="mt-4" th:if="*{emailAddress == #authentication.name}">
-					<div class="mb-2" th:text="#{role}"></div>
-					<div class="ms-3 mb-2 fs-5" th:text="#{admin}"></div>
-				</div>
-				
-
 				<div class="mt-5">
 					<!-- 確定ボタン -->
 					<button class="btn btn-primary btn-lg me-2 mb-5" type="submit" id="userEdit" name="userEdit"

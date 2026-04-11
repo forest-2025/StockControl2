@@ -131,28 +131,33 @@ public interface ProductInfoService {
 	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, Integer productId);
 
 	/** 
-	 * 商品画像をバリデーションチェックし,ローカルファイルストレージ(プロジェクト直下)に保存する. 
+	 * 商品画像をバリデーションチェックする. 
 	 * 
 	 * @param file アップロードされた商品画像.
-	 * @param result  商品画像のバリデーションエラーメッセージのリストと DB に保存するためのファイル名を保持するオブジェクト.
-	 * 				(if文の外で利用したいため先に作成して,フィールドerrors ・ fileNameともにnullの状態で渡す).
-	 * @return 	バリデーション結果を保持するオブジェクト.
-	 * 			バリデーションエラーがある場合：fileName は null,errors にエラーメッセージが格納される.
-	*             	バリデーションエラーがない場合：errors は null,fileName に DB に保存するための一意の名前のファイル名が格納される.
-	*             	(引数 result に結果を設定して返す).
-	 * @throws RuntimeException 画像ファイルの処理で例外が発生した場合. 
+	 * @param errors 商品画像のバリデーションエラーメッセージのリストを保持するオブジェクト.
+	 * @return 	バリデーションエラーメッセージを保持するオブジェクト.
+	 *			バリデーションエラーがない場合：errors は nullが格納される.
 	 */
-	public List<String> validateAndUpload(MultipartFile file,List<String> errors) throws IOException;
+	public List<String> validateImage(MultipartFile file, List<String> errors);
 
+	/** 
+	 * 商品画像をローカルファイルストレージ(プロジェクト直下)に保存する. 
+	 * 
+	 * @param file アップロードされた商品画像.
+	 * @return 	画像ファイルの一意にしたファイル名.
+	 * @throws IOException 画像ファイルの保存処理で例外が発生した場合. 
+	 */
+	public String uploadImage(MultipartFile file) throws IOException;
+	
 	/** 
 	 * 商品の画像情報を更新する.
 	 * 既存の画像は削除する(物理削除).
 	 * 
 	 * @param product 既存の商品情報(画像情報を削除するため必要).
 	 * @param productImageEdit 更新する商品情報.
-	 * @throws RuntimeException 画像ファイルの削除処理で例外が発生した場合. 
+	 * @throws IOException 画像ファイルの削除処理で例外が発生した場合. 
 	 */
 	public void updateProductImage(MProduct product, MProduct productImageEdit) throws IOException;
+
 	
-	public String uploadImage(MultipartFile file) throws IOException;
 }

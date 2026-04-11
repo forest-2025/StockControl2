@@ -1,15 +1,15 @@
 package com.example.form.users;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-
 import com.example.domain.users.validation.UniqueUser;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
 import com.example.validation.ValidGroup3;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
@@ -40,7 +40,7 @@ public class EditForm {
 	@Size(max = 254, groups = ValidGroup2.class)
 	private String emailAddress; // メールアドレス.
 
-	//@NotNull(groups = ValidGroup1.class)
+	@NotNull(groups = ValidGroup1.class)
 	private Boolean role; // 管理者権限.
 
 }

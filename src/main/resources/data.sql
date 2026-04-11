@@ -28,7 +28,7 @@ VALUES
 (
    '2',
    'tokyo@company.co.jp',
-   '$2a$10$aSuzDDvaISzuIiwQ7G5Hi.YuRVXtInEkI4q2GlY4dr95Qr2MrRW8y',
+   '$2a$10$YgFiI/AIXXj3wm40TquMreQL7PYGqccgV5YTST6bJvM5tXqABfpze',
    '東京',
    '一郎',
    'E00002',

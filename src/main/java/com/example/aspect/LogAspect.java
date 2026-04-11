@@ -28,12 +28,12 @@ public class LogAspect {
 			// 実行結果を呼び出し元に返却
 			return result;
 
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			// エラーログ出力
 			log.error("メソッド異常終了:" + jp.getSignature());
 			
 			// エラーの再スロー
-			throw e;
+			throw ex;
 		}
 	}
 

@@ -10,35 +10,21 @@
 <body>
 	<div layout:fragment="content">
 		<div class="text-center mt-5">
-			
+
 			<h3 class="error-message text-danger" th:text="#{errorMessage}"></h3>
 
-			<!--/* 各エラーのメッセージ */-->
 			<div class="mt-5">
-				<h4 th:if="${error == 403}">
-					このページを表示する権限がありません。ヘッダーのメニューから移動してください。
-				</h4>
+				<!--/* 通常のメッセージ */-->
+				<div th:if="${errorMessage == null}">
+					<h4 th:text="#{commonErrorMessage}"></h4>
+				</div>
 
-				<h4 th:if="${error == 404}">
-					お探しのページは移動または削除された可能性があります。ヘッダーのメニューから移動してください。
-				</h4>
-
-				<h4 th:if="${error == 'MaxUploadSize'}" th:text="#{MaxUploadSizeMessage}">
-
-				</h4>
-
-				<!--/* MaxUploadSizeExceededException以外すべてに表示する共通メッセージ*/-->
-				<h4 th:if="${error == ''}">
-					システム内で予期せぬエラーが発生しました。しばらく待ってからやり直すか、管理者へお問い合わせください。
-				</h4>
-
-				<!--/* ログインしていないユーザーがエラーになったときはログイン画面に遷移させるためリンクを表示する */-->
-				<div class="fs-4 fw-bold" sec:authorize="isAnonymous()">
-					<a th:href="@{/login}" th:text="#{backToLogin}"></a>
+				<!--/* 独自メッセージ */-->
+				<div th:if="${errorMessage != null}">
+					<h4 th:text="${errorMessage}"></h4>
 				</div>
 
 			</div>
-
 		</div>
 
 	</div>

@@ -85,13 +85,6 @@
 			<artifactId>modelmapper-spring</artifactId>
 			<version>3.2.5</version>
 		</dependency>
-		<!-- mysql
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.33</version>
-			<scope>runtime</scope>
-		</dependency>-->
 		<!-- thymeleaf-layout-dialect -->
 		<dependency>
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
@@ -140,11 +133,16 @@
 			<version>1.13.1</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- AOP -->
+		<!-- Spring AOP -->
 		<dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-aop</artifactId>
-    </dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<!-- AspectJ -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

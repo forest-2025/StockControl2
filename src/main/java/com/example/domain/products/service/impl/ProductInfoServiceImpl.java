@@ -160,7 +160,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	// 商品情報を登録する.
 	@Override
 	public void registerProduct(MProduct product) {
-		
+
 		// 商品を登録する.
 		productMapper.insertOne(product);
 
@@ -192,25 +192,25 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
 	// 削除フラグを更新する.
 	@Override
-	public void updateIsDeleted(MProduct product) throws IOException{
+	public void updateIsDeleted(MProduct product) throws IOException {
 
 		// 商品情報の削除は物理削除ではなく論理削除のため,削除フラグ(is_deleted)を削除済みの1に変更する.
 		product.setProductIsDeleted(1);
 
-			// 画像は削除する(メモリを圧迫するため).
-			if (product.getProductImage() != null) {
-				Path oldFile = Path.of(uploadDir, product.getProductImage());
-				if (Files.exists(oldFile)) {
-					Files.delete(oldFile);
-				}
-
+		// 画像は削除する(メモリを圧迫するため).
+		if (product.getProductImage() != null) {
+			Path oldFile = Path.of(uploadDir, product.getProductImage());
+			if (Files.exists(oldFile)) {
+				Files.delete(oldFile);
 			}
 
-			// 画像を削除したため,DBのファイル名も削除するため,nullに設定する.
-			product.setProductImage(null);
+		}
 
-			// 削除フラグを更新する.
-			productMapper.updateIsDeleted(product);
+		// 画像を削除したため,DBのファイル名も削除するため,nullに設定する.
+		product.setProductImage(null);
+
+		// 削除フラグを更新する.
+		productMapper.updateIsDeleted(product);
 
 	}
 
@@ -234,8 +234,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	}
 
 	@Override
-	public List<String> validateAndUpload(MultipartFile file,List<String> errors) {
-		
+	public List<String> validateImage(MultipartFile file, List<String> errors) {
+
 		// 選択したファイルのファイル名を取得する.
 		String originalFileName = file.getOriginalFilename();
 
@@ -261,41 +261,42 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 				errors.add(errorMessage);
 			}
 		}
-			return errors;
+		return errors;
 
 	}
-	
+
 	// 画像ファイルを登録する.
-	public String uploadImage (MultipartFile file) throws IOException {
-		
+	public String uploadImage(MultipartFile file) throws IOException {
+
 		String fileName = UUID.randomUUID().toString() + ".jpg";
-		
+
 		Path targetFile = Path.of(uploadDir, fileName);
 
 		Files.createDirectories(targetFile.getParent());
-		
-		try(InputStream is = file.getInputStream()){
+
+		try (InputStream is = file.getInputStream()) {
 			Files.copy(is, targetFile);
-			
+
 		}
+
 		return fileName;
-		
+
 	}
 
 	// 商品の画像情報を更新する.
 	@Override
 	public void updateProductImage(MProduct product, MProduct productImageEdit) throws IOException {
 
-			// 既存画像を削除する.
-			if (product.getProductImage() != null) {
-				Path oldFile = Path.of(uploadDir, product.getProductImage());
-				if (Files.exists(oldFile)) {
-					Files.delete(oldFile);
-				}
+		// 既存画像を削除する.
+		if (product.getProductImage() != null) {
+			Path oldFile = Path.of(uploadDir, product.getProductImage());
+			if (Files.exists(oldFile)) {
+				Files.delete(oldFile);
 			}
+		}
 
-			// 商品の画像情報を更新する.
-			productMapper.updateProductImage(productImageEdit);
+		// 商品の画像情報を更新する.
+		productMapper.updateProductImage(productImageEdit);
 
 	}
 
