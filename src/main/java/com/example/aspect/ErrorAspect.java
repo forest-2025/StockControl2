@@ -9,10 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 @Aspect
 @Component
 @Slf4j
+/**
+ * 例外発生時にログを出力するアスペクト
+ */
 public class ErrorAspect {
 
-	@AfterThrowing(value = "execution(* *..*..*(..))&&"
-			+ "(bean(*Controller) || bean(*Service) || bean(*Repository))", throwing = "ex")
+	@AfterThrowing(value = "execution(* com.example..*(..))", throwing = "ex")
 	public void logAfterThrowing(Exception ex) {
 		
 		log.error("予期せぬエラーの発生: {}", ex.getClass().getSimpleName(), ex);

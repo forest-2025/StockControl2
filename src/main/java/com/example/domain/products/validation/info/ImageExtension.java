@@ -10,19 +10,19 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 /**
- * 入荷先IDが m_supplier に存在するか検証するアノテーション.
+ * 画像ファイルがJPEGか検証するアノテーション.
  * 
  * このアノテーションはフィールドに付与する.
  * 
  */
 @Target({ElementType.FIELD}) 
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = SupplierIdExistsValidator.class)
+@Constraint(validatedBy = ImageExtensionValidator.class)
 @Documented
-public @interface SupplierIdExists {
+public @interface ImageExtension {
 
-	String message() default "{SupplierIdExists.message}";
+	String message() default "{ImageExtension.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-
+    
 }

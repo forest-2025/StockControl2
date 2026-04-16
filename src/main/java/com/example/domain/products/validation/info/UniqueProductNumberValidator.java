@@ -2,14 +2,12 @@ package com.example.domain.products.validation.info;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.domain.products.service.ProductInfoService;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * UniqueProductNumber アノテーションの検証処理を行う.
@@ -17,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
  * null の場合は @NotBlank に任す.
  * 一致しない場合は productNumber フィールドにエラーを紐付ける.
  */
-@Slf4j
 public class UniqueProductNumberValidator implements ConstraintValidator<UniqueProductNumber, Object> {
 
 	@Autowired
@@ -53,49 +50,37 @@ public class UniqueProductNumberValidator implements ConstraintValidator<UniqueP
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 
-		try {
+		if (value == null) {
 
-			if (value == null) {
-				return true;
-			}
+			return true;
+		}
 
-			BeanWrapper beanWrapper = new BeanWrapperImpl(value); // フォームで入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップする.
-			Object productIdValue = beanWrapper.getPropertyValue(productId);	// 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
-			Object productNumberValue = beanWrapper.getPropertyValue(productNumber);
+		BeanWrapper beanWrapper = new BeanWrapperImpl(value); // フォームで入力されたformクラスのオブジェクトをspringbootが操作しやすいようにラップする.
+		Object productIdValue = beanWrapper.getPropertyValue(productId); // 引数に渡した文字列(確認したいformクラスのフィールド名)を探して値を取得する.
+		Object productNumberValue = beanWrapper.getPropertyValue(productNumber);
 
-			if (productNumberValue == null) {
+		// 商品登録の場合,productIdValue はnullなので,nullチェックはしない.
+		if (productNumberValue == null) {
 
-				return true;
+			return true;
 
-			}
+		}
 
-			// 重複があるか確認する.
-			boolean isUnique = productInfoService.getCountDuplicates(productIdValue, productNumberValue);
+		// 重複があるか確認する.
+		boolean isUnique = productInfoService.isNotDuplicates(productIdValue, productNumberValue);
 
-			if (isUnique) {
+		if (isUnique) {
 
-				return true;
+			return true;
 
-			} else {
+		} else {
 
-				// エラーを特定のフィールドに紐づけて伝える
-				context.disableDefaultConstraintViolation(); // デフォルトのクラスエラーを無効化.
-				context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージをメッセージに再設定する.
-						.addPropertyNode(productNumber) // productNumberフィールドにエラーをつける.
-						.addConstraintViolation(); // バリデーションエラーを確定する.
+			// エラーを特定のフィールドに紐づけて伝える
+			context.disableDefaultConstraintViolation(); // デフォルトのクラスエラーを無効化.
+			context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージをメッセージに再設定する.
+					.addPropertyNode(productNumber) // productNumberフィールドにエラーをつける.
+					.addConstraintViolation(); // バリデーションエラーを確定する.
 
-				return false;
-			}
-
-		} catch (BeansException e) {
-			
-			log.error("@UniqueProductNumberValidator バリデーション中に例外が発生しました。フィールド名が正しいか確認してください: {}", e.getMessage());
-
-			return false;
-
-		} catch (Exception e) {
-			// その他予期せぬエラー（DB接続エラーなど）.
-			log.error("@UniqueProductNumberValidator で予期せぬエラーが発生しました", e);
 			return false;
 		}
 	}

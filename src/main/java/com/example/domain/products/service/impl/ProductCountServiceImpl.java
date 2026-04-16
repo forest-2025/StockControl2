@@ -3,14 +3,12 @@ package com.example.domain.products.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.customers.model.MCustomer;
 import com.example.domain.products.model.MProduct;
 import com.example.domain.products.service.ProductCountService;
-import com.example.domain.users.model.MUser;
 import com.example.dto.products.ProductWithSupplier;
 import com.example.dto.products.TStock;
 import com.example.dto.products.TTransactionHistory;
@@ -19,7 +17,6 @@ import com.example.repository.ProductMapper;
 import com.example.repository.ProductWithSupplierMapper;
 import com.example.repository.StockMapper;
 import com.example.repository.TransactionHistoryMapper;
-import com.example.repository.UserMapper;
 
 /**
  * ProductCountService の実装クラス.
@@ -35,8 +32,6 @@ public class ProductCountServiceImpl implements ProductCountService {
 	@Autowired
 	private TransactionHistoryMapper transactionHistoryMapper;
 
-	@Autowired
-	private UserMapper userMapper;
 
 	@Autowired
 	private CustomerMapper customerMapper;
@@ -50,33 +45,17 @@ public class ProductCountServiceImpl implements ProductCountService {
 	// 商品IDから商品情報を取得する(削除済みは除く). 
 	@Override
 	public MProduct getOneProduct(Integer productId) {
-		MProduct product = productMapper.findByProductId(productId);
-		return product;
+		
+		return productMapper.findByProductId(productId);
+		
 	}
 	
 	// 商品IDから商品情報と入荷先情報を取得する(削除済みは除く).
 	@Override
 	public ProductWithSupplier getOneProductWithSupplier(Integer productId) {
 		
-		ProductWithSupplier productWithSupplier = productWithSupplierMapper.findByProductId(productId);
-		return productWithSupplier;
+		return productWithSupplierMapper.findByProductId(productId);
 		
-	}
-
-	// ログイン中のユーザーのメールアドレスからユーザーIDを取得する.
-	@Override
-	public Integer getUserId(UserDetails userDetails) {
-
-		// ログイン中のユーザーのメールアドレス取得する.
-		String emailAddress = userDetails.getUsername();
-		
-		// メールアドレスからユーザー情報を取得する(削除済みは除く).
-		MUser user = userMapper.findByEmailAddress(emailAddress);
-		
-		// ユーザー情報からユーザーIDを取得する.
-		Integer userId = user.getUserId();
-
-		return userId;
 	}
 
 	// 入荷した商品の在庫数を増やし,履歴を登録する.
@@ -99,13 +78,13 @@ public class ProductCountServiceImpl implements ProductCountService {
 	@Override
 	public List<MCustomer> getCustomerList() {
 		
-		List<MCustomer> customerList = customerMapper.findAllInAscById();
-
-		return customerList;
+		return customerMapper.findAllInAscById();
+		
 	}
 
 	// 出荷先が登録されていて,削除済みでないかを出荷先IDで検索して確認する.
 	public boolean existsByCustomerId(Integer customerId) {
+		
 		MCustomer customer = customerMapper.findByCustomerId(customerId);
 		if(customer == null) {
 			return false;
@@ -116,9 +95,11 @@ public class ProductCountServiceImpl implements ProductCountService {
 	// 商品IDから商品の在庫情報を取得し,在庫数のみ返す.
 	@Override
 	public Integer getOneStockQuantity(Integer productId) {
+		
 		TStock stock = stockMapper.findByProductId(productId);
-		Integer stockQuantity = stock.getStockQuantity();
-		return stockQuantity;
+		
+		return stock.getStockQuantity();
+		
 	}
 
 	// 出荷した商品の在庫数を減らし,履歴を登録する.

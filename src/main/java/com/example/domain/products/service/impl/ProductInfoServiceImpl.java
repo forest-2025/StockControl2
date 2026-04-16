@@ -5,12 +5,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,13 +54,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	@Autowired
 	private ProductWithSupplierMapper productWithSupplierMapper;
 
-	@Autowired
-	private MessageSource messageSource;
-
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 
 	private static final String[] ALLOWED_EXTENSIONS = { "jpg", "jpeg" };
+
+	// 登録できる画像ファイルの最大サイズ.
+	private static final int MAX_SIZE = 20 * 1024 * 1024;
 
 	// 1ページで表示する商品数・入出荷履歴数を10に設定する.
 	private static final int SHOW_SIZE = 10;
@@ -79,7 +77,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 			return this.getSearchProductList(search, sort, page);
 
 			/* sort(並び替え順序)がascまたはdescでないとき(開発者ツールでクエリパラメータで値を変えられたときなど)は,
-			 * 削除済み以外の取得する. */
+			 * 削除済み以外の商品一覧を取得する. */
 		} else {
 			return this.getProductList(page);
 
@@ -102,9 +100,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	public PageInfo<ProductList> getSearchProductList(String search, String sort, int page) {
 
 		PageHelper.startPage(page, SHOW_SIZE);
-		List<ProductList> productItems = productListMapper.findSearchResults(search, sort);
+		List<ProductList> productList = productListMapper.findSearchResults(search, sort);
 
-		return new PageInfo<>(productItems);
+		return new PageInfo<>(productList);
 	}
 
 	// 商品のIDから商品情報と入荷先情報を取得する(削除済みは除く).
@@ -120,8 +118,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	@Override
 	public List<MSupplier> getAllSupplier() {
 
-		List<MSupplier> supplierList = supplierMapper.findAllInAscById();
-		return supplierList;
+		return supplierMapper.findAllInAscById();
+
 	}
 
 	// 入荷先IDから入荷先がDBに登録されてるか確認する(削除済みは除く).
@@ -140,9 +138,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		}
 	}
 
-	// 指定した商品番号と重複するデータの件数を取得する.
+	// 指定した商品番号と重複するデータが存在するか判別する.
 	@Override
-	public boolean getCountDuplicates(Object productIdValue, Object productNumberValue) {
+	public boolean isNotDuplicates(Object productIdValue, Object productNumberValue) {
 
 		/* 取得した商品の商品番号と商品IDから,商品番号が既存の商品番号と(修正時は自身の商品番号は除外して)重複しているか確認し,
 		 * 重複している件数をcountに代入する.*/
@@ -179,6 +177,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	// 商品情報(商品番号・商品名・入荷先)を更新する.
 	@Override
 	public void updateProduct(MProduct product) {
+
 		productMapper.updateOne(product);
 
 	}
@@ -186,8 +185,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	// 商品IDから商品情報を取得する(削除済みは除く).
 	@Override
 	public MProduct getOneProduct(Integer productId) {
-		MProduct product = productMapper.findByProductId(productId);
-		return product;
+
+		return productMapper.findByProductId(productId);
+
 	}
 
 	// 削除フラグを更新する.
@@ -218,9 +218,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 	@Override
 	public ProductList getOneItemInTheList(Integer productId) {
 
-		ProductList productList = productListMapper.findByProductId(productId);
+		return productListMapper.findByProductId(productId);
 
-		return productList;
 	}
 
 	// 商品IDからその商品の履歴を降順でページングして取得する.  
@@ -233,39 +232,50 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 		return new PageInfo<>(historyList);
 	}
 
+	// 商品画像のサイズが20MBを越えていないかを確認する.  
 	@Override
-	public List<String> validateImage(MultipartFile file, List<String> errors) {
+	public boolean isValidFileSize(MultipartFile file) {
+
+		if (file.getSize() > MAX_SIZE) {
+
+			return false;
+
+		}
+
+		return true;
+	}
+
+	// 商品画像がJPEGかを確認する.
+	@Override
+	public boolean isAllowedExtension(MultipartFile file) {
+		
+		// MultipartFileのコンテントタイプがJPEGか確認する.
+		String contentType = file.getContentType();
+		
+		if(!contentType.equals("image/jpeg")) {
+			
+			return false;
+		}
 
 		// 選択したファイルのファイル名を取得する.
 		String originalFileName = file.getOriginalFilename();
 
-		// ファイル名がnullだったりなかったときはバリデーションエラーにする.
-		if (originalFileName == null || originalFileName.isBlank()) {
-			String errorMessage = messageSource.getMessage("InvalidFileName", null, Locale.JAPAN);
-			errors.add(errorMessage);
-		} else {
-			// 下にあるprivateメソッドgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している.
-			String extension = this.getExtension(originalFileName).toLowerCase();
+		// 下にあるprivateメソッドgetExtension()を呼び出して拡張子を取得し,それを小文字に変換している.
+		String extension = this.getExtension(originalFileName).toLowerCase();
 
-			// 拡張子がJPEG(.jpg, .jpeg)か確認する.
-			boolean allowed = false;
-			for (String allowedExtension : ALLOWED_EXTENSIONS) {
-				if (allowedExtension.equals(extension)) {
-					allowed = true;
-					break;
-				}
-			}
-			// JPEGでなければバリデーションエラーにする.
-			if (!allowed) {
-				String errorMessage = messageSource.getMessage("FileFormatsDiffer", null, Locale.JAPAN);
-				errors.add(errorMessage);
+		// 拡張子がJPEGか確認する.
+		for (String allowedExtension : ALLOWED_EXTENSIONS) {
+			if (allowedExtension.equals(extension)) {
+
+				return true;
 			}
 		}
-		return errors;
+		return false;
 
 	}
 
-	// 画像ファイルを登録する.
+	// 画像ファイルを保存する.
+	@Override
 	public String uploadImage(MultipartFile file) throws IOException {
 
 		String fileName = UUID.randomUUID().toString() + ".jpg";

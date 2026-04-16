@@ -5,8 +5,6 @@
 	<!-- 個別CSS読込 -->
 	<link rel="stylesheet" th:href="@{/css/products/info/register.css}">
 	<link rel="stylesheet" th:href="@{/css/form/register.css}">
-	<!-- 個別JS読込 -->
-	<script th:src="@{/js/image.js}" defer></script>
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -62,15 +60,12 @@
 				<!-- 画像 -->
 				<div class="mt-4">
 					<label class="mb-2" for="productFile" th:text="#{image}"></label>
+					<span class="text-danger fw-bold ms-2" th:text="#{imageWarning}"></span>
 					<input type="file" class="form-control mb-2 responsive-text" th:field="*{productFile}"
-						th:aria-label="#{image}" accept="image/jpeg"
-						th:classappend="${errors != null and !errors.isEmpty()} ? ' is-invalid' : ''">
+						th:aria-label="#{image}" accept="image/jpeg" th:errorclass="is-invalid">
 
 					<!-- エラーメッセージ -->
-					<div id="jsFileError" class="invalid-feedback" th:text="#{OverSize}"></div>
-					<div class="invalid-feedback fs-6" th:if="${errors != null}" th:each="error : ${errors}"
-						th:text="${error}">
-					</div>
+					<div class="invalid-feedback fs-6" th:errors="*{productFile}"></div>
 				</div>
 
 				<div class="mt-5">

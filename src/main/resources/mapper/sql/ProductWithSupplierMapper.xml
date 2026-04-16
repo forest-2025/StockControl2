@@ -5,7 +5,7 @@
 <!-- Mapperとxmlのマッピング -->
 <mapper namespace="com.example.repository.ProductWithSupplierMapper">
 
-	<resultMap type="ProductWithSupplier" id="productWithSupplierMap" >
+	<resultMap type="ProductWithSupplier" id="productWithSupplier" >
   		<association property="product" resultMap="product" columnPrefix="product_" />
   		<association property="supplier" resultMap="supplier" columnPrefix="supplier_" />
   	</resultMap>
@@ -30,7 +30,7 @@
 
 	<!-- 商品IDから商品情報と入荷先情報を取得する(削除済みは除く) -->
 	<select id="findByProductId"
-		resultMap="productWithSupplierMap">
+		resultMap="productWithSupplier">
 		select
 			product.id as product_id,
 			product.name as product_name,

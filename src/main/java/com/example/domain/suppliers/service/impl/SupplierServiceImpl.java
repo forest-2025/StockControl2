@@ -92,9 +92,8 @@ public class SupplierServiceImpl implements SupplierService {
 	@Override
 	public MSupplier getBySupplierId(Integer supplierId) {
 
-		MSupplier supplier = supplierMapper.findBySupplierId(supplierId);
-
-		return supplier;
+		return supplierMapper.findBySupplierId(supplierId);
+		
 	}
 
 	// 入荷先の情報を更新する.

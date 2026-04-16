@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
 /** 
  * ユーザーの情報に関するコントローラクラス.
  * 
- *  */
+ */
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -70,6 +70,12 @@ public class UserController {
 		 * @RequestParam(defaultValue = "1") int pageはpage=1がデフォルト. */
 
 		PageInfo<MUser> userList = userService.findAllSorted(search, sort, page);
+
+		// 並び替え順序のとき検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
+		if (!(sort.equals("asc") || sort.equals("desc"))) {
+			search = "";
+		}
+		
 		model.addAttribute("userList", userList);
 		model.addAttribute("search", search);
 
@@ -147,7 +153,6 @@ public class UserController {
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
 	 * @param userId ユーザー情報を修正するユーザーのID.
-	 * @param customUserDetails ログイン中のユーザーの情報.
 	 * @param form ユーザー修正フォーム.
 	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
 	 * 			正常に完了した場合,ユーザー情報修正フォーム画面のビュー名.
@@ -155,7 +160,6 @@ public class UserController {
 	@GetMapping("/{userId}/edit")
 	public String getEdit(Model model,
 			@PathVariable Integer userId,
-			@AuthenticationPrincipal CustomUserDetails customUserDetails,
 			@ModelAttribute EditForm form) {
 
 		// ユーザーIDから情報を取得する.
@@ -419,8 +423,7 @@ public class UserController {
 			 * SpringSecurityから見て「ログインユーザーが存在しない状態」になる.
 			 * logoutメソッドは内部的にsession.invalidate();が実行され,これによりHTTPセッションが破棄される.
 			 * またCookie(JSESSIONID)を削除してくれる.
-			 * 
-			 *  */
+			 */
 			// 認証情報のクリア・セッション破棄・Cookieの削除を行い,ユーザーをログアウト状態にする.
 			logoutHandler.logout(request, response, authentication);
 

@@ -26,8 +26,8 @@ import jakarta.validation.Payload;
 @Documented
 public @interface UniqueProductNumber {
 	
-	String message() default "{UniqueProductNumber.message}";	// デフォルトエラーメッセージ.
-    Class<?>[] groups() default {};							// groupsを指定できる仕組みの設定.
+	String message() default "{UniqueProductNumber.message}";
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
     
     String productIdField();		// この属性を設定することで,各formクラスのフィールド名をバリデータクラスに渡すことができる.

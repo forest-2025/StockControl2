@@ -114,7 +114,7 @@ public class ProductCountController {
 			return "products/count/arrive";
 		}
 
-		//form（商品ID・入荷数・日付・備考）をTTransactionHistory型に変換する.
+		//form（入荷数・備考）をTTransactionHistory型に変換する.
 		TTransactionHistory transactionHistory = new TTransactionHistory();
 		transactionHistory = modelMapper.map(form, TTransactionHistory.class);
 
@@ -209,8 +209,7 @@ public class ProductCountController {
 		TTransactionHistory transactionHistory = new TTransactionHistory();
 		transactionHistory = modelMapper.map(form, TTransactionHistory.class);
 
-		// 商品IDとユーザーIDを設定する.
-		transactionHistory.setProductId(productId);
+		// ユーザーIDを設定する.
 		transactionHistory.setUserId(customUserDetails.getUserId());
 
 		// 出荷処理を行う.(商品の在庫を減少させて履歴を更新する).
@@ -302,12 +301,11 @@ public class ProductCountController {
 		 * 実在庫数より商品の在庫数が多ければ在庫が減ったということなので負の数が格納される. */
 		Integer amountOfChange = form.getActualProductCount() - stockQuantity;
 
-		// 商品ID・ユーザーID・在庫の増減数をを設定する.
-		transactionHistory.setProductId(productId);
+		// ユーザーID・在庫の増減数を設定する.
 		transactionHistory.setUserId(customUserDetails.getUserId());
 		transactionHistory.setAmountOfChange(amountOfChange);
 
-		// 修正処理を行う.(商品の在庫を調整して履歴を更新する).
+		// 修正処理を行う(商品の在庫を調整して履歴を更新する).
 		productCountService.processEdit(transactionHistory);
 
 		return "redirect:/products/" + productId + "/info/display-details";

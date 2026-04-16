@@ -13,7 +13,8 @@ import jakarta.validation.Payload;
  * 実在庫数が在庫数とおなじ数量でないかを検証するアノテーション.
  * 
  * このアノテーションはクラスに付与する.
- * 
+ * (StockEditForm の productId をもとに在庫数を取得して比較するため,
+ * フィールドに付与すると在庫数を取得できないのでクラスに付与する).
  */
 @Target({ElementType.TYPE}) 
 @Retention(RetentionPolicy.RUNTIME)
@@ -21,7 +22,7 @@ import jakarta.validation.Payload;
 @Documented
 public @interface RequiresStockUpdate {
 
-	String message() default "{RequiresStockUpdate.message}";	// デフォルトエラーメッセージ.
-    Class<?>[] groups() default {};					// groupsを指定できる仕組みの設定.
+	String message() default "{RequiresStockUpdate.message}";
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

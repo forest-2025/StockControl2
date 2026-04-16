@@ -21,8 +21,8 @@ import jakarta.validation.Payload;
 @Documented
 public @interface SafeHiragana {
 	
-	String message() default "{SafeHiragana.message}";	// デフォルトエラーメッセージ.
-    Class<?>[] groups() default {};							// groupsを指定できる仕組みの設定.
+	String message() default "{SafeHiragana.message}";
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
     
 }

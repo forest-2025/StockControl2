@@ -13,6 +13,8 @@ import jakarta.validation.Payload;
  * 出荷数が在庫数を越えていないか検証するアノテーション.
  * 
  * このアノテーションはクラスに付与する.
+ * (ShipForm の productId をもとに在庫数を取得して比較するため,
+ * フィールドに付与すると在庫数を取得できないのでクラスに付与する).
  * 
  */
 @Target({ElementType.TYPE}) 
@@ -21,8 +23,8 @@ import jakarta.validation.Payload;
 @Documented
 public @interface WithinStock {
 	
-	String message() default "{WithinStock.message}";	// デフォルトエラーメッセージ.
-    Class<?>[] groups() default {};					// groupsを指定できる仕組みの設定.
+	String message() default "{WithinStock.message}";
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
    
 }

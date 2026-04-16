@@ -29,7 +29,7 @@ import jakarta.validation.Payload;
 @Documented
 public @interface UniqueUser {
 
-	String message() default "重複しています";	// デフォルトエラーメッセージ.
+	String message() default "Duplicate.message";	// デフォルトエラーメッセージ.
     Class<?>[] groups() default {};							// groupsを指定できる仕組みの設定.
     Class<? extends Payload>[] payload() default {};
     

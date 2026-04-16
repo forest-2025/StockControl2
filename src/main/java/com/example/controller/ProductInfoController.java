@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -72,8 +71,13 @@ public class ProductInfoController {
 		 * パラメータ名searchがあってもなくても受け付けられるようにしている.
 		 * パラメータ名searchが無ければ削除されていない全商品の一覧を取得し,あればsearchの値が含まれる商品を検索する. */
 
-		int n = 1/0;
 		PageInfo<ProductList> productList = productInfoService.findAllSorted(search, sort, page);
+
+		// 並び替え順序のとき検索フォームに検索語句があると検索できているようにみえるためsearchに空白を入れる.
+		if (!(sort.equals("asc") || sort.equals("desc"))) {
+			search = "";
+		}
+
 		model.addAttribute("productList", productList);
 		model.addAttribute("search", search);
 
@@ -117,28 +121,20 @@ public class ProductInfoController {
 			@ModelAttribute @Validated(GroupOrder.class) RegisterForm form,
 			BindingResult bindingResult) throws IOException {
 
-		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
-		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
-		MultipartFile file = form.getProductFile();
-		List<String> errors = new ArrayList<>();
-
-		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う(画像選択していなければnullではないがfile.isEmpty()がTrueになる).
-		if (file != null && !file.isEmpty()) {
-			errors = productInfoService.validateImage(file, errors);
-		}
-
-		/* バリデーションエラーがあれば商品登録フォーム画面へ戻る.
-		 * 画像がなければresultのfileName ・ errorsは両方ともnullでhasErrors()はfalseになる. */
-		if (bindingResult.hasErrors() || !errors.isEmpty()) {
-			model.addAttribute("errors", errors);
+		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
+		if (bindingResult.hasErrors() ) {
+			
 			// 入荷先名全件取得しmodelに格納する処理,ヘッダーの設定をmodelに格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している).
 			this.goToRegister(model);
 
 			return "products/info/register";
 		}
 
+		MultipartFile file = form.getProductFile();
+		
 		String fileName = null;
 
+		// 画像ファイルがあれば保存する.
 		if (file != null && !file.isEmpty()) {
 			fileName = productInfoService.uploadImage(file);
 		}
@@ -335,22 +331,12 @@ public class ProductInfoController {
 			return "error";
 		}
 
-		/* MultipartFile型はSpringのアップロードされたファイルを扱うためのオブジェクト.
-		 * ファイル名・サイズ・MIMEタイプ(ファイルの種類を表す情報でタイプ/サブタイトルの形式(image/jpegみたいな)をしている)・内容（バイト配列）などをもつ. */
-		MultipartFile file = form.getProductFile();
-		List<String> errors = new ArrayList<>();
-
-		// 画像ファイルがあれば,画像ファイルのバリデーションチェックと画像の保存を行う.
-		if (file != null && !file.isEmpty()) {
-			errors = productInfoService.validateImage(file, errors);
-		}
 
 		// バリデーションエラーがあれば商品登録フォーム画面へ戻る.
-		if (!errors.isEmpty()) {
+		if (bindingResult.hasErrors()) {
 
 			// modelに格納する.
 			model.addAttribute("product", product);
-			model.addAttribute("errors", errors);
 
 			// ヘッダーの色と項目を設定する.
 			customHeader.setGray("画像修正");
@@ -359,6 +345,8 @@ public class ProductInfoController {
 			return "products/info/image-edit";
 		}
 
+		
+		MultipartFile file = form.getProductFile();
 		String fileName = null;
 
 		if (file != null && !file.isEmpty()) {
@@ -417,7 +405,7 @@ public class ProductInfoController {
 	 * 			正常に完了した場合,商品一覧画面のビュー名(リダイレクト).
 	 */
 	@PostMapping("/{productId}/info/delete")
-	public String postDelete(Model model, @PathVariable Integer productId) throws IOException{
+	public String postDelete(Model model, @PathVariable Integer productId) throws IOException {
 
 		/// 商品IDから商品情報を取得する(削除済みは除く).
 		MProduct productOne = productInfoService.getOneProduct(productId);

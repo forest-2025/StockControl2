@@ -1,17 +1,18 @@
 package com.example.form.products.info;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.domain.products.validation.info.ImageExtension;
+import com.example.domain.products.validation.info.MaxUploadSizeExceeded;
 import com.example.domain.products.validation.info.SupplierIdExists;
 import com.example.domain.products.validation.info.UniqueProductNumber;
 import com.example.validation.ValidGroup1;
 import com.example.validation.ValidGroup2;
 import com.example.validation.ValidGroup3;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
@@ -36,12 +37,8 @@ public class RegisterForm {
 	@SupplierIdExists(groups = ValidGroup2.class)
 	private Integer supplierId; // 入荷先ID.
 
+	@MaxUploadSizeExceeded(groups = ValidGroup1.class)
+	@ImageExtension(groups = ValidGroup2.class)
 	private MultipartFile productFile; // 商品画像.
 
 }
-
-/* 商品画像は DB では image で,エンティティクラスでは productImage , form クラスでは　productFile なのは,
- * DB ではシンプルな名前のほうが使いやすいからで,エンティティクラスは何の画像かわかるようにするため product をつけている.
- * form ではエンティティクラスと同じ名前にすると, modelMapper.map で値のコピー・変換をするときに自動的にマッピングされて値が入るが,
- * DB の image には一意の名前のファイル名を入れたいので,マッピングされないように form とエンティティクラスで別の名前にしている.
- */

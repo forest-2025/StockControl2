@@ -89,9 +89,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public MCustomer getByCustomerId(Integer customerId) {
 
-		MCustomer customer = customerMapper.findByCustomerId(customerId);
-
-		return customer;
+		return customerMapper.findByCustomerId(customerId);
 	}
 
 	// 出荷先の情報を更新する.
@@ -99,7 +97,6 @@ public class CustomerServiceImpl implements CustomerService {
 	public void updateOne(MCustomer customer) {
 
 		customerMapper.updateOne(customer);
-
 	}
 
 	// 削除フラグを更新する.

@@ -31,7 +31,7 @@ public interface CustomerService {
 
 	/** 
 	 * 削除済み以外の出荷先一覧から検索語句が出荷先ID・出荷先名・出荷先名ふりがなと一致する出荷先を検索する.
-	 * その一覧を,指定された並べ替え項目（IDまたはふりがな）と並べ替え順序（昇順または降順）に基づいてソートする.
+	 * その一覧を指定された並べ替え項目（IDまたはふりがな）と,並べ替え順序（昇順または降順）に基づいてソートする.
 	 * 
 	 * 
 	 * @param search 検索語句.
@@ -60,14 +60,16 @@ public interface CustomerService {
 	/**
 	 *  出荷先の情報を更新する.
 	 *  
-	 *  @param customer 更新する出荷先情報.*/
+	 *  @param customer 更新する出荷先情報.
+	 */
 	public void updateOne(MCustomer customer);
 
 	/** 
 	 * 削除フラグを更新する.
 	 * 出荷先情報の削除は物理削除ではなく論理削除のため削除フラグを1に設定する.
 	 * 
-	 * @param customer 更新する出荷先情報.*/
+	 * @param customer 更新する出荷先情報.
+	 */
 	public void updateIsDeleted(MCustomer customer);
 
 }

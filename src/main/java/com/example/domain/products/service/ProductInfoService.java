@@ -80,7 +80,7 @@ public interface ProductInfoService {
 	 * @param productNumberValue 商品番号.
 	 * @return 重複がなければ true,あれば false.
 	 */
-	public boolean getCountDuplicates(Object productIdValue, Object productNumberValue);
+	public boolean isNotDuplicates(Object productIdValue, Object productNumberValue);
 
 	/** 
 	 * 商品情報を登録する. 
@@ -130,15 +130,31 @@ public interface ProductInfoService {
 	 */
 	public PageInfo<HistoryDetails> getHistoryForOneProduct(int page, Integer productId);
 
+	/**
+	 * 商品画像のサイズが20MBを越えていないかを確認する.
+	 * 
+	 * @param file アップロードされた商品画像.
+	 * @return	有効なファイルサイズなら true,そうでなければ false.
+	 */
+	public boolean isValidFileSize(MultipartFile file);
+
+	/**
+	 * 商品画像が JPEG かを確認する.
+	 * 
+	 * @param file アップロードされた商品画像.
+	 * @return	JPEGなら true,そうでなければ false.
+	 */
+	public boolean isAllowedExtension (MultipartFile file);
+	
 	/** 
 	 * 商品画像をバリデーションチェックする. 
 	 * 
 	 * @param file アップロードされた商品画像.
 	 * @param errors 商品画像のバリデーションエラーメッセージのリストを保持するオブジェクト.
 	 * @return 	バリデーションエラーメッセージを保持するオブジェクト.
-	 *			バリデーションエラーがない場合：errors は nullが格納される.
+	 *			バリデーションエラーがない場合,errors は nullが格納される.
 	 */
-	public List<String> validateImage(MultipartFile file, List<String> errors);
+	//public List<String> validateImage(MultipartFile file, List<String> errors);
 
 	/** 
 	 * 商品画像をローカルファイルストレージ(プロジェクト直下)に保存する. 
@@ -148,7 +164,7 @@ public interface ProductInfoService {
 	 * @throws IOException 画像ファイルの保存処理で例外が発生した場合. 
 	 */
 	public String uploadImage(MultipartFile file) throws IOException;
-	
+
 	/** 
 	 * 商品の画像情報を更新する.
 	 * 既存の画像は削除する(物理削除).
@@ -159,5 +175,4 @@ public interface ProductInfoService {
 	 */
 	public void updateProductImage(MProduct product, MProduct productImageEdit) throws IOException;
 
-	
 }

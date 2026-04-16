@@ -22,8 +22,8 @@ import jakarta.validation.Payload;
 @Documented
 public @interface CustomerIdExists {
 	
-	String message() default "{CustomerIdExists.message}";	// デフォルトエラーメッセージ.
-    Class<?>[] groups() default {};					// groupsを指定できる仕組みの設定.
+	String message() default "{CustomerIdExists.message}";
+    Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
     
 }

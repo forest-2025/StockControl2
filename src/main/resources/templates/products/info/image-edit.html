@@ -4,8 +4,6 @@
 <head>
 	<!-- 個別CSS読込 -->
 	<link rel="stylesheet" th:href="@{/css/products/info/image-edit.css}">
-	<!-- 個別JS読込 -->
-	<script th:src="@{/js/image.js}" defer></script>
 	<title layout:fragment="title" th:text="${customHeader.headerItem}"></title>
 </head>
 
@@ -25,8 +23,8 @@
 		<div>
 
 			<form method="post" th:object="${imageEditForm}"
-				th:action="@{'/products/' + ${product.productId} + '/info/imageEdit'}" 
-				enctype="multipart/form-data" id="uploadForm">
+				th:action="@{'/products/' + ${product.productId} + '/info/imageEdit'}" enctype="multipart/form-data"
+				id="uploadForm">
 
 				<!-- 商品番号 -->
 				<div class="mt-4">
@@ -45,17 +43,14 @@
 				<!-- 画像 -->
 				<div class="mt-4">
 					<label class="form-label mb-2" for="formFile" th:text="#{image}"></label>
+					<span class="text-danger fw-bold ms-2" th:text="#{imageWarning}"></span>
 					<!--/* responsive-textがあることで画面サイズが小さくても"ファイルが選択されていません"などの文字が読めるようにしている
 					 accept="image/jpeg"で選択画面でJPEGの拡張子のファイルだけを初期表示することができる */-->
 					<input type="file" class="form-control mb-2 responsive-text" th:field="*{productFile}"
-						th:aria-label="#{image}" accept="image/jpeg"
-						th:classappend="${errors != null and !errors.isEmpty()} ? ' is-invalid' : ''">
+						th:aria-label="#{image}" accept="image/jpeg" th:errorclass="is-invalid">
 
 					<!-- エラーメッセージ -->
-					<div id="jsFileError" class="invalid-feedback" th:text="#{OverSize}"></div>
-					<div class="invalid-feedback fs-6" th:if="${errors != null}" th:each="error : ${errors}"
-						th:text="${error}">
-					</div>
+					<div class="invalid-feedback fs-6" th:errors="*{productFile}"></div>
 				</div>
 
 				<div class="mt-5">

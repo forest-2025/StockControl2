@@ -16,7 +16,7 @@ public interface ProductWithSupplierMapper {
 	/** 
 	 * 商品IDから商品情報と入荷先情報を取得する(削除済みは除く). 
 	 * 
-	 * @param　productId 取得する商品のID.
+	 * @param　productId 取得する商品の商品ID.
 	 * @return 商品情報と入荷先情報.*/
 	public ProductWithSupplier findByProductId(Integer productId);
 

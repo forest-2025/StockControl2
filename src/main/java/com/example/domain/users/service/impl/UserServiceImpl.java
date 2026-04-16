@@ -23,8 +23,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserMapper userMapper;
 
-	
-
 	// 1ページで表示するユーザーの人数を10人に設定する.
 	private final int SHOW_SIZE = 10;
 
@@ -32,15 +30,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public MUser getByEmailAddress(String emailAddress) {
 
-		MUser user = userMapper.findByEmailAddress(emailAddress);
+		return userMapper.findByEmailAddress(emailAddress);
 
-		return user;
 	}
-	
+
 	//  従業員番号を指定された並べ替え順序（昇順または降順）に基づいて並び替えたユーザー一覧を取得する.
 	@Override
-	public PageInfo<MUser> findAllSorted(String search, String sort, int page){
-		
+	public PageInfo<MUser> findAllSorted(String search, String sort, int page) {
+
 		// 削除済み以外のユーザー情報を従業員番号の昇順で取得する.
 		if (search == null) {
 			return this.getUsers(page);
@@ -89,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
 		PageHelper.startPage(page, SHOW_SIZE);
 
-		List<MUser> result = userMapper.findSearchResults(search,sort);
+		List<MUser> result = userMapper.findSearchResults(search, sort);
 
 		return new PageInfo<>(result);
 	}
@@ -118,21 +115,26 @@ public class UserServiceImpl implements UserService {
 	// ユーザーIDからユーザー情報を取得する(削除済みは除く). 
 	@Override
 	public MUser getByUserId(Integer userId) {
-		MUser user = userMapper.findByUserId(userId);
-		return user;
+
+		return userMapper.findByUserId(userId);
+
 	}
 
 	// ユーザーの情報を更新する(パスワード以外).
 	@Override
 	public void updateExceptPassword(MUser user) {
+
 		userMapper.updateOne(user);
+
 	}
 
 	// ユーザーのパスワードを更新する. 
 	@Override
 	public void updatePassword(MUser user) {
+
 		// パスワードを更新する.
 		userMapper.updatePassword(user);
+
 	}
 
 	// 削除フラグを更新する.
@@ -143,6 +145,7 @@ public class UserServiceImpl implements UserService {
 		user.setUserIsDeleted(1);
 		// 削除フラグを更新する.
 		userMapper.updateIsDeleted(user);
+
 	}
 
 }

@@ -2,8 +2,6 @@ package com.example.domain.products.service;
 
 import java.util.List;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.example.domain.customers.model.MCustomer;
 import com.example.domain.products.model.MProduct;
 import com.example.dto.products.ProductWithSupplier;
@@ -32,15 +30,6 @@ public interface ProductCountService {
 	 */
 	public ProductWithSupplier getOneProductWithSupplier(Integer productId);
 
-	/** 
-	 * ログイン中のユーザーのメールアドレスからユーザーIDを取得する.
-	 * (履歴で誰が処理したかわかるようにするため).
-	 * 
-	 * @param userDetails ログイン中のユーザーの情報.
-	 * @return ログイン中のユーザーのユーザーID.
-	 */
-	public Integer getUserId(UserDetails userDetails);
-
 	/**
 	 *  入荷した商品の在庫数を増やし,履歴を登録する.
 	 *  
@@ -65,7 +54,6 @@ public interface ProductCountService {
 	
 	/** 
 	 * 商品IDから商品の在庫情報を取得し,在庫数のみ返す.
-	 * (出荷数が在庫数を越えていないか確認するため.)
 	 * 
 	 * @param productId 取得する在庫情報の商品ID.
 	 * @return 商品の在庫数.

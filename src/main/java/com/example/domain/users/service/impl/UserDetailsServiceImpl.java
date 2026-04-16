@@ -52,27 +52,3 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 }
-/* SecurityBeanConfig クラスでも記載しているが,認証に成功したときに作成されるのは authenticated=true に設定され,
- * UserDetails(このクラスの loadUserByUsername()メソッドで作成された DB から取得した情報をもつ UserDetails オブジェクト)
- * 等を保持する Authentication オブジェクト.
- * @AuthenticationPrincipal UserDetails userDetails
- * @AuthenticationPrincipal CustomUserDetails customUserDetails
- * で渡されるオブジェクトは同じオブジェクトだが,受け取る型が違う(インタフェースか実装クラスか).
- * 
- * UserDetails は実際は CustomUserDetails オブジェクトが入っているが,型が UserDetails のため UserDetails のメソッドしか扱えず,
- * CustomUserDetails のフィールドにアクセスするには instanceof を使用して型チェックをしないといけない.
- * (別のが入っていたら ClassCastException になる).
- * 
- * CustomUserDetails はそのまま自身のフィールドやメソッドを使用できる.
- * しかし, Authentication オブジェクトのなかの principal が CustomUserDetails でなければ ClassCastException になる.
- * 
- * Authentication の principal はフィールドではなくプロパティ(インタフェースなのでフィールド自体がないが getPrincipal()メソッドがある).
- * これは principal という属性が“取得できること”を実装クラスに強制している.
- * 実装クラスの principal という属性とは getter によって外部から取得できる論理的な値のことで,その実体はフィールドでも,
- * 計算結果でも,別のオブジェクトでもいい.
- * 
- * また @AuthenticationPrincipal で取得されるのはリクエスト中の ThreadLocal にセットされた,
- * SecurityContext（SecurityContextHolder） 内の Authentication オブジェクト.
- * (HTTPセッションに保存する SecurityContext は次のリクエストで復元するための保管庫で,
- * リクエスト中にコントローラークラスなどで直接参照されることはない).
- * */

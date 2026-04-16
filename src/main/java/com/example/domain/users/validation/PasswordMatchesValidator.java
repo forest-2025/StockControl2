@@ -2,11 +2,9 @@ package com.example.domain.users.validation;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.BeansException;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * PasswordMatches アノテーションの検証処理を行う.
@@ -14,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
  * null の場合は @NotBlank に任す.
  * 一致しない場合は password フィールドにエラーを紐付ける.
  */
-@Slf4j
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
 
 	private String message; // エラーメッセージ;
@@ -32,8 +29,8 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 	@Override
 	public void initialize(PasswordMatches annotation) {
 		this.message = annotation.message();
-		this.password = annotation.password();					// 各formクラスのpassword属性の値(フィールド名)が取得され代入されている.
-		this.reEnterPassword = annotation.reEnterPassword();	 // 各formクラスのreEnterPassword属性の値(フィールド名)が取得され代入されている.
+		this.password = annotation.password(); // 各formクラスのpassword属性の値(フィールド名)が取得され代入されている.
+		this.reEnterPassword = annotation.reEnterPassword(); // 各formクラスのreEnterPassword属性の値(フィールド名)が取得され代入されている.
 	}
 
 	/**
@@ -45,47 +42,35 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
 	 */
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
-		
-		try {
-			
-			if (value == null) {
-				
-		        return true;
-		    }
-			
-			BeanWrapper beanWrapper = new BeanWrapperImpl(value);
-			Object firstPassword = beanWrapper.getPropertyValue(password);
-			Object secondPassword = beanWrapper.getPropertyValue(reEnterPassword);
 
-			if (firstPassword == null || secondPassword == null) {
-				
-				return true;
-			}
+		if (value == null) {
 
-			if (firstPassword.equals(secondPassword)) {
+			return true;
+		}
 
-				return true;
+		BeanWrapper beanWrapper = new BeanWrapperImpl(value);
+		Object firstPassword = beanWrapper.getPropertyValue(password);
+		Object secondPassword = beanWrapper.getPropertyValue(reEnterPassword);
 
-			} else {
-				// エラーを特定のフィールドに紐づけて伝える
-				context.disableDefaultConstraintViolation(); // デフォルトのクラスエラーを無効化.
-				context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージをメッセージに再設定する.
-						.addPropertyNode("password")// passwordフィールドにエラーをつける.
-						.addConstraintViolation(); // バリデーションエラーを確定する.
+		if (firstPassword == null || secondPassword == null) {
 
-				return false;
-			}
-			
-		} catch (BeansException e) {
-            log.error("@PasswordMatches バリデーション中に例外が発生しました。フィールド名が正しいか確認してください: {}", e.getMessage());
-            
-            return false; 
-            
-        } catch (Exception e) {
-            // その他予期せぬエラー（DB接続エラーなど）.
-            log.error("@PasswordMatches バリデーション中に例外が発生しました", e);
-            return false;
-        }
+			return true;
+		}
+
+		if (firstPassword.equals(secondPassword)) {
+
+			return true;
+
+		} else {
+			// エラーを特定のフィールドに紐づけて伝える
+			context.disableDefaultConstraintViolation(); // デフォルトのクラスエラーを無効化.
+			context.buildConstraintViolationWithTemplate(message) // デフォルトメッセージをメッセージに再設定する.
+					.addPropertyNode("password")// passwordフィールドにエラーをつける.
+					.addConstraintViolation(); // バリデーションエラーを確定する.
+
+			return false;
+		}
+
 	}
 }
 

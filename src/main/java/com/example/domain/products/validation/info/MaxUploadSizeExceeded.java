@@ -10,19 +10,20 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 /**
- * 入荷先IDが m_supplier に存在するか検証するアノテーション.
+ * 画像ファイルが20MBを越えていないか検証するアノテーション.
  * 
  * このアノテーションはフィールドに付与する.
  * 
  */
 @Target({ElementType.FIELD}) 
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = SupplierIdExistsValidator.class)
+@Constraint(validatedBy = MaxUploadSizeExceededValidator.class)
 @Documented
-public @interface SupplierIdExists {
-
-	String message() default "{SupplierIdExists.message}";
+public @interface MaxUploadSizeExceeded {
+	
+	String message() default "{OverSize.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+
 
 }
