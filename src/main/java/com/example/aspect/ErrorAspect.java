@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 /**
- * 例外発生時にログを出力するアスペクト
+ * 例外発生時にログを出力するアスペクト.
  */
 public class ErrorAspect {
 
