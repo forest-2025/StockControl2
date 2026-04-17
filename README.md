@@ -22,7 +22,7 @@ file.upload-dir=C:/任意のディレクトリ/<br>
 
 3.EclipseなどのIDEで開いて、アプリを起動させる。
 
-4.ブラウザで[http://localhost:8080/](http://localhost:8080/"StockControl2")を開く
+4.ブラウザで[http://localhost:8080/](http://localhost:8080/ "StockControl2")を開く
 
 ## 工夫した点
 文字を大きめにしました。
