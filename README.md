@@ -16,13 +16,17 @@ git clone https://github.com/forest-2025/StockControl2.git
 application.propertiesの<br>
 ```
 # 画像保存先（任意）.
-file.upload-dir=C:/任意のディレクトリ/<br>
+file.upload-dir=C:/任意のディレクトリ/
 ```
-に、任意のディレクトリを設定して画像ファイルの保存先を設定してください。
+に任意のディレクトリを設定して画像ファイルの保存先を設定してください。
 
-3.EclipseなどのIDEで開いて、アプリを起動させる。
+3.EclipseなどのIDEで開いてアプリを起動させる。<br>
+または、コマンドプロンプトなどでプロジェクトのルートディレクトリ（pom.xmlがある場所）に移動して以下のコマンドを実行してください。<br>
+```
+./mvnw spring-boot:run
+```
 
 4.ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開く
 
 ## 工夫した点
-文字を大きめにしました。
+文字をっ見やすいように*大きめ*にしました。
