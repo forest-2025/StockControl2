@@ -2,7 +2,7 @@
 商品の在庫を管理するアプリケーションです。
 
 ## 使用技術
-・フロントエンド：HTML,css,Bootstrap,JavaScript,Thymeleaf
+・フロントエンド：HTML・CSS・Bootstrap・JavaScript・Thymeleaf
 
-・バックエンド：Spring boot,Java,H2 Database
+・バックエンド：Spring boot・Java・H2 Database
 
