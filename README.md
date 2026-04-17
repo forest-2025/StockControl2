@@ -3,5 +3,6 @@
 
 ## 使用技術
 ・フロントエンド：HTML,css,Bootstrap,JavaScript,Thymeleaf
+
 ・バックエンド：Spring boot,Java,H2 Database
 
