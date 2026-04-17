@@ -6,3 +6,5 @@
 
 ・バックエンド：Spring boot・Java・H2 Database
 
+## 工夫した点
+文字を大きめにしました。
