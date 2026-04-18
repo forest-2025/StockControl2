@@ -29,12 +29,12 @@ file.upload-dir=C:/任意のディレクトリ/
 4.ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
 
 ## ログイン情報
-一般ユーザー
-・メールアドレス：tokyo@company.co.jp
+一般ユーザー<br>
+・メールアドレス：tokyo@company.co.jp<br>
 ・パスワード：12345
 
-管理者
-・メールアドレス：osaka@company.co.jp
+管理者<br>
+・メールアドレス：osaka@company.co.jp<br>
 ・パスワード：12345
 
 
