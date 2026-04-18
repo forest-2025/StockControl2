@@ -7,26 +7,27 @@
 ・バックエンド：Spring boot・Java・H2 Database
 
 ## 実行方法
-1.リポジトリーを保存するフォルダに移動してクローンしてください。
+1.リポジトリーを保存するフォルダに移動してリポジトリーをクローンしてください。
 ```
 git clone https://github.com/forest-2025/StockControl2.git
 ```
 
-2.商品画像ファイルを保存するディレクトリを設定をしてください。<br>
-application.propertiesの<br>
+2.商品画像ファイルを保存するディレクトリを作成してください。<br>
+
+3.作成した商品画像ファイルの保存先のパスを application.properties の file.upload-dir に設定してください。<br>
+[application.properties]
 ```
 # 画像保存先（任意）.
-file.upload-dir=C:/任意のディレクトリ/
+file.upload-dir=C:/'任意のディレクトリ'/
 ```
-に任意のディレクトリを設定して画像ファイルの保存先を設定してください。
 
-3.EclipseなどのIDEでプロジェクトを開いてアプリを実行してください。<br>
+4.EclipseなどのIDEでプロジェクトを開いてアプリを実行してください。<br>
 または、コマンドプロンプトなどでプロジェクトのルートディレクトリ（pom.xmlがある場所）に移動して以下のコマンドを実行してください。<br>
 ```
 ./mvnw spring-boot:run
 ```
 
-4.ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
+5.ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
 
 ## ログイン情報
 一般ユーザー<br>
