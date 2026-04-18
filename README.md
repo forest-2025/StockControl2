@@ -30,7 +30,7 @@ file.upload-dir=C:/任意のディレクトリ/
 
 ## ログイン情報
 一般ユーザー<br>
-・メールアドレス：`tokyo@company.co.jp`<br>
+・メールアドレス：tokyo&#64;company.co.jp<br>
 ・パスワード：12345
 
 管理者<br>
