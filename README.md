@@ -21,13 +21,13 @@ git clone https://github.com/forest-2025/StockControl2.git
 # 画像保存先（任意）.
 file.upload-dir=C:/'任意のディレクトリ'/
 ```
-
-4.EclipseなどのIDEでプロジェクトを開いてアプリを実行してください。<br>
+<br>
+4.EclipseなどのIDEでプロジェクトを開いてアプリを実行してください。<br><br><br>
 または、コマンドプロンプトなどでプロジェクトのルートディレクトリ（pom.xmlがある場所）に移動して以下のコマンドを実行してください。<br>
 ```
 ./mvnw spring-boot:run
 ```
-
+<br>
 5.ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
 
 ## ログイン情報
