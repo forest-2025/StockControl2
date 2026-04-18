@@ -24,8 +24,9 @@ file.upload-dir=C:/'任意のディレクトリ'/
 <br>
 4.EclipseなどのIDEでプロジェクトを開いてアプリを実行してください。<br>
 または、コマンドプロンプトなどでプロジェクトのルートディレクトリ（pom.xmlがある場所）に移動して以下のコマンドを実行してください。<br>
+
 ```
-222
+./mvnw spring-boot:run
 ```
 <br>
 5.ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
