@@ -45,12 +45,8 @@ file.upload-dir=C:/'任意のディレクトリ'/
 
 
 ## 画像
-<img width="1890" height="669" alt="スクリーンショット 2026-04-21 120025" src="https://github.com/user-attachments/assets/2ac3022e-52ce-4373-b13f-4f849554a816" />
 <img width="1886" height="849" alt="スクリーンショット 2026-04-21 120009" src="https://github.com/user-attachments/assets/e22f0f4c-1a7a-43fe-a9b2-ca48d983ca60" />
-
-
-
-
+<img width="1890" height="669" alt="スクリーンショット 2026-04-21 120025" src="https://github.com/user-attachments/assets/2ac3022e-52ce-4373-b13f-4f849554a816" />
  
 ## 工夫した点
 文字を見やすいように**大きめ**にしました。<br>
