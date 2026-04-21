@@ -7,7 +7,7 @@
 ・バックエンド：Spring boot・Java・H2 Database
 
 ## 実行方法
-1.リポジトリーを保存するフォルダに移動してリポジトリーをクローンしてください。
+1.リポジトリーを保存するフォルダに移動して、リポジトリーをクローンしてください。
 ```
 git clone https://github.com/forest-2025/StockControl2.git
 ```
