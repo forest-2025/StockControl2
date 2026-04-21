@@ -47,7 +47,8 @@ file.upload-dir=C:/'任意のディレクトリ'/
 ## 画像
 ・商品一覧
 <img width="1885" height="849" alt="スクリーンショット 2026-04-21 131356" src="https://github.com/user-attachments/assets/0905cf5a-2d14-4e72-9f9d-bf38c58aee33" />
-<img width="1895" height="675" alt="スクリーンショット 2026-04-21 131519" src="https://github.com/user-attachments/assets/b91dc771-c9d5-4ffc-8dda-90273b33b4a6" />
+<img width="1884" height="677" alt="スクリーンショット 2026-04-21 131720" src="https://github.com/user-attachments/assets/400fafd6-aa27-45c6-bcdd-b7dc194631e6" />
+
 
  <br>
 
