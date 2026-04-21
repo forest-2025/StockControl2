@@ -44,8 +44,10 @@ file.upload-dir=C:/'任意のディレクトリ'/
 ・パスワード：12345
 
 
-## 動画
- #### 一般ユーザー
+## 画像
+<img width="1891" height="743" alt="スクリーンショット 2026-04-21 115427" src="https://github.com/user-attachments/assets/d0b71662-3668-4dc1-ad70-9578ce10c919" />
+<img width="1889" height="916" alt="スクリーンショット 2026-04-21 115405" src="https://github.com/user-attachments/assets/f6f66ff8-e6f8-45ed-9539-0e42aca7a02a" />
+
  
 ## 工夫した点
 文字を見やすいように**大きめ**にしました。<br>
