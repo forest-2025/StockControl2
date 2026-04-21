@@ -45,8 +45,9 @@ file.upload-dir=C:/'任意のディレクトリ'/
 
 
 ## 画像
-<img width="1886" height="915" alt="スクリーンショット 2026-04-21 115819" src="https://github.com/user-attachments/assets/3b7f2256-464b-4d8a-975a-05247dac3ee5" />
-<img width="1886" height="585" alt="スクリーンショット 2026-04-21 115838" src="https://github.com/user-attachments/assets/949e9de1-ac0c-4ad5-b30b-97502839df4c" />
+<img width="1890" height="669" alt="スクリーンショット 2026-04-21 120025" src="https://github.com/user-attachments/assets/2ac3022e-52ce-4373-b13f-4f849554a816" />
+<img width="1886" height="849" alt="スクリーンショット 2026-04-21 120009" src="https://github.com/user-attachments/assets/e22f0f4c-1a7a-43fe-a9b2-ca48d983ca60" />
+
 
 
 
