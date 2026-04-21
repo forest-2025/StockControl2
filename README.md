@@ -32,6 +32,8 @@ file.upload-dir=C:/'任意のディレクトリ'/
 
 5.ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
 
+
+
 ## ログイン情報
 一般ユーザー<br>
 ・メールアドレス：`tokyo@company.co.jp`<br>
@@ -43,11 +45,8 @@ file.upload-dir=C:/'任意のディレクトリ'/
 
 
 ## 動画
-<br>
-
  #### 一般ユーザー
-
-
+ 
 ## 工夫した点
 文字を見やすいように**大きめ**にしました。<br>
 ヘッダーの背景色を項目ごとに変化するようにしました。<br>
