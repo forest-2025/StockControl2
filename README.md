@@ -45,12 +45,12 @@ file.upload-dir=C:/'任意のディレクトリ'/
 
 
 ## 画像
-・商品一覧
+・商品一覧<br>
 <img width="1885" height="849" alt="スクリーンショット 2026-04-21 131356" src="https://github.com/user-attachments/assets/0905cf5a-2d14-4e72-9f9d-bf38c58aee33" />
 <img width="1884" height="677" alt="スクリーンショット 2026-04-21 131720" src="https://github.com/user-attachments/assets/400fafd6-aa27-45c6-bcdd-b7dc194631e6" />
  <br>
 
- ・詳細情報
+ ・詳細情報<br>
 <img width="1886" height="797" alt="スクリーンショット 2026-04-21 131837" src="https://github.com/user-attachments/assets/39987aeb-ca70-4a2a-9af7-954260d3d263" />
 <img width="1887" height="414" alt="スクリーンショット 2026-04-21 131853" src="https://github.com/user-attachments/assets/dbb822cd-f20f-4b17-961a-3f0eac7ed987" />
  
