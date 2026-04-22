@@ -113,7 +113,7 @@
 									<!--/* パスワード修正ボタン */-->
 									<!-- パスワード修正ボタン -->
 									<a class="dropdown-item fs-5"
-										th:href="@{'/users/' + ${#authentication.principal.userId}+ '/passwordEdit'}" role="button"
+										th:href="@{'/users/passwordEdit'}" role="button"
 										th:text="#{editPassword}"></a>
 									<!--/* ログアウトボタン */-->
 									<form method="post" th:action="@{/logout}">

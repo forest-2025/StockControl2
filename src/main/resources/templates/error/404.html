@@ -12,7 +12,8 @@
 		<div class="text-center mt-5">
 			<h3 class="error-message text-danger" th:text="#{errorMessage}"></h3>
 			<h4 class="mt-5" th:text="#{404ErrorMessage}"></h4>
-			<div class="fs-5 fw-bold mt-4" th:text="#{backToTheHeader}"></div>
+			<div class="fs-5 fw-bold mt-4" th:text="#{backToTheHeader}"
+			sec:authorize="isAuthenticated()"></div>
 		</div>
 	</div>
 </body>

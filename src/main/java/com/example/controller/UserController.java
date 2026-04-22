@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -75,14 +74,14 @@ public class UserController {
 		if (!(sort.equals("asc") || sort.equals("desc"))) {
 			search = "";
 		}
-		
+
 		model.addAttribute("userList", userList);
 		model.addAttribute("search", search);
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setYellow("ユーザー一覧");
 		model.addAttribute("customHeader", customHeader);
-		
+
 		return "users/list";
 	}
 
@@ -247,7 +246,7 @@ public class UserController {
 
 		} else {
 			mUser.setRole("ROLE_GENERAL");
-			
+
 		}
 
 		// ユーザー情報を更新する.
@@ -262,27 +261,15 @@ public class UserController {
 	 * パスワード修正フォーム画面へ遷移する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param userId パスワードを修正するユーザーのID.
 	 * @param form パスワード修正フォーム.
-	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
-	 * 			正常に完了した場合,パスワード修正フォーム画面のビュー名.
+	 * @return パスワード修正フォーム画面のビュー名.
 	 */
-	@PreAuthorize("#userId == authentication.principal.userId")
-	@GetMapping("/{userId}/passwordEdit")
-	public String getPasswordEdit(Model model, @PathVariable Integer userId,
+	@GetMapping("/passwordEdit")
+	public String getPasswordEdit(Model model,
 			@ModelAttribute PasswordEditForm form) {
 
-		// ユーザーIDから情報を取得する.
-		MUser user = userService.getByUserId(userId);
-
-		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
-		if (user == null) {
-			return "error";
-		}
-
-		/* ユーザーIDを渡すためにユーザー情報をmodelに格納する処理,ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
-		 * (下のほうでprivateメソッドとして設定している). */
-		this.goToPasswordEdit(model, user);
+		// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.(下のほうでprivateメソッドとして設定している). 
+		this.goToPasswordEdit(model);
 
 		return "users/password-edit";
 	}
@@ -292,22 +279,22 @@ public class UserController {
 	 * パスワードの修正内容を確認して更新する.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param userId パスワードを修正するユーザーのID.
+	 * @param customUserDetails ログイン中のユーザーの情報.
 	 * @param form パスワード修正フォーム.
 	 * @param bindingResult バリデーションエラー.
-	 * @return 	パスパラメータのユーザーIDがDBに存在しなければエラー画面のビュー名.
+	 * @return 	ログイン中のユーザーのユーザーIDがDBに存在しなければエラー画面のビュー名.
 	 * 			バリデーションエラーがあればパスワード修正フォーム画面のビュー名.
 	 * 			正常に完了した場合,ユーザー一覧画面のビュー名(リダイレクト).
 	 */
-	@PreAuthorize("#userId == authentication.principal.userId")
-	@PostMapping("/{userId}/passwordEdit")
-	public String postPasswordEdit(Model model, @PathVariable Integer userId,
+	@PostMapping("/passwordEdit")
+	public String postPasswordEdit(Model model,
+			@AuthenticationPrincipal CustomUserDetails customUserDetails,
 			@ModelAttribute @Validated(GroupOrder.class) PasswordEditForm form,
 			BindingResult bindingResult) {
 		// @PathVariableの引数のname属性は省略している.
 
 		// ユーザーIDから情報を取得する.
-		MUser user = userService.getByUserId(userId);
+		MUser user = userService.getByUserId(customUserDetails.getUserId());
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
 		if (user == null) {
@@ -317,22 +304,17 @@ public class UserController {
 		// バリデーションエラーがあればパスワード修正フォーム画面へ戻る.
 		if (bindingResult.hasErrors()) {
 
-			/* ユーザーIDを渡すためにユーザー情報をmodelに格納する処理,ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している.
-			 * (下のほうでprivateメソッドとして設定している). */
-			this.goToPasswordEdit(model, user);
+			// ヘッダーの設定をmodel格納する処理をまとめたメソッドを呼び出している(下のほうでprivateメソッドとして設定している). 
+			this.goToPasswordEdit(model);
 
 			return "users/password-edit";
 		}
 
-		// formクラスをエンティティクラスに変換する.
-		//MUser muser = modelMapper.map(form, MUser.class);
-		// ユーザーIDを設定する.
-		MUser muser = new MUser();
-		muser.setUserId(userId);
-		muser.setPassword(passwordEncoder.encode(form.getPassword()));
+		// パスワードを設定する.
+		user.setPassword(passwordEncoder.encode(form.getPassword()));
 
 		// ユーザーのパスワードを更新する.
-		userService.updatePassword(muser);
+		userService.updatePassword(user);
 
 		return "redirect:/products/info/list";
 
@@ -478,12 +460,8 @@ public class UserController {
 	 * パスワード修正フォーム画面で確定ボタンを押した後のバリデーションエラー時にフォームに戻るときの共通処理をまとめたメソッド.
 	 * 
 	 * @param model ビューにデータを渡すためのモデル.
-	 * @param user パスワードを修正するユーザーの情報.
 	 */
-	private void goToPasswordEdit(Model model, MUser user) {
-
-		// 取得したユーザー情報をパスワード修正フォーム画面に渡すためmodelに格納する(userIdを渡すため).
-		model.addAttribute("user", user);
+	private void goToPasswordEdit(Model model) {
 
 		// ヘッダーの色と項目を設定する.
 		customHeader.setYellow("パスワード修正");

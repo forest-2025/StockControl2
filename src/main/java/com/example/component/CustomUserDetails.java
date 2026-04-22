@@ -14,8 +14,7 @@ import com.example.domain.users.model.MUser;
  * 基本的な username ・ password と権限に関する role,
  * 独自フィールドとして familyName ・ firstName ・ userId を追加して保持している.
  * これによりログイン中のユーザーの名前をログインしているあいだ画面に表示し続けることができ,
- * パスワードの修正画面に遷移しパスワードの変更を行うことができる.
- *
+ * またパスワードの修正ができる.
  */
 public class CustomUserDetails implements UserDetails {
 

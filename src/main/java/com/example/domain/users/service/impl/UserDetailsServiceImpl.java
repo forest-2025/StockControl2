@@ -41,8 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 
 		/* ユーザーがログインしている間はユーザーの姓と名に"さん"をつけた名前をヘッダーに表示しておく.
-		 * それには情報が消えないようにセッションに登録する必要があるため,UserクラスをカスタマイズしたCustomUserDetailsクラスを使い登録する.
-		 * また,ヘッダーにパスワード修正画面へのリンクをつけるためユーザーIDも登録している. */
+		 * それには情報が消えないようにセッションに登録する必要があるためUserクラスをカスタマイズしたCustomUserDetailsクラスを使い登録する. */
 		CustomUserDetails customUserDetails = new CustomUserDetails(loginUser);
 
 		// UserDetailsを生成する.
