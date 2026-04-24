@@ -32,7 +32,7 @@ import com.example.validation.GroupOrder;
  *
  */
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/products") 
 public class ProductCountController {
 
 	@Autowired
