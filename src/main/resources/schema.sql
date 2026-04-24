@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS m_product
    update_date_time datetime NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    FOREIGN KEY (supplier_id) REFERENCES m_supplier (id)
 );
-ALTER TABLE m_product ALTER COLUMN ID RESTART WITH 11;
+ALTER TABLE m_product ALTER COLUMN ID RESTART WITH 12;
 CREATE INDEX ix_m_product_name ON m_product (name);
 CREATE INDEX ix_m_product_number ON m_product (number);
 CREATE TABLE IF NOT EXISTS t_stock
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS t_stock
    update_date_time datetime NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    FOREIGN KEY (product_id) REFERENCES m_product (id)
 );
-ALTER TABLE t_stock ALTER COLUMN ID RESTART WITH 11;
+ALTER TABLE t_stock ALTER COLUMN ID RESTART WITH 12;
 CREATE TABLE IF NOT EXISTS t_transaction_history
 (
    id int NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
