@@ -1,7 +1,7 @@
 # 在庫管理アプリ
 商品の在庫を管理するアプリケーションです。
 
- [https://github.com/forest-2025/StockControl2/tree/master/doc](https://github.com/forest-2025/StockControl2/tree/master/doc)
+ [https://github.com/forest-2025/StockControl2/tree/master/doc](テーブル定義書)
 
 ## 使用技術
 ・フロントエンド：HTML・CSS・Bootstrap・JavaScript・Thymeleaf
