@@ -297,7 +297,7 @@ public class UserController {
 		MUser user = userService.getByUserId(customUserDetails.getUserId());
 
 		// 取得したユーザー情報が存在するか確認する(存在しなければエラー画面へ).
-		if (user == null) { 
+		if (user == null) {
 			return "error";
 		}
 
