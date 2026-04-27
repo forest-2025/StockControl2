@@ -4,9 +4,28 @@
  [URL一覧・テーブル定義書・画面設計書](https://github.com/forest-2025/StockControl2/tree/master/doc)
 
 ## 使用技術
-・フロントエンド：HTML・CSS・Bootstrap・JavaScript・Thymeleaf
 
-・バックエンド：Spring boot・Java・H2 Database
+### バックエンド
+・ Java: 21
+・ Spring Boot: 3.5.7
+・ Build Tool: Maven
+・ Database: H2 Database
+   起動時にテーブルと初期データが自動生成されます。
+
+### フロントエンド
+・ Thymeleaf
+・ Bootstrap: 5.3.8
+・ Bootstrap Icons: 1.13.1
+・ JavaScript
+・ jQuery: 3.7.1
+
+### その他ライブラリ
+・ Lombok
+・ Mybatis Spring Boot Starter: 3.0.5
+・ ModelMapper: 3.2.5
+・ Spring AOP / AspectJ
+・ PageHelper Spring Boot Starter: 2.1.1 
+・ Popper.js: 2.9.2
 
 ## 実行方法
 1.リポジトリーを保存するフォルダに移動して、リポジトリーをクローンしてください。
