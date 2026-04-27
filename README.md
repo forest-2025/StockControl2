@@ -20,12 +20,12 @@
 ・ jQuery: 3.7.1<br>
 
 ### その他ライブラリ
-・ Lombok
-・ Mybatis Spring Boot Starter: 3.0.5
-・ ModelMapper: 3.2.5
-・ Spring AOP / AspectJ
-・ PageHelper Spring Boot Starter: 2.1.1 
-・ Popper.js: 2.9.2
+・ Lombok<br>
+・ Mybatis Spring Boot Starter: 3.0.5<br>
+・ ModelMapper: 3.2.5<br>
+・ Spring AOP / AspectJ<br>
+・ PageHelper Spring Boot Starter: 2.1.1 <br>
+・ Popper.js: 2.9.2<br>
 
 ## 実行方法
 1.リポジトリーを保存するフォルダに移動して、リポジトリーをクローンしてください。
