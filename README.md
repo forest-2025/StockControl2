@@ -44,7 +44,7 @@ git clone https://github.com/forest-2025/StockControl2.git
 file.upload-dir=C:/'任意のディレクトリ'/
 ```
 <br>
-4.EclipseなどのIDEでプロジェクトをインポートしてアプリを実行してください。
+4.EclipseなどのIDEでプロジェクトをインポートしてアプリを実行してください。<br>
 シェルを利用するときは、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動して、以下のコマンドを実行してください。<br>
 
 ```
