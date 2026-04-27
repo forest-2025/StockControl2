@@ -24,8 +24,8 @@ git clone https://github.com/forest-2025/StockControl2.git
 file.upload-dir=C:/'任意のディレクトリ'/
 ```
 <br>
-4.EclipseなどのIDEでプロジェクトを開いてアプリを実行してください。<br>
-または、コマンドプロンプトなどでプロジェクトのルートディレクトリ（pom.xmlがある場所）に移動して以下で実行してください。<br>
+4.EclipseなどのIDEでプロジェクトをインポートしてアプリを実行してください。
+シェルを利用するときは、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動して、以下のコマンドを実行してください。<br>
 
 ```
 ./mvnw spring-boot:run
