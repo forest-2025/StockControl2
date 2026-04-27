@@ -22,7 +22,7 @@
 ### その他ライブラリ
 ・ Lombok<br>
 ・ Mybatis Spring Boot Starter: 3.0.5<br>
-・ ModelMapper: 3.2.5<br>
+・ Model Mapper: 3.2.5<br>
 ・ Spring AOP / AspectJ<br>
 ・ PageHelper Spring Boot Starter: 2.1.1 <br>
 ・ Popper.js: 2.9.2<br>
