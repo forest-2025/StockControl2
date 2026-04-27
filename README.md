@@ -1,7 +1,11 @@
 # 在庫管理アプリ
 商品の在庫を管理するアプリケーションです。
 
- [URL一覧・テーブル定義書・画面設計書・要件定義書](https://github.com/forest-2025/StockControl2/tree/master/doc)
+ [URL一覧](https://github.com/forest-2025/StockControl2/tree/master/doc)
+ [テーブル定義書](https://github.com/forest-2025/StockControl2/tree/master/doc)
+ [画面設計書](https://github.com/forest-2025/StockControl2/tree/master/doc)
+ [要件定義書](https://github.com/forest-2025/StockControl2/tree/master/doc)
+
 
 ## 使用技術
 
