@@ -8,8 +8,6 @@
 ### バックエンド
 ・ Java: 21<br>
 ・ Spring Boot: 3.5.7<br>
-・ Spring Boot Starter Security<br>
-・ Build Tool: Maven<br>
 ・ Database: H2 Database<br>
 　 起動時にテーブルと初期データが自動生成されます。<br>
 
@@ -19,13 +17,6 @@
 ・ Bootstrap Icons: 1.13.1<br>
 ・ JavaScript<br>
 ・ jQuery: 3.7.1<br>
-
-### その他ライブラリ
-・ Lombok<br>
-・ Mybatis Spring Boot Starter: 3.0.5<br>
-・ Model Mapper: 3.2.5<br>
-・ Spring AOP / AspectJ<br>
-・ PageHelper Spring Boot Starter: 2.1.1 <br>
 ・ Popper.js: 2.9.2<br>
 
 ## 実行方法
