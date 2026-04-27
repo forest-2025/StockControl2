@@ -6,18 +6,18 @@
 ## 使用技術
 
 ### バックエンド
-・ Java: 21
-・ Spring Boot: 3.5.7
-・ Build Tool: Maven
-・ Database: H2 Database
-   起動時にテーブルと初期データが自動生成されます。
+・ Java: 21<br>
+・ Spring Boot: 3.5.7<br>
+・ Build Tool: Maven<br>
+・ Database: H2 Database<br>
+　 起動時にテーブルと初期データが自動生成されます。<br>
 
 ### フロントエンド
-・ Thymeleaf
-・ Bootstrap: 5.3.8
-・ Bootstrap Icons: 1.13.1
-・ JavaScript
-・ jQuery: 3.7.1
+・ Thymeleaf<br>
+・ Bootstrap: 5.3.8<br>
+・ Bootstrap Icons: 1.13.1<br>
+・ JavaScript<br>
+・ jQuery: 3.7.1<br>
 
 ### その他ライブラリ
 ・ Lombok
