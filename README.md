@@ -8,6 +8,7 @@
 ### バックエンド
 ・ Java: 21<br>
 ・ Spring Boot: 3.5.7<br>
+・ Spring Boot Starter Security<br>
 ・ Build Tool: Maven<br>
 ・ Database: H2 Database<br>
 　 起動時にテーブルと初期データが自動生成されます。<br>
