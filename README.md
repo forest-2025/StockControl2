@@ -20,7 +20,7 @@
 - Java: 21
 - Spring Boot: 3.5.7
 - Database: H2 Database  
-　　起動時にテーブルと初期データが自動生成されます。
+起動時にテーブルと初期データが自動生成されます。
 
 ### フロントエンド
 - Thymeleaf
@@ -35,8 +35,8 @@
     ```git
     git clone https://github.com/forest-2025/StockControl2.git
     ```
-1. 商品画像ファイルを保存するディレクトリを作成してください。  
-1. 作成した商品画像ファイルの保存先のパスを application.properties の **file.upload-dir** に設定してください。
+1. 商品画像ファイルを保存するディレクトリを作成してください。    
+1. 作成した商品画像ファイルの保存先のパスを application.properties の **file.upload-dir** に設定してください。  
  [application.properties]
     ```git
     # 画像保存先（任意）.
