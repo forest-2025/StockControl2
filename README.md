@@ -70,14 +70,12 @@
 
 ## 画像イメージ
 - 商品一覧
-「![代替テキスト](https://github.com/user-attachments/assets/74500c3f-9de0-4dee-b794-08d9e24220b6)
-「![代替テキスト](https://github.com/user-attachments/assets/400fafd6-aa27-45c6-bcdd-b7dc194631e6)
-<img width="1888" height="846" alt="スクリーンショット 2026-04-21 141030" src="https://github.com/user-attachments/assets/74500c3f-9de0-4dee-b794-08d9e24220b6" />
-<img width="1884" height="677" alt="スクリーンショット 2026-04-21 131720" src="https://github.com/user-attachments/assets/400fafd6-aa27-45c6-bcdd-b7dc194631e6" />
- <br>
+![商品一覧1](https://github.com/user-attachments/assets/74500c3f-9de0-4dee-b794-08d9e24220b6)
+![商品一覧2](https://github.com/user-attachments/assets/400fafd6-aa27-45c6-bcdd-b7dc194631e6)
 
-・詳細情報<br>
- 
+- 詳細情報
+ ![詳細情報1](https://github.com/user-attachments/assets/39987aeb-ca70-4a2a-9af7-954260d3d263)
+ ![詳細情報2](https://github.com/user-attachments/assets/dbb822cd-f20f-4b17-961a-3f0eac7ed987)
 <img width="1886" height="797" alt="スクリーンショット 2026-04-21 131837" src="https://github.com/user-attachments/assets/39987aeb-ca70-4a2a-9af7-954260d3d263" />
 <img width="1887" height="414" alt="スクリーンショット 2026-04-21 131853" src="https://github.com/user-attachments/assets/dbb822cd-f20f-4b17-961a-3f0eac7ed987" />
  
