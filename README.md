@@ -19,7 +19,7 @@
 ### バックエンド
 - Java: 21
 - Spring Boot: 3.5.7
-- Database: H2 Database
+- Database: H2 Database  
 　　起動時にテーブルと初期データが自動生成されます。
 
 ### フロントエンド
