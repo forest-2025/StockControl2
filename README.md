@@ -51,11 +51,11 @@
 
   JDK21（Java 21）以降をご用意いただければ、IDEを使用せずにシェルでアプリを実行することができます。   
   その場合は、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動し、以下のコマンドを実行してください。
-  
-     ```git
-     ./mvnw spring-boot:run
-     ```
-     
+
+    ```git
+    ./mvnw spring-boot:run
+    ```
+
 1. ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
 
 ## ログイン情報
