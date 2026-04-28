@@ -2,41 +2,40 @@
 商品の在庫を管理するアプリケーションです。
 
 ## 機能一覧
- - 商品情報管理: 一覧、登録・修正・削除
- - 商品在庫管理: 入荷・出荷・在庫修正
- - ユーザー管理: 一覧、登録・修正・削除
- - 入荷先管理: 一覧、登録・修正・削除
- - 出荷先管理: 一覧、登録・修正・削除
+- 商品情報管理: 一覧、登録・修正・削除
+- 商品在庫管理: 入荷・出荷・在庫修正
+- ユーザー管理: 一覧、登録・修正・削除
+- 入荷先管理: 一覧、登録・修正・削除
+- 出荷先管理: 一覧、登録・修正・削除
 
 ## 仕様書
- - [要件定義書](https://github.com/forest-2025/StockControl2/tree/master/doc/要件定義書.png)
- - [画面設計書](https://github.com/forest-2025/StockControl2/tree/master/doc/画面設計書.pdf)
- - [URL一覧](https://github.com/forest-2025/StockControl2/tree/master/doc/URL一覧.pdf)
- - [テーブル定義書](https://github.com/forest-2025/StockControl2/tree/master/doc/テーブル定義書.pdf)
+- [要件定義書](https://github.com/forest-2025/StockControl2/tree/master/doc/要件定義書.png)
+- [画面設計書](https://github.com/forest-2025/StockControl2/tree/master/doc/画面設計書.pdf)
+- [URL一覧](https://github.com/forest-2025/StockControl2/tree/master/doc/URL一覧.pdf)
+- [テーブル定義書](https://github.com/forest-2025/StockControl2/tree/master/doc/テーブル定義書.pdf)
 
 ## 使用技術
 
 ### バックエンド
- - Java: 21
- - Spring Boot: 3.5.7
- - Database: H2 Database
-　   起動時にテーブルと初期データが自動生成されます。
+- Java: 21
+- Spring Boot: 3.5.7
+- Database: H2 Database
+　　起動時にテーブルと初期データが自動生成されます。
 
 ### フロントエンド
- - Thymeleaf
- - Bootstrap: 5.3.8
- - Bootstrap Icons: 1.13.1
- - JavaScript
- - jQuery: 3.7.1
- - Popper.js: 2.9.2
+- Thymeleaf
+- Bootstrap: 5.3.8
+- Bootstrap Icons: 1.13.1
+- JavaScript
+- jQuery: 3.7.1
+- Popper.js: 2.9.2
 
 ## 実行方法
 1. リポジトリーを保存するフォルダに移動して、リポジトリーをクローンしてください。
 
-   　　```git
-　　　　git clone https://github.com/forest-2025/StockControl2.git
-   　　```
-   
+   　```git
+　　　git clone https://github.com/forest-2025/StockControl2.git
+   　```
 1. 商品画像ファイルを保存するディレクトリを作成してください。
 1. 作成した商品画像ファイルの保存先のパスを application.properties の **file.upload-dir** に設定してください。
  [application.properties]
