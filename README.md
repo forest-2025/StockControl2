@@ -35,7 +35,7 @@
     ```git
     git clone https://github.com/forest-2025/StockControl2.git
     ```
-1. 商品画像ファイルを保存するディレクトリを作成してください。
+1. 商品画像ファイルを保存するディレクトリを作成してください。  
 1. 作成した商品画像ファイルの保存先のパスを application.properties の **file.upload-dir** に設定してください。
  [application.properties]
     ```git
@@ -44,11 +44,11 @@
     ```
 1. SpringBootが起動できるIDE (Pleiades Eclipseなど)でプロジェクトをインポートしてアプリを実行してください。
 
-  JDK21（Java 21）以降をご用意いただければ、IDEを使用せずにシェルでアプリを実行することができます。<br>
+  JDK21（Java 21）以降をご用意いただければ、IDEを使用せずにシェルでアプリを実行することができます。  
   その場合は、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動し、以下のコマンドを実行してください。
-    ```git
-    ./mvnw spring-boot:run
-    ```
+     ```git
+     ./mvnw spring-boot:run
+     ```
 1. ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
 
 ## ログイン情報
