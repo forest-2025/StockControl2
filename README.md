@@ -1,11 +1,17 @@
 # 在庫管理アプリ
 商品の在庫を管理するアプリケーションです。
 
+## 機能一覧
+ ・商品在庫管理: 商品一覧、商品登録、入荷・出荷・在庫調整
+ ・ユーザー管理: 一覧、登録・修正・削除
+ ・入荷先管理: 一覧、登録・修正・削除
+ ・出荷先管理: 一覧、登録・修正・削除
+
+## 仕様書
+ ・[要件定義書](https://github.com/forest-2025/StockControl2/tree/master/doc/要件定義書.png)<br>
+ ・[画面設計書](https://github.com/forest-2025/StockControl2/tree/master/doc/画面設計書.pdf)<br>
  ・[URL一覧](https://github.com/forest-2025/StockControl2/tree/master/doc/URL一覧.pdf)<br>
  ・[テーブル定義書](https://github.com/forest-2025/StockControl2/tree/master/doc/テーブル定義書.pdf)<br>
- ・[画面設計書](https://github.com/forest-2025/StockControl2/tree/master/doc/画面設計書.pdf)<br>
- ・[要件定義書](https://github.com/forest-2025/StockControl2/tree/master/doc/要件定義書.png)<br>
-
 
 ## 使用技術
 
@@ -39,8 +45,9 @@ git clone https://github.com/forest-2025/StockControl2.git
 file.upload-dir=C:/'任意のディレクトリ'/
 ```
 <br>
-4.EclipseなどのIDEでプロジェクトをインポートしてアプリを実行してください。<br>
-シェルを利用するときは、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動して、以下のコマンドを実行してください。<br>
+4.SpringBootが起動できるIDE (Pleiades Eclipseなど)でプロジェクトをインポートしてアプリを実行してください。<br>
+IDEを使用せずにシェルで実行する場合は、JDK21（Java 21）以上をインストールし、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動して、以下のコマンドを実行してください。<br>
+
 <br>
 
 
