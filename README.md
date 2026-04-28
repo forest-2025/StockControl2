@@ -31,14 +31,14 @@
 ・ Popper.js: 2.9.2<br>
 
 ## 実行方法
-1.リポジトリーを保存するフォルダに移動して、リポジトリーをクローンしてください。
+1. リポジトリーを保存するフォルダに移動して、リポジトリーをクローンしてください。
 ```
 git clone https://github.com/forest-2025/StockControl2.git
 ```
 <br>
-2.商品画像ファイルを保存するディレクトリを作成してください。<br><br><br>
+2. 商品画像ファイルを保存するディレクトリを作成してください。<br><br><br>
 
-3.作成した商品画像ファイルの保存先のパスを application.properties の **file.upload-dir** に設定してください。<br>
+3. 作成した商品画像ファイルの保存先のパスを application.properties の **file.upload-dir** に設定してください。<br>
 
 [application.properties]
 ```
@@ -46,7 +46,7 @@ git clone https://github.com/forest-2025/StockControl2.git
 file.upload-dir=C:/'任意のディレクトリ'/
 ```
 <br>
-4.SpringBootが起動できるIDE (Pleiades Eclipseなど)でプロジェクトをインポートしてアプリを実行してください。<br>
+4. SpringBootが起動できるIDE (Pleiades Eclipseなど)でプロジェクトをインポートしてアプリを実行してください。<br>
 <br>
 JDK21（Java 21）以降をご用意いただければ、IDEを使用せずにシェルでアプリを実行することができます。<br>
 その場合は、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動し、以下のコマンドを実行してください。<br>
