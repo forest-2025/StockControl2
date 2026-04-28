@@ -47,7 +47,7 @@
     file.upload-dir=C:/'任意のディレクトリ'/
     ```
 
-1. SpringBootが起動できるIDE (Pleiades Eclipseなど)でプロジェクトをインポートしてアプリを実行してください。
+1. SpringBootが起動できるIDE (Pleiades Eclipseなど)でプロジェクトをインポートしてアプリを実行してください。　　
 
   JDK21（Java 21）以降をご用意いただければ、IDEを使用せずにシェルでアプリを実行することができます。   
   その場合は、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動し、以下のコマンドを実行してください。
@@ -76,8 +76,6 @@
 - 詳細情報
  ![詳細情報1](https://github.com/user-attachments/assets/39987aeb-ca70-4a2a-9af7-954260d3d263)
  ![詳細情報2](https://github.com/user-attachments/assets/dbb822cd-f20f-4b17-961a-3f0eac7ed987)
-<img width="1886" height="797" alt="スクリーンショット 2026-04-21 131837" src="https://github.com/user-attachments/assets/39987aeb-ca70-4a2a-9af7-954260d3d263" />
-<img width="1887" height="414" alt="スクリーンショット 2026-04-21 131853" src="https://github.com/user-attachments/assets/dbb822cd-f20f-4b17-961a-3f0eac7ed987" />
  
 ## 工夫した点
 - 年配の方が見やすいように文字を**大きめ**にいたしました。
