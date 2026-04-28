@@ -38,18 +38,17 @@
 1. 商品画像ファイルを保存するディレクトリを作成してください。
 1. 作成した商品画像ファイルの保存先のパスを application.properties の **file.upload-dir** に設定してください。
  [application.properties]
- ```
- # 画像保存先（任意）.
- file.upload-dir=C:/'任意のディレクトリ'/
- ```
+    ```git
+    # 画像保存先（任意）.
+    file.upload-dir=C:/'任意のディレクトリ'/
+    ```
 1. SpringBootが起動できるIDE (Pleiades Eclipseなど)でプロジェクトをインポートしてアプリを実行してください。
 
   JDK21（Java 21）以降をご用意いただければ、IDEを使用せずにシェルでアプリを実行することができます。<br>
   その場合は、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動し、以下のコマンドを実行してください。
-```
-./mvnw spring-boot:run
-```
-
+    ```git
+    ./mvnw spring-boot:run
+    ```
 1. ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
 
 ## ログイン情報
