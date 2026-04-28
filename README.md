@@ -20,7 +20,7 @@
 - Java: 21
 - Spring Boot: 3.5.7
 - Database: H2 Database  
-起動時にテーブルと初期データが自動生成されます。
+  起動時にテーブルと初期データが自動生成されます。
 
 ### フロントエンド
 - Thymeleaf
@@ -35,7 +35,7 @@
     ```git
     git clone https://github.com/forest-2025/StockControl2.git
     ```
-1. 商品画像ファイルを保存するディレクトリを作成してください。    
+1. 商品画像ファイルを保存するディレクトリを作成してください。     
 1. 作成した商品画像ファイルの保存先のパスを application.properties の **file.upload-dir** に設定してください。  
  [application.properties]
     ```git
@@ -48,7 +48,7 @@
   その場合は、プロジェクトのルートディレクトリ（pom.xmlがある場所）に移動し、以下のコマンドを実行してください。
      ```git
      ./mvnw spring-boot:run
-     ```
+     ```  
 1. ブラウザで[http://localhost:8080/login](http://localhost:8080/login "StockControl2")を開いてください。
 
 ## ログイン情報
