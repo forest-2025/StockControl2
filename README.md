@@ -35,8 +35,7 @@
     ```git
     git clone https://github.com/forest-2025/StockControl2.git
     ```
-1. 商品画像ファイルを保存するディレクトリを作成してください。
-      
+1. 商品画像ファイルを保存するディレクトリを作成してください。  
 1. 作成した商品画像ファイルの保存先のパスを application.properties の **file.upload-dir** に設定してください。  
  [application.properties]
     ```git
